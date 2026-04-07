@@ -1,4 +1,7 @@
-"""Agents package."""
+"""Agents package — multi-agent orchestration for medical reasoning.
+
+Re-exports the orchestrator module's public API.
+"""
 
 from agents.orchestrator import (
     MultiAgentOrchestrator,
@@ -7,6 +10,7 @@ from agents.orchestrator import (
     AgentDefinition,
     AgentTask,
     AgentResult,
+    ConsensusResult,
 )
 
 __all__ = [
@@ -16,4 +20,5 @@ __all__ = [
     "AgentDefinition",
     "AgentTask",
     "AgentResult",
+    "ConsensusResult",
 ]
