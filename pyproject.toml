@@ -1,6 +1,6 @@
 [build-system]
 requires = ["setuptools>=68.0", "wheel"]
-build-backend = "setuptools.backends._legacy:_Backend"
+build-backend = "setuptools.build_meta"
 
 [project]
 name = "openclaw-medical-harness"
@@ -43,6 +43,10 @@ dev = [
     "ruff>=0.1.0",
     "pre-commit>=3.0",
 ]
+server = [
+    "fastapi>=0.104.0",
+    "uvicorn>=0.24.0",
+]
 
 [project.urls]
 Documentation = "https://mokangmedical.github.io/openclaw-medical-harness"
@@ -68,4 +72,4 @@ testpaths = ["tests"]
 addopts = "-v --tb=short"
 
 [tool.setuptools.packages.find]
-include = ["harness*", "agents*", "mcp_tools*"]
+include = ["openclaw_medical_harness*"]

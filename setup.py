@@ -12,7 +12,7 @@ setup(
     author_email="mokangmedical@example.com",
     url="https://github.com/MoKangMedical/openclaw-medical-harness",
     license="MIT",
-    packages=find_packages(),
+    packages=find_packages(include=["openclaw_medical_harness", "openclaw_medical_harness.*"]),
     python_requires=">=3.10",
     install_requires=[
         "httpx>=0.25.0",
@@ -23,6 +23,7 @@ setup(
         "openclaw": ["openclaw>=2026.4.0"],
         "crewai": ["crewai>=0.28.0"],
         "all": ["openclaw>=2026.4.0", "crewai>=0.28.0"],
+        "server": ["fastapi>=0.104.0", "uvicorn>=0.24.0"],
         "dev": [
             "pytest>=7.0",
             "pytest-cov>=4.0",

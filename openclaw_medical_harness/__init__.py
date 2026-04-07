@@ -16,15 +16,27 @@ Medical AI Agent Orchestration Framework for OpenClaw — Built on Harness Theor
 __version__ = "0.1.0"
 __author__ = "MoKangMedical"
 
-from .base import BaseHarness
-from .context import ContextManager
-from .recovery import FailureRecovery
-from .validator import ResultValidator, ValidationResult
+from .base import (
+    BaseHarness,
+    HarnessConfig,
+    HarnessResult,
+    HarnessStatus,
+    HarnessMetrics,
+    ToolBase,
+    ToolExecutionError,
+    ModelProviderBase,
+)
+
+from .context import ContextManager, HarnessContext, CompressionStrategy
+
+from .recovery import FailureRecovery, RecoveryStrategy, RecoveryResult
+
+from .validator import ResultValidator, ValidationResult, ValidationSeverity
 
 # Harness implementations
-from .diagnosis import DiagnosisHarness
-from .drug_discovery import DrugDiscoveryHarness
-from .health_management import HealthManagementHarness
+from .diagnosis import DiagnosisHarness, DiagnosticResult, DifferentialDiagnosis
+from .drug_discovery import DrugDiscoveryHarness, DrugDiscoveryResult, CompoundProfile
+from .health_management import HealthManagementHarness, HealthPlan, HealthAssessment
 
 # Agent orchestration
 from .agents import MedicalOrchestrator
@@ -33,14 +45,41 @@ from .agents import MedicalOrchestrator
 from .mcp_tools import MedicalToolRegistry
 
 __all__ = [
+    # Base
     "BaseHarness",
+    "HarnessConfig",
+    "HarnessResult",
+    "HarnessStatus",
+    "HarnessMetrics",
+    "ToolBase",
+    "ToolExecutionError",
+    "ModelProviderBase",
+    # Context
     "ContextManager",
+    "HarnessContext",
+    "CompressionStrategy",
+    # Recovery
     "FailureRecovery",
+    "RecoveryStrategy",
+    "RecoveryResult",
+    # Validator
     "ResultValidator",
     "ValidationResult",
+    "ValidationSeverity",
+    # Diagnosis
     "DiagnosisHarness",
+    "DiagnosticResult",
+    "DifferentialDiagnosis",
+    # Drug Discovery
     "DrugDiscoveryHarness",
+    "DrugDiscoveryResult",
+    "CompoundProfile",
+    # Health Management
     "HealthManagementHarness",
+    "HealthPlan",
+    "HealthAssessment",
+    # Agents
     "MedicalOrchestrator",
+    # MCP Tools
     "MedicalToolRegistry",
 ]
