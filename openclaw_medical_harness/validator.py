@@ -225,9 +225,10 @@ class ResultValidator:
             issues.append("输出为空")
             return issues
 
-        # 必须有诊断字段
-        if "diagnosis" not in result and "output" not in result and "raw_output" not in result:
-            issues.append("输出缺少 'diagnosis' 或 'output' 字段")
+        # 必须有核心输出字段（诊断或领域特定字段）
+        core_fields = {"diagnosis", "output", "raw_output", "target", "assessment"}
+        if not core_fields.intersection(result.keys()):
+            issues.append(f"输出缺少核心字段（{'/'.join(core_fields)}之一）")
 
         # 必须有置信度
         if "confidence" not in result:
