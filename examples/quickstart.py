@@ -1,19 +1,34 @@
+"""Quick Start — 5 lines to run a diagnostic Harness.
+
+This example demonstrates the simplest way to use OpenClaw-Medical-Harness:
+just create a DiagnosticHarness and execute it with patient symptoms.
+
+Usage:
+    python examples/quickstart.py
 """
-Quick Start — 5行代码启动诊断Harness。
-"""
 
-from openclaw_medical_harness import DiagnosisHarness
+from harness.diagnosis import DiagnosticHarness
 
-# 创建诊断Harness（神经内科方向）
-harness = DiagnosisHarness(model_provider="mimo", specialty="neurology")
 
-# 执行诊断
-result = harness.execute({
-    "symptoms": ["bilateral ptosis", "fatigable weakness", "diplopia"],
-    "patient_history": {"age": 35, "sex": "F"},
-})
+def main() -> None:
+    """Run a quick diagnostic Harness demo."""
 
-# 查看结果
-print(f"诊断: {result['diagnosis']}")
-print(f"置信度: {result['confidence']:.2f}")
-print(f"下一步: {result['next_steps']}")
+    # 1. Create a diagnostic Harness
+    harness = DiagnosticHarness(name="quick-start-dx")
+
+    # 2. Execute with patient symptoms
+    result = harness.execute({
+        "symptoms": ["chest pain", "shortness of breath"],
+        "age": 55,
+        "sex": "male",
+    })
+
+    # 3. Print the results
+    print(f"Status: {result.status}")
+    print(f"Execution time: {result.metrics.execution_time_ms:.1f}ms")
+    print(f"Harness: {result.harness_name}")
+    print(f"Validation score: {result.metrics.validation_score:.2f}")
+
+
+if __name__ == "__main__":
+    main()

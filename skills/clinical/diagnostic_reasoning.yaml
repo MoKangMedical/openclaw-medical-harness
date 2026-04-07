@@ -1,0 +1,162 @@
+# OpenClaw Skill: Diagnostic Reasoning
+# A structured clinical decision support skill for OpenClaw
+#
+# This skill implements evidence-based diagnostic reasoning:
+#   1. Symptom intake and structuring
+#   2. Red flag screening
+#   3. Differential diagnosis generation
+#   4. Workup strategy formulation
+#   5. Evidence-based diagnosis narrowing
+
+name: diagnostic_reasoning
+version: "1.0.0"
+description: >
+  Clinical diagnostic reasoning skill — performs structured differential
+  diagnosis from patient symptoms using evidence-based protocols.
+
+author: MoKangMedical
+license: MIT
+compatibility:
+  openclaw: ">=2026.4"
+  python: ">=3.10"
+
+# Skill category and tags
+category: clinical
+tags:
+  - diagnosis
+  - clinical-decision-support
+  - differential-diagnosis
+  - evidence-based-medicine
+
+# Input schema
+input_schema:
+  type: object
+  required:
+    - symptoms
+  properties:
+    symptoms:
+      type: array
+      items:
+        type: string
+      description: "List of presenting symptoms"
+      example: ["chest pain", "shortness of breath", "diaphoresis"]
+    age:
+      type: integer
+      description: "Patient age in years"
+      minimum: 0
+      maximum: 150
+    sex:
+      type: string
+      enum: ["male", "female", "other"]
+      description: "Patient biological sex"
+    medical_history:
+      type: array
+      items:
+        type: string
+      description: "Past medical history items"
+    current_medications:
+      type: array
+      items:
+        type: string
+      description: "Current medications"
+    vital_signs:
+      type: object
+      description: "Current vital signs"
+    lab_results:
+      type: object
+      description: "Available laboratory results"
+
+# Output schema
+output_schema:
+  type: object
+  properties:
+    primary_diagnosis:
+      type: string
+      description: "Most likely diagnosis"
+    confidence:
+      type: number
+      minimum: 0.0
+      maximum: 1.0
+      description: "Confidence in primary diagnosis"
+    differential_list:
+      type: array
+      items:
+        type: object
+        properties:
+          condition:
+            type: string
+          probability:
+            type: number
+          supporting_evidence:
+            type: array
+            items:
+              type: string
+          recommended_tests:
+            type: array
+            items:
+              type: string
+    recommended_tests:
+      type: array
+      items:
+        type: string
+    urgency_level:
+      type: string
+      enum: ["emergency", "urgent", "routine"]
+    specialist_referral:
+      type: string
+    reasoning_chain:
+      type: array
+      items:
+        type: string
+    red_flags:
+      type: array
+      items:
+        type: string
+
+# MCP tools this skill uses
+tools:
+  - name: pubmed_search
+    required: false
+    description: "Search PubMed for clinical evidence"
+  - name: omim_lookup
+    required: false
+    description: "Look up rare genetic diseases"
+  - name: openfae_safety
+    required: false
+    description: "Check drug safety profiles"
+
+# Harness configuration
+harness:
+  type: diagnosis
+  config:
+    enable_rare_disease_screening: false
+    multidisciplinary_mode: false
+    max_differentials: 5
+    min_confidence_threshold: 0.3
+
+# Recovery strategy
+recovery:
+  strategy: escalate
+  max_retries: 2
+  escalation_message: >
+    Diagnostic uncertainty detected. Consider specialist consultation
+    or additional workup before proceeding.
+
+# Validation rules
+validation:
+  strict_mode: false
+  required_output_fields:
+    - primary_diagnosis
+    - differential_list
+    - confidence
+  safety_patterns:
+    - pattern: "no need for testing"
+      severity: critical
+      message: "Recommendations to skip testing require review"
+
+# Execution parameters
+execution:
+  timeout_seconds: 120
+  max_tokens: 4096
+  temperature: 0.3
+  model: mimo

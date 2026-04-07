@@ -9,42 +9,63 @@ description = "Medical AI Agent Orchestration Framework for OpenClaw — Built o
 readme = "README.md"
 license = {text = "MIT"}
 requires-python = ">=3.10"
-authors = [{name = "MoKangMedical"}]
-keywords = ["openclaw", "medical", "ai", "harness", "agent", "diagnosis", "drug-discovery"]
+authors = [
+    {name = "MoKangMedical", email = "mokangmedical@example.com"},
+]
+keywords = ["medical", "ai", "agent", "harness", "openclaw", "diagnosis", "drug-discovery"]
 classifiers = [
     "Development Status :: 3 - Alpha",
-    "Framework :: OpenClaw",
+    "Intended Audience :: Healthcare Industry",
+    "Intended Audience :: Science/Research",
     "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
     "Topic :: Scientific/Engineering :: Medical Science Apps.",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
 ]
-
 dependencies = [
+    "httpx>=0.25.0",
     "pydantic>=2.0.0",
-    "httpx>=0.27.0",
     "pyyaml>=6.0",
 ]
 
 [project.optional-dependencies]
-crewai = ["crewai[tools]>=0.28.0"]
-dev = ["pytest>=7.0", "pytest-asyncio>=0.23", "ruff>=0.3", "mypy>=1.8"]
+openclaw = ["openclaw>=2026.4.0"]
+crewai = ["crewai>=0.28.0"]
+all = ["openclaw>=2026.4.0", "crewai>=0.28.0"]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+    "pytest-asyncio>=0.21",
+    "mypy>=1.0",
+    "ruff>=0.1.0",
+    "pre-commit>=3.0",
+]
 
 [project.urls]
-Homepage = "https://github.com/MoKangMedical/openclaw-medical-harness"
-Documentation = "https://github.com/MoKangMedical/openclaw-medical-harness#readme"
-Repository = "https://github.com/MoKangMedical/openclaw-medical-harness"
+Documentation = "https://mokangmedical.github.io/openclaw-medical-harness"
+Source = "https://github.com/MoKangMedical/openclaw-medical-harness"
+Issues = "https://github.com/MoKangMedical/openclaw-medical-harness/issues"
 
 [tool.ruff]
-line-length = 100
 target-version = "py310"
+line-length = 100
 
 [tool.ruff.lint]
-select = ["E", "F", "I", "N", "W", "UP"]
+select = ["E", "F", "W", "I", "N", "UP", "B", "SIM", "TCH"]
+ignore = ["E501"]
 
 [tool.mypy]
 python_version = "3.10"
-strict = false
 warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+addopts = "-v --tb=short"
+
+[tool.setuptools.packages.find]
+include = ["harness*", "agents*", "mcp_tools*"]
