@@ -25,6 +25,8 @@ from .base import (
     ToolBase,
     ToolExecutionError,
     ModelProviderBase,
+    CheckpointError,
+    DryRunPlan,
 )
 
 from .context import ContextManager, HarnessContext, CompressionStrategy
@@ -54,6 +56,8 @@ __all__ = [
     "ToolBase",
     "ToolExecutionError",
     "ModelProviderBase",
+    "CheckpointError",
+    "DryRunPlan",
     # Context
     "ContextManager",
     "HarnessContext",
