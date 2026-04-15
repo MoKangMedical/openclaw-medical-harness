@@ -137,6 +137,11 @@ class ConsensusResult:
     evidence_summary: list[str] = field(default_factory=list)
     escalation_needed: bool = False
 
+    @property
+    def agent_opinions(self) -> list[AgentResult]:
+        """Alias for agent_results values (backward compatibility)."""
+        return list(self.agent_results.values())
+
 
 # ── Agent Templates ──────────────────────────────────────────────────
 
@@ -228,7 +233,7 @@ class MultiAgentOrchestrator:
 
     def add_agent(
         self,
-        role: AgentRole,
+        role: AgentRole | str,
         name: str = "",
         specialty: str = "",
         tools: list[str] | None = None,
@@ -239,6 +244,7 @@ class MultiAgentOrchestrator:
 
         Args:
             role: The agent's role (diagnostic, literature, drug, communication).
+                 Accepts AgentRole enum or string name.
             name: Optional custom name. Auto-generated if empty.
             specialty: Medical specialty (e.g., 'neurology').
             tools: Override default tools for this role.
@@ -251,6 +257,11 @@ class MultiAgentOrchestrator:
         Raises:
             ValueError: If max_agents limit reached.
         """
+        # Accept string role names and convert to AgentRole
+        if isinstance(role, str):
+            role_map = {r.value: r for r in AgentRole}
+            role = role_map.get(role.lower(), AgentRole.DIAGNOSTIC)
+
         if len(self._agents) >= self.max_agents:
             raise ValueError(f"Maximum agent limit ({self.max_agents}) reached")
 
@@ -287,10 +298,11 @@ class MultiAgentOrchestrator:
 
     def run(
         self,
-        objective: str,
+        objective: str = "",
         context: dict[str, Any] | None = None,
         consensus_rounds: int = 3,
         timeout_seconds: float = 300.0,
+        task: str = "",
     ) -> ConsensusResult:
         """Execute multi-agent orchestration.
 
@@ -301,6 +313,7 @@ class MultiAgentOrchestrator:
 
         Args:
             objective: The medical task to accomplish.
+            task: Alias for objective (backward compatibility).
             context: Shared context data (patient info, symptoms, etc.).
             consensus_rounds: Number of deliberation rounds for consensus.
             timeout_seconds: Maximum total execution time.
@@ -308,6 +321,10 @@ class MultiAgentOrchestrator:
         Returns:
             ConsensusResult with the aggregated multi-agent output.
         """
+        # Accept 'task' as alias for 'objective'
+        if task and not objective:
+            objective = task
+
         context = context or {}
         start_time = time.monotonic()
 
