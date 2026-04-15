@@ -6,6 +6,7 @@ Provides a centralized registry of MCP-compatible medical tools:
   - OpenTargets: Target-disease association evidence
   - OMIM: Mendelian genetics and rare disease data
   - OpenFDA: Drug safety and adverse event signals
+  - RDKit: Cheminformatics calculations
 
 Each tool is defined with its MCP endpoint, parameters, and
 Harness integration metadata.
@@ -27,7 +28,7 @@ class MCPCategory(str, Enum):
     """Categories for MCP tool classification."""
 
     LITERATURE = "literature"
-    DRUG_DATA = "drug_data"
+    DRUG = "drug"
     GENETICS = "genetics"
     SAFETY = "safety"
     TARGET = "target"
@@ -65,11 +66,7 @@ class MCPToolDefinition:
 
 
 class MCPToolAdapter(ToolBase):
-    """Adapter that wraps an MCPToolDefinition as a ToolBase.
-
-    Translates between the Harness tool interface and the MCP protocol,
-    enabling seamless integration of external medical data sources.
-    """
+    """Adapter that wraps an MCPToolDefinition as a ToolBase."""
 
     def __init__(self, definition: MCPToolDefinition, client: Any | None = None) -> None:
         self._definition = definition
@@ -89,34 +86,16 @@ class MCPToolAdapter(ToolBase):
         context: dict[str, Any],
         prior_results: dict[str, Any],
     ) -> dict[str, Any]:
-        """Execute the MCP tool call.
-
-        Args:
-            context: Current Harness context.
-            prior_results: Results from earlier tools in the chain.
-
-        Returns:
-            Dict with the tool's response data.
-        """
+        """Execute the MCP tool call."""
         self._call_count += 1
-
-        # Rate limit check
         if self._call_count > self._definition.rate_limit_per_minute:
             logger.warning("Rate limit reached for tool %s", self.name)
             return {"error": "rate_limited", "tool": self.name}
 
-        # Extract parameters from context
         params = self._extract_params(context, prior_results)
+        logger.info("MCP call: %s.%s with %d params",
+                     self.name, self._definition.mcp_method, len(params))
 
-        logger.info(
-            "MCP call: %s.%s with %d params",
-            self.name,
-            self._definition.mcp_method,
-            len(params),
-        )
-
-        # In production, this would make the actual MCP call
-        # For now, return a structured placeholder
         return {
             "tool": self.name,
             "method": self._definition.mcp_method,
@@ -126,27 +105,16 @@ class MCPToolAdapter(ToolBase):
         }
 
     def _extract_params(
-        self,
-        context: dict[str, Any],
-        prior_results: dict[str, Any],
+        self, context: dict[str, Any], prior_results: dict[str, Any],
     ) -> dict[str, Any]:
-        """Extract tool parameters from context and prior results.
-
-        Args:
-            context: Current Harness context.
-            prior_results: Results from earlier tools.
-
-        Returns:
-            Dict of parameters for the MCP call.
-        """
+        """Extract tool parameters from context and prior results."""
         input_data = context.get("input", {})
         params: dict[str, Any] = {}
 
-        # Tool-specific parameter extraction
         if self._definition.category == MCPCategory.LITERATURE:
             params["query"] = input_data.get("search_query", "")
             params["symptoms"] = input_data.get("symptoms", [])
-        elif self._definition.category == MCPCategory.DRUG_DATA:
+        elif self._definition.category == MCPCategory.DRUG:
             params["compound"] = input_data.get("compound", "")
             params["target"] = input_data.get("target", "")
         elif self._definition.category == MCPCategory.TARGET:
@@ -161,10 +129,11 @@ class MCPToolAdapter(ToolBase):
         return params
 
 
-# Pre-registered medical MCP tools
+# ── Pre-registered medical MCP tools ───────────────────────────────
+
 _MEDICAL_TOOLS: dict[str, MCPToolDefinition] = {
-    "pubmed_search": MCPToolDefinition(
-        name="pubmed_search",
+    "pubmed": MCPToolDefinition(
+        name="pubmed",
         display_name="PubMed Literature Search",
         description="Search PubMed for biomedical literature, retrieve abstracts and citations",
         category=MCPCategory.LITERATURE,
@@ -178,11 +147,11 @@ _MEDICAL_TOOLS: dict[str, MCPToolDefinition] = {
         harness_compatible=["diagnosis", "drug_discovery", "health_management"],
         rate_limit_per_minute=10,
     ),
-    "chembl_query": MCPToolDefinition(
-        name="chembl_query",
+    "chembl": MCPToolDefinition(
+        name="chembl",
         display_name="ChEMBL Drug Data",
         description="Query ChEMBL for drug compound bioactivity, structure, and target data",
-        category=MCPCategory.DRUG_DATA,
+        category=MCPCategory.DRUG,
         mcp_endpoint="https://www.ebi.ac.uk/chembl/api/data",
         mcp_method="molecule",
         parameters_schema={
@@ -193,8 +162,8 @@ _MEDICAL_TOOLS: dict[str, MCPToolDefinition] = {
         harness_compatible=["drug_discovery"],
         rate_limit_per_minute=30,
     ),
-    "opentargets_association": MCPToolDefinition(
-        name="opentargets_association",
+    "opentargets": MCPToolDefinition(
+        name="opentargets",
         display_name="OpenTargets Target-Disease Association",
         description="Query OpenTargets for target-disease association scores and evidence",
         category=MCPCategory.TARGET,
@@ -207,8 +176,8 @@ _MEDICAL_TOOLS: dict[str, MCPToolDefinition] = {
         harness_compatible=["diagnosis", "drug_discovery"],
         rate_limit_per_minute=30,
     ),
-    "omim_lookup": MCPToolDefinition(
-        name="omim_lookup",
+    "omim": MCPToolDefinition(
+        name="omim",
         display_name="OMIM Genetic Disease Lookup",
         description="Search OMIM for Mendelian disease-gene-phenotype relationships",
         category=MCPCategory.GENETICS,
@@ -223,8 +192,8 @@ _MEDICAL_TOOLS: dict[str, MCPToolDefinition] = {
         rate_limit_per_minute=10,
         requires_auth=True,
     ),
-    "openfae_safety": MCPToolDefinition(
-        name="openfae_safety",
+    "openfda": MCPToolDefinition(
+        name="openfda",
         display_name="OpenFDA Drug Safety",
         description="Query OpenFDA for drug adverse event reports and safety signals",
         category=MCPCategory.SAFETY,
@@ -238,21 +207,25 @@ _MEDICAL_TOOLS: dict[str, MCPToolDefinition] = {
         harness_compatible=["drug_discovery", "health_management"],
         rate_limit_per_minute=20,
     ),
+    "rdkit": MCPToolDefinition(
+        name="rdkit",
+        display_name="RDKit Cheminformatics",
+        description="Molecular structure analysis, property calculation, and similarity search",
+        category=MCPCategory.DRUG,
+        mcp_endpoint="https://rdkit.local/api",
+        mcp_method="compute",
+        parameters_schema={
+            "smiles": {"type": "string", "required": True},
+            "properties": {"type": "array", "default": ["mw", "logp", "tpsa"]},
+        },
+        harness_compatible=["drug_discovery"],
+        rate_limit_per_minute=60,
+    ),
 }
 
 
 class MedicalToolRegistry:
-    """Registry of pre-configured medical MCP tools.
-
-    Provides a centralized way to discover, configure, and instantiate
-    medical data tools for use within Harnesses.
-
-    Example:
-        >>> registry = MedicalToolRegistry()
-        >>> tools = registry.get_tools_for_harness("diagnosis")
-        >>> print([t.name for t in tools])
-        ['pubmed_search', 'omim_lookup', 'openfae_safety']
-    """
+    """Registry of pre-configured medical MCP tools."""
 
     def __init__(self, mcp_client: Any | None = None) -> None:
         self._definitions = dict(_MEDICAL_TOOLS)
@@ -260,19 +233,9 @@ class MedicalToolRegistry:
         self._custom_tools: dict[str, MCPToolDefinition] = {}
 
     def register(
-        self,
-        definition: MCPToolDefinition,
-        override: bool = False,
+        self, definition: MCPToolDefinition, override: bool = False,
     ) -> None:
-        """Register a custom MCP tool.
-
-        Args:
-            definition: The tool definition to register.
-            override: If True, override existing tool with same name.
-
-        Raises:
-            ValueError: If tool already registered and override is False.
-        """
+        """Register a custom MCP tool."""
         if definition.name in self._definitions and not override:
             raise ValueError(
                 f"Tool '{definition.name}' already registered. Use override=True to replace."
@@ -282,49 +245,39 @@ class MedicalToolRegistry:
         logger.info("Registered MCP tool: %s", definition.name)
 
     def get(self, name: str) -> MCPToolAdapter | None:
-        """Get a tool by name as an MCPToolAdapter.
-
-        Args:
-            name: The tool name.
-
-        Returns:
-            MCPToolAdapter instance, or None if not found.
-        """
+        """Get a tool by name as an MCPToolAdapter."""
         definition = self._definitions.get(name)
         if not definition:
             return None
         return MCPToolAdapter(definition, client=self._mcp_client)
 
+    def list_tools(self, category: str | None = None) -> list[dict[str, Any]]:
+        """List tools as dicts, optionally filtered by category string."""
+        tools = self._definitions.values()
+        if category:
+            tools = [d for d in tools if d.category.value == category]
+        return [
+            {"name": d.name, "display_name": d.display_name,
+             "category": d.category.value, "description": d.description}
+            for d in tools
+        ]
+
+    def list_categories(self) -> list[str]:
+        """Return unique category strings."""
+        return sorted({d.category.value for d in self._definitions.values()})
+
+    def list_all(self) -> list[MCPToolDefinition]:
+        """List all registered tool definitions."""
+        return list(self._definitions.values())
+
+    def list_by_category(self, category: MCPCategory) -> list[MCPToolDefinition]:
+        """List tools filtered by category enum."""
+        return [d for d in self._definitions.values() if d.category == category]
+
     def get_tools_for_harness(self, harness_type: str) -> list[MCPToolAdapter]:
-        """Get all tools compatible with a specific Harness type.
-
-        Args:
-            harness_type: Harness type ('diagnosis', 'drug_discovery', 'health_management').
-
-        Returns:
-            List of compatible MCPToolAdapter instances.
-        """
+        """Get all tools compatible with a specific Harness type."""
         return [
             MCPToolAdapter(defn, client=self._mcp_client)
             for defn in self._definitions.values()
             if harness_type in defn.harness_compatible
         ]
-
-    def list_all(self) -> list[MCPToolDefinition]:
-        """List all registered tool definitions.
-
-        Returns:
-            List of all MCPToolDefinition objects.
-        """
-        return list(self._definitions.values())
-
-    def list_by_category(self, category: MCPCategory) -> list[MCPToolDefinition]:
-        """List tools filtered by category.
-
-        Args:
-            category: The MCP category to filter by.
-
-        Returns:
-            List of matching MCPToolDefinition objects.
-        """
-        return [d for d in self._definitions.values() if d.category == category]
