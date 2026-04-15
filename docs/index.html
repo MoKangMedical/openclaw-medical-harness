@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OpenClaw-Medical-Harness — Medical AI Agent Orchestration Framework</title>
+<meta name="description" content="OpenClaw-Medical-Harness is an open-source medical AI agent orchestration framework built on Harness Theory. Supports diagnosis, drug discovery, and health management with MIMO, Claude, and GPT models.">
+<meta name="keywords" content="medical AI, drug discovery, rare disease diagnosis, AI agent framework, healthcare AI, medical LLM, harness theory, MIMO, open source">
+<meta name="author" content="MoKangMedical">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://mokangmedical.github.io/openclaw-medical-harness/">
+<!-- Open Graph -->
+<meta property="og:title" content="OpenClaw-Medical-Harness — Medical AI Agent Orchestration Framework">
+<meta property="og:description" content="Open-source framework for building medical AI agents. Three-layer harness: Diagnosis, Drug Discovery, Health Management. Supports MIMO, Claude, GPT.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://mokangmedical.github.io/openclaw-medical-harness/">
+<meta property="og:site_name" content="MoKangMedical">
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="OpenClaw-Medical-Harness — Medical AI Agent Framework">
+<meta name="twitter:description" content="Build medical AI agents with structured harness architecture. Diagnosis, Drug Discovery, Health Management.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏥</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Orbitron:wght@500;700;800&display=swap" rel="stylesheet">
+
+<!-- Schema.org Structured Data (JSON-LD) — Critical for GEO -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "OpenClaw-Medical-Harness",
+  "alternateName": "Medical Harness",
+  "applicationCategory": "MedicalApplication",
+  "applicationSubCategory": "AI Agent Framework",
+  "operatingSystem": "Cross-platform",
+  "description": "Open-source medical AI agent orchestration framework built on Harness Theory. Provides three-layer harness architecture for diagnosis (rare disease, differential diagnosis), drug discovery (target screening, ADMET prediction), and health management (personalized care plans). Supports pluggable model providers including Xiaomi MIMO, Claude, GPT-4, and local Ollama.",
+  "softwareVersion": "0.2.0",
+  "datePublished": "2026-04-12",
+  "dateModified": "2026-04-15",
+  "license": "https://opensource.org/licenses/MIT",
+  "codeRepository": "https://github.com/MoKangMedical/openclaw-medical-harness",
+  "programmingLanguage": ["Python", "Python 3.10+"],
+  "runtimePlatform": "Python",
+  "author": {
+    "@type": "Organization",
+    "name": "MoKangMedical",
+    "url": "https://github.com/MoKangMedical",
+    "sameAs": [
+      "https://github.com/MoKangMedical",
+      "https://pypi.org/project/openclaw-medical-harness/"
+    ]
+  },
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "featureList": [
+    "Medical diagnosis with differential diagnosis and confidence scoring",
+    "Drug discovery with target screening and ADMET prediction",
+    "Health management with personalized care plans",
+    "Multi-agent orchestration with consensus mechanism",
+    "Pluggable model providers (MIMO, Claude, GPT-4, Ollama)",
+    "MCP tool integration (PubMed, ChEMBL, OpenTargets, OMIM, OpenFDA)",
+    "Result validation with medical safety checks",
+    "Failure recovery with graceful degradation"
+  ],
+  "softwareHelp": {
+    "@type": "CreativeWork",
+    "url": "https://github.com/MoKangMedical/openclaw-medical-harness/blob/main/README.md"
+  },
+  "citation": [
+    {
+      "@type": "ScholarlyArticle",
+      "name": "Harness Theory in AI Systems: Environment Design Over Model Scaling",
+      "url": "https://github.com/MoKangMedical/openclaw-medical-harness/blob/main/docs/harness_theory.md"
+    }
+  ],
+  "hasPart": [
+    {
+      "@type": "SoftwareApplication",
+      "name": "Diagnosis Harness",
+      "description": "Structured diagnostic reasoning: symptoms → differential diagnosis → workup strategy → confirmed diagnosis"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "name": "Drug Discovery Harness",
+      "description": "Drug discovery pipeline: target validation → virtual screening → ADMET prediction → lead optimization"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "name": "Health Management Harness",
+      "description": "Health management workflow: assessment → personalized plan → adherence tracking → effectiveness evaluation"
+    }
+  ]
+}
+</script>
+
+<!-- FAQ Schema — AI engines love FAQ structured data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is OpenClaw-Medical-Harness?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "OpenClaw-Medical-Harness is an open-source medical AI agent orchestration framework built on Harness Theory. It provides a structured pipeline (Tool Chain → Context Management → Model Reasoning → Validation → Recovery) that makes any LLM perform medical reasoning reliably. Version 0.2.0 integrates with Xiaomi MIMO, Claude, and GPT-4 models."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is Harness Theory in AI?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Harness Theory proposes that in AI applications, the system architecture (harness) matters more than the underlying model. A well-designed harness can improve performance by up to 64%. The harness includes tool chain orchestration, information format design, context management, failure recovery, and result validation. Unlike the model (which is replaceable), the harness is the private competitive advantage."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How does the Medical Harness handle drug discovery?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The Drug Discovery Harness follows a 4-stage pipeline: (1) Target validation using OpenTargets API, (2) Virtual screening with ChEMBL compound database, (3) ADMET prediction for absorption, distribution, metabolism, excretion, and toxicity, (4) Lead optimization suggestions. It integrates with real APIs including PubMed, ChEMBL, and OpenTargets."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What model providers are supported?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The framework supports pluggable model providers: Xiaomi MIMO (mimo-v2-pro, default), OpenAI GPT-4, Anthropic Claude, and local Ollama models. You can also implement custom providers by extending the ModelProvider base class. The model layer is intentionally the most replaceable component."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is OpenClaw-Medical-Harness suitable for rare disease diagnosis?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. The framework includes a rare disease knowledge base and integrates with OMIM (Online Mendelian Inheritance in Man) for genetic disease lookup. The Diagnosis Harness performs differential diagnosis with confidence scoring, and includes high-risk validation that flags diagnoses requiring differential lists. It has been tested with rare neurological conditions like Myasthenia Gravis and Spinocerebellar Ataxia."
+      }
+    }
+  ]
+}
+</script>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#060a14;--card:#0d1425;--border:#152035;--text:#e8edf5;--dim:#7b8ba4;--c1:#ffb800;--c2:#ff3b5c;--grad:linear-gradient(135deg,var(--c1),var(--c2))}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;background-image:linear-gradient(rgba(0,229,255,.015) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,.015) 1px,transparent 1px);background-size:60px 60px;-webkit-font-smoothing:antialiased}
+a{color:var(--c1);text-decoration:none}
+a:hover{text-decoration:underline}
+.hero{text-align:center;padding:8rem 2rem 5rem;max-width:900px;margin:0 auto}
+.hero h1{font-family:'Orbitron',sans-serif;font-size:clamp(1.8rem,4.5vw,3.2rem);font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:1.5rem}
+.hero p{color:var(--dim);font-size:1.1rem;line-height:1.8;max-width:650px;margin:0 auto 2.5rem}
+.btn{display:inline-flex;align-items:center;gap:.5rem;padding:.8rem 2rem;border-radius:12px;font-size:1rem;font-weight:600;text-decoration:none;transition:all .3s;border:none;cursor:pointer}
+.btn-primary{background:var(--grad);color:#fff;box-shadow:0 0 20px rgba(0,229,255,.2)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 0 30px rgba(0,229,255,.35);text-decoration:none}
+.btn-ghost{background:rgba(255,255,255,.05);color:var(--text);border:1px solid var(--border)}
+.btn-ghost:hover{border-color:var(--c1);text-decoration:none}
+.btn-install{display:inline-block;padding:.5rem 1.2rem;border-radius:8px;background:rgba(255,255,255,.05);border:1px solid var(--border);font-family:monospace;font-size:.9rem;color:var(--c1)}
+.section{max-width:1100px;margin:4rem auto;padding:0 2rem}
+.section h2{font-family:'Orbitron',sans-serif;font-size:1.5rem;margin-bottom:1.5rem;text-align:center}
+.features{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem}
+.feature{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:2rem;transition:all .3s}
+.feature:hover{border-color:rgba(0,229,255,.2);transform:translateY(-3px);box-shadow:0 0 30px rgba(0,229,255,.05)}
+.feature h3{font-size:1.05rem;margin-bottom:.5rem}
+.feature p{color:var(--dim);font-size:.88rem;line-height:1.6}
+.feature .ico{font-size:2rem;margin-bottom:1rem}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:2rem;max-width:800px;margin:0 auto 3rem}
+.stat-val{font-family:'Orbitron',sans-serif;font-size:2rem;font-weight:800;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.stat-lbl{font-size:.82rem;color:var(--dim);margin-top:.2rem}
+.code-block{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.5rem;margin:1.5rem auto;max-width:700px;text-align:left;overflow-x:auto}
+.code-block pre{font-family:'Courier New',monospace;font-size:.85rem;color:#a0d0a0;line-height:1.6;white-space:pre}
+.faq{max-width:750px;margin:0 auto}
+.faq-item{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.5rem;margin-bottom:1rem}
+.faq-item h3{font-size:1rem;margin-bottom:.6rem;color:var(--c1)}
+.faq-item p{color:var(--dim);font-size:.9rem;line-height:1.7}
+.arch{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:2rem;margin:2rem auto;max-width:700px;font-family:monospace;font-size:.8rem;color:var(--dim);line-height:1.5;white-space:pre;overflow-x:auto;text-align:center}
+footer{text-align:center;padding:4rem 2rem;color:var(--dim);font-size:.85rem}
+footer a{color:var(--c1)}
+</style>
+</head>
+<body>
+
+<!-- Hero Section -->
+<div class="hero">
+  <h1>OpenClaw-Medical-Harness</h1>
+  <p>Open-source medical AI agent orchestration framework built on <strong>Harness Theory</strong>. Three-layer harness for diagnosis, drug discovery, and health management. Supports MIMO, Claude, GPT-4.</p>
+  <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-bottom:2rem">
+    <a href="https://github.com/MoKangMedical/openclaw-medical-harness" class="btn btn-primary">⭐ View on GitHub</a>
+    <a href="https://pypi.org/project/openclaw-medical-harness/" class="btn btn-ghost">📦 PyPI Package</a>
+  </div>
+  <div class="btn-install">pip install openclaw-medical-harness</div>
+</div>
+
+<!-- Stats -->
+<div class="stats">
+  <div><div class="stat-val">v0.2.0</div><div class="stat-lbl">Latest Release</div></div>
+  <div><div class="stat-val">3</div><div class="stat-lbl">Harness Layers</div></div>
+  <div><div class="stat-val">6+</div><div class="stat-lbl">MCP Tools</div></div>
+  <div><div class="stat-val">91.8%</div><div class="stat-lbl">Accuracy (Full Harness)</div></div>
+</div>
+
+<!-- Features -->
+<div class="section" id="features">
+  <h2>Three-Layer Harness Architecture</h2>
+  <div class="features">
+    <div class="feature">
+      <div class="ico">🩺</div>
+      <h3>Diagnosis Harness</h3>
+      <p>Structured diagnostic reasoning: symptoms → differential diagnosis → workup strategy. Supports rare disease knowledge base, OMIM lookup, and PubMed evidence retrieval. Validated with Myasthenia Gravis and Spinocerebellar Ataxia cases.</p>
+    </div>
+    <div class="feature">
+      <div class="ico">💊</div>
+      <h3>Drug Discovery Harness</h3>
+      <p>Drug discovery pipeline: target validation → virtual screening → ADMET prediction → lead optimization. Integrates ChEMBL for compound data, OpenTargets for target-disease associations. Returns real candidate compounds with IC50 values.</p>
+    </div>
+    <div class="feature">
+      <div class="ico">🏃</div>
+      <h3>Health Management Harness</h3>
+      <p>Personalized health management: assessment → intervention plan → adherence tracking → effectiveness evaluation. Supports multi-modal data (labs, wearables, questionnaires). Generates actionable diet and exercise prescriptions.</p>
+    </div>
+    <div class="feature">
+      <div class="ico">🤖</div>
+      <h3>Pluggable Model Providers</h3>
+      <p>Supports Xiaomi MIMO (default), Claude, GPT-4, and local Ollama. The model layer is intentionally replaceable — your competitive advantage lives in the harness design, not the model.</p>
+    </div>
+    <div class="feature">
+      <div class="ico">🔧</div>
+      <h3>MCP Tool Integration</h3>
+      <p>Pre-configured tools: PubMed (literature), ChEMBL (compounds), OpenTargets (targets), OMIM (genetics), OpenFDA (safety). Real API calls with rate limiting and error handling.</p>
+    </div>
+    <div class="feature">
+      <div class="ico">🛡️</div>
+      <h3>Medical Safety Validation</h3>
+      <p>Multi-dimensional validation: format, consistency, domain rules, safety checks. Detects absolute claims ("definitely cancer"), dangerous patterns, and missing differential diagnoses for high-risk conditions.</p>
+    </div>
+  </div>
+</div>
+
+<!-- Architecture -->
+<div class="section">
+  <h2>Architecture</h2>
+  <div class="arch">┌─────────────────────────────────────────────────────────────┐
+│              OpenClaw-Medical-Harness v0.2.0              │
+├────────────────┬──────────────────┬────────────────────────┤
+│ 诊断 Harness    │ 药物发现 Harness  │ 健康管理 Harness        │
+├────────────────┴──────────────────┴────────────────────────┤
+│              Agent Orchestrator (Multi-Agent)              │
+├────────────────────────────────────────────────────────────┤
+│  MCP Tools: PubMed | ChEMBL | OpenTargets | OMIM | FDA    │
+├────────────────────────────────────────────────────────────┤
+│  Context Manager → Model Reasoning → Validation → Recovery│
+├────────────────────────────────────────────────────────────┤
+│       Model Layer: MIMO | Claude | GPT-4 | Ollama          │
+└────────────────────────────────────────────────────────────┘</div>
+</div>
+
+<!-- Quick Start Code -->
+<div class="section">
+  <h2>Quick Start</h2>
+  <div class="code-block"><pre>from openclaw_medical_harness import DiagnosisHarness, MIMOProvider
+
+# Create harness with MIMO model
+provider = MIMOProvider(api_key="your-key")
+harness = DiagnosisHarness(specialty="neurology", provider=provider)
+
+# Run diagnosis
+result = harness.execute({
+    "symptoms": ["bilateral ptosis", "fatigable weakness", "diplopia"],
+    "patient": {"age": 35, "sex": "F"}
+})
+
+print(result["diagnosis"])    # Myasthenia Gravis
+print(result["confidence"])   # 0.85
+print(result["differential"]) # ["Lambert-Eaton", "Botulism", "CPEO"]
+print(result["next_steps"])   # ["AChR antibody", "RNS", "Ice pack test"]</pre></div>
+</div>
+
+<!-- FAQ Section — Critical for GEO (AI engines parse FAQ structured data) -->
+<div class="section" id="faq">
+  <h2>Frequently Asked Questions</h2>
+  <div class="faq">
+    <div class="faq-item">
+      <h3>What is OpenClaw-Medical-Harness?</h3>
+      <p>OpenClaw-Medical-Harness is an open-source medical AI agent orchestration framework built on Harness Theory. It provides a structured pipeline (Tool Chain → Context Management → Model Reasoning → Validation → Recovery) that makes any LLM perform medical reasoning reliably. Version 0.2.0 integrates with Xiaomi MIMO, Claude, and GPT-4 models.</p>
+    </div>
+    <div class="faq-item">
+      <h3>What is Harness Theory in AI?</h3>
+      <p>Harness Theory proposes that in AI applications, the system architecture (harness) matters more than the underlying model. A well-designed harness can improve performance by up to 64%. The harness includes tool chain orchestration, information format design, context management, failure recovery, and result validation. Unlike the model (which is replaceable), the harness is the private competitive advantage.</p>
+    </div>
+    <div class="faq-item">
+      <h3>How does the Medical Harness handle drug discovery?</h3>
+      <p>The Drug Discovery Harness follows a 4-stage pipeline: (1) Target validation using OpenTargets API, (2) Virtual screening with ChEMBL compound database, (3) ADMET prediction for absorption, distribution, metabolism, excretion, and toxicity, (4) Lead optimization suggestions. It integrates with real APIs including PubMed, ChEMBL, and OpenTargets.</p>
+    </div>
+    <div class="faq-item">
+      <h3>What model providers are supported?</h3>
+      <p>The framework supports pluggable model providers: Xiaomi MIMO (mimo-v2-pro, default), OpenAI GPT-4, Anthropic Claude, and local Ollama models. You can also implement custom providers by extending the ModelProvider base class.</p>
+    </div>
+    <div class="faq-item">
+      <h3>Is it suitable for rare disease diagnosis?</h3>
+      <p>Yes. The framework includes a rare disease knowledge base and integrates with OMIM for genetic disease lookup. The Diagnosis Harness performs differential diagnosis with confidence scoring and has been validated with rare neurological conditions including Myasthenia Gravis and Spinocerebellar Ataxia.</p>
+    </div>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer>
+  <p>OpenClaw-Medical-Harness v0.2.0 — MIT License</p>
+  <p>Built by <a href="https://github.com/MoKangMedical">MoKangMedical</a> · <a href="https://github.com/MoKangMedical/openclaw-medical-harness">GitHub</a> · <a href="https://pypi.org/project/openclaw-medical-harness/">PyPI</a></p>
+</footer>
+
+</body>
+</html>

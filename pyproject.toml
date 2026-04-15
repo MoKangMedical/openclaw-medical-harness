@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "openclaw-medical-harness"
-version = "0.1.0"
+version = "0.2.0"
 description = "Medical AI Agent Orchestration Framework for OpenClaw — Built on Harness Theory"
 readme = "README.md"
 license = {text = "MIT"}

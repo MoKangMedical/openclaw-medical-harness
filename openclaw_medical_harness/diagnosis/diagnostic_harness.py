@@ -122,7 +122,7 @@ class DiagnosisHarness(BaseHarness):
                 recovery_strategy=RecoveryStrategy.ESCALATE.value,
                 validation_threshold=0.7,
             )
-        super().__init__(config=config)
+        super().__init__(config=config, **kwargs)
         self.specialty = specialty
         self.kb = knowledge_base or RARE_DISEASE_KB
 
@@ -208,55 +208,140 @@ class DiagnosisHarness(BaseHarness):
         context: dict[str, Any],
         tool_results: dict[str, Any],
     ) -> dict[str, Any]:
-        """诊断推理：结合知识库和工具结果。"""
+        """诊断推理：结合知识库 + 模型推理 + 工具结果。"""
         patient = context.get("patient", {})
         symptoms = [s.lower() for s in patient.get("symptoms", [])]
 
-        # 如果有恢复约束，添加提示
-        recovery_info = context.get("_recovery", {})
-        if recovery_info:
-            symptoms.append("需要给出鉴别诊断列表和置信度")
-
-        # 知识库匹配
-        candidates: list[dict[str, Any]] = []
+        # Step 1: 知识库匹配（提供先验上下文）
+        kb_candidates: list[dict[str, Any]] = []
         for disease_code, disease_info in self.kb.items():
             match_score = sum(
                 1 for key_symptom in disease_info["key_symptoms"]
                 if any(key_symptom.lower() in s for s in symptoms)
             )
             if match_score > 0:
-                candidates.append({
+                kb_candidates.append({
                     "code": disease_code,
                     "name": disease_info["name"],
                     "score": match_score / len(disease_info["key_symptoms"]),
                     "differential": disease_info["differential"],
                     "tests": disease_info["diagnostic_tests"],
                 })
+        kb_candidates.sort(key=lambda x: x["score"], reverse=True)
 
-        # 按匹配度排序
-        candidates.sort(key=lambda x: x["score"], reverse=True)
+        # Step 2: 构建推理prompt
+        prompt = self._build_model_prompt(patient, symptoms, kb_candidates, tool_results, context)
 
-        if candidates:
-            top = candidates[0]
-            return {
-                "diagnosis": top["name"],
-                "confidence": min(top["score"] + 0.2, 0.95),
-                "differential": [c["name"] for c in candidates[1:4]],
-                "next_steps": top["tests"],
-                "evidence": {
-                    "knowledge_base_match": True,
-                    "candidates": len(candidates),
-                    "tool_results": tool_results,
-                },
-            }
-        else:
-            return {
-                "diagnosis": "需要进一步评估",
-                "confidence": 0.3,
-                "differential": ["详细病史采集", "体格检查", "实验室检查"],
-                "next_steps": ["详细病史采集", "体格检查", "实验室检查"],
-                "evidence": {"knowledge_base_match": False},
-            }
+        # Step 3: 调用模型
+        model_result = self._call_model(prompt)
+
+        # Step 4: 合并知识库和模型结果
+        if model_result.get("mode") == "fallback" or "diagnosis" not in model_result:
+            # 模型未返回结构化结果，使用知识库结果
+            if kb_candidates:
+                top = kb_candidates[0]
+                return {
+                    "diagnosis": top["name"],
+                    "confidence": min(top["score"] + 0.2, 0.95),
+                    "differential": [c["name"] for c in kb_candidates[1:4]],
+                    "next_steps": top["tests"],
+                    "evidence": {"source": "knowledge_base", "candidates": len(kb_candidates)},
+                }
+            else:
+                return {
+                    "diagnosis": model_result.get("analysis", "需要进一步评估"),
+                    "confidence": model_result.get("confidence", 0.3),
+                    "differential": ["详细病史采集", "体格检查", "实验室检查"],
+                    "next_steps": ["详细病史采集", "体格检查", "实验室检查"],
+                    "evidence": {"source": "model_fallback"},
+                }
+
+        # 模型返回了结构化结果，使用模型结果
+        result = {
+            "diagnosis": model_result.get("diagnosis", "无法确定"),
+            "confidence": model_result.get("confidence", 0.5),
+            "differential": model_result.get("differential", model_result.get("differentials", [])),
+            "next_steps": model_result.get("next_steps", model_result.get("tests", [])),
+            "reasoning": model_result.get("reasoning", model_result.get("analysis", "")),
+            "evidence": {
+                "source": "model",
+                "provider": self.model_provider,
+                "kb_candidates": len(kb_candidates),
+                "tool_results": tool_results,
+            },
+        }
+
+        # 如果知识库有匹配，补充知识库的下一步检查
+        if kb_candidates and not result["next_steps"]:
+            result["next_steps"] = kb_candidates[0]["tests"]
+
+        return result
+
+    def _build_model_prompt(
+        self,
+        patient: dict[str, Any],
+        symptoms: list[str],
+        kb_candidates: list[dict[str, Any]],
+        tool_results: dict[str, Any],
+        context: dict[str, Any],
+    ) -> str:
+        """构建完整的模型推理prompt。"""
+        age = patient.get('age', '未知')
+        sex = patient.get('sex', '未知')
+
+        prompt = f"""你是一位{self.specialty}专科医生。请根据以下信息进行鉴别诊断。
+
+## 患者信息
+- 年龄: {age}
+- 性别: {sex}
+- 主诉: {patient.get('chief_complaint', '未提供')}
+
+## 症状列表
+"""
+        for s in symptoms:
+            prompt += f"- {s}\n"
+
+        # 注入知识库先验
+        if kb_candidates:
+            prompt += "\n## 知识库匹配结果（供参考）\n"
+            for c in kb_candidates[:3]:
+                prompt += f"- {c['name']} (匹配度: {c['score']:.0%})\n"
+                prompt += f"  鉴别: {', '.join(c['differential'])}\n"
+
+        # 注入工具结果
+        if tool_results:
+            prompt += "\n## 工具检索结果\n"
+            for tool_name, output in tool_results.items():
+                if isinstance(output, dict) and "error" not in output:
+                    articles = output.get("articles", [])
+                    if articles:
+                        prompt += f"\n### {tool_name} 文献\n"
+                        for a in articles[:3]:
+                            prompt += f"- {a.get('title', '')} ({a.get('journal', '')})\n"
+                    associations = output.get("associations", [])
+                    if associations:
+                        prompt += f"\n### {tool_name} 靶点关联\n"
+                        for a in associations[:3]:
+                            prompt += f"- {a.get('disease_name', '')} (score: {a.get('score', 0):.2f})\n"
+
+        # 恢复约束
+        recovery_info = context.get("_recovery", {})
+        if recovery_info:
+            prompt += f"\n## 注意\n上次分析有问题：{recovery_info.get('original_issues', [])}\n"
+            prompt += "请给出更准确的鉴别诊断列表，并标注每个诊断的置信度。\n"
+
+        prompt += """
+## 输出要求
+请以严格的JSON格式返回，格式如下（不要输出其他内容）：
+{"diagnosis": "最可能的诊断名称", "confidence": 0.85, "differential": ["鉴别诊断1", "鉴别诊断2", "鉴别诊断3"], "next_steps": ["检查1", "检查2", "检查3"], "reasoning": "诊断推理过程"}
+
+注意：
+- confidence 范围 0-1
+- 如果不确定，明确说明并给出较低的置信度
+- 不要使用"肯定"、"100%"等绝对性表述
+- differential 至少列出3个鉴别诊断
+"""
+        return prompt
 
     def _domain(self) -> str:
         return "diagnosis"

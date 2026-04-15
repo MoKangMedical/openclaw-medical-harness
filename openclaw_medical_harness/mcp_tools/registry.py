@@ -18,7 +18,7 @@ from dataclasses import dataclass, field
 from enum import Enum
 from typing import Any, Callable, Optional
 
-from openclaw_medical_harness.harness.base import ToolBase
+from openclaw_medical_harness.base import ToolBase
 
 logger = logging.getLogger(__name__)
 

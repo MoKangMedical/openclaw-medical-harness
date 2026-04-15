@@ -1,33 +1,36 @@
-"""Quick Start — 5 lines to run a diagnostic Harness.
+"""
+Quick Start — OpenClaw-Medical-Harness 快速入门。
 
-This example demonstrates the simplest way to use OpenClaw-Medical-Harness:
-just create a DiagnosticHarness and execute it with patient symptoms.
-
-Usage:
+运行方式：
+    export MIMO_API_KEY="sk-your-key"
     python examples/quickstart.py
 """
 
-from harness.diagnosis import DiagnosticHarness
+import os
+from openclaw_medical_harness import DiagnosisHarness
 
 
-def main() -> None:
-    """Run a quick diagnostic Harness demo."""
+def main():
+    # 确保API Key已设置
+    if not os.getenv("MIMO_API_KEY"):
+        print("⚠️  请先设置 MIMO_API_KEY 环境变量")
+        print("   export MIMO_API_KEY='sk-your-key'")
+        return
 
-    # 1. Create a diagnostic Harness
-    harness = DiagnosticHarness(name="quick-start-dx")
+    # 创建诊断Harness（自动使用MIMO模型）
+    harness = DiagnosisHarness(specialty="neurology")
 
-    # 2. Execute with patient symptoms
+    # 执行诊断
+    print("🏥 诊断Harness — 罕见病鉴别诊断\n")
     result = harness.execute({
-        "symptoms": ["chest pain", "shortness of breath"],
-        "age": 55,
-        "sex": "male",
+        "symptoms": ["bilateral ptosis", "fatigable weakness", "diplopia"],
+        "patient": {"age": 35, "sex": "F"},
     })
 
-    # 3. Print the results
-    print(f"Status: {result.status}")
-    print(f"Execution time: {result.metrics.execution_time_ms:.1f}ms")
-    print(f"Harness: {result.harness_name}")
-    print(f"Validation score: {result.metrics.validation_score:.2f}")
+    print(f"📋 诊断结果：{result['diagnosis']}")
+    print(f"📊 置信度：{result['confidence']:.2f}")
+    print(f"🔬 下一步检查：{', '.join(result['next_steps'])}")
+    print(f"⏱️  执行时间：{result['execution_time_ms']:.0f}ms")
 
 
 if __name__ == "__main__":
