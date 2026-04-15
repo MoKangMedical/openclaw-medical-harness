@@ -3,120 +3,65 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>What is Harness Theory? A New Framework for AI System Design | OpenClaw</title>
-<meta name="description" content="Harness Theory proposes that in AI applications, the system architecture (harness) matters more than the underlying model. A well-designed harness improves LLM performance by up to 64%. Learn the 7-layer framework.">
-<meta name="keywords" content="harness theory, AI system design, LLM architecture, prompt engineering, AI agent framework, medical AI">
-<link rel="canonical" href="https://mokangmedical.github.io/openclaw-medical-harness/blog/what-is-harness-theory.html">
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Article",
-  "headline": "What is Harness Theory? A New Framework for AI System Design",
-  "description": "Harness Theory proposes that in AI applications, the system architecture (harness) matters more than the underlying model. A well-designed harness improves LLM performance by up to 64%.",
-  "datePublished": "2026-04-16",
-  "dateModified": "2026-04-16",
-  "author": {"@type": "Organization", "name": "MoKangMedical"},
-  "publisher": {"@type": "Organization", "name": "MoKangMedical"},
-  "mainEntityOfPage": "https://mokangmedical.github.io/openclaw-medical-harness/blog/what-is-harness-theory.html",
-  "keywords": ["harness theory", "AI architecture", "LLM optimization", "medical AI"]
-}
-</script>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  "mainEntity": [
-    {"@type": "Question", "name": "What is Harness Theory in AI?", "acceptedAnswer": {"@type": "Answer", "text": "Harness Theory is a framework that proposes system architecture design (the 'harness') matters more than the underlying AI model. It defines 7 layers: Model, Reasoning Optimization, Context Management, Tool Integration, Agent Framework, Harness Design, and Business Value. The harness (layer 6) is the only layer that cannot be directly copied by competitors."}},
-    {"@type": "Question", "name": "How much can a harness improve AI performance?", "acceptedAnswer": {"@type": "Answer", "text": "In medical AI benchmarks, a complete harness improved diagnostic accuracy from 72.3% (raw model) to 91.8%, and consistency from 0.68 to 0.93. This 19.5 percentage point improvement comes entirely from architecture, not model upgrades."}},
-    {"@type": "Question", "name": "What are the 7 layers of the Harness ecosystem?", "acceptedAnswer": {"@type": "Answer", "text": "L1: Model layer (replaceable), L2: Reasoning optimization (prompt engineering, CoT), L3: Context management, L4: Tool integration (MCP protocol), L5: Agent framework (OpenClaw, CrewAI, AutoGen), L6: Harness design (private competitive advantage), L7: Business value (diagnosis reports, drug candidates, health plans)."}}
-  ]
-}
-</script>
+<title>What is Harness Theory? — OpenClaw Medical Harness</title>
+<meta name="description" content="What is Harness Theory?. OpenClaw Medical Harness documentation.">
 <style>
-body{font-family:'Inter',system-ui,sans-serif;max-width:800px;margin:0 auto;padding:2rem;color:#1a1a2e;line-height:1.8}
-h1{font-size:2rem;margin-bottom:.5rem}h2{font-size:1.4rem;margin-top:2rem;border-bottom:2px solid #e0e0e0;padding-bottom:.3rem}
-h3{font-size:1.1rem;margin-top:1.5rem}code{background:#f5f5f5;padding:.15rem .4rem;border-radius:4px;font-size:.9em}
-blockquote{border-left:4px solid #ffb800;padding-left:1rem;margin:1rem 0;color:#555;font-style:italic}
-table{border-collapse:collapse;width:100%;margin:1rem 0}th,td{border:1px solid #ddd;padding:.5rem;text-align:left}th{background:#f9f9f9}
-.faq{background:#f8f9fa;padding:1.5rem;border-radius:8px;margin:1rem 0}
-.faq h3{color:#1a73e8;margin-top:.5rem}.faq p{margin-top:.3rem}
-.breadcrumb{color:#666;font-size:.85rem;margin-bottom:1rem}
-.breadcrumb a{color:#1a73e8;text-decoration:none}
-nav.toc{background:#f8f9fa;padding:1rem;border-radius:8px;margin-bottom:2rem}
-nav.toc a{color:#1a73e8;text-decoration:none;display:block;padding:.2rem 0}
+body{font-family:system-ui,-apple-system,sans-serif;max-width:900px;margin:0 auto;padding:2rem;color:#c9d1d9;background:#0d1117;line-height:1.7}
+h1,h2,h3{color:#fff}a{color:#58a6ff}pre{background:#1c2128;padding:1rem;border-radius:8px;overflow-x:auto}
+code{color:#3fb950;background:#1c2128;padding:.15rem .4rem;border-radius:4px;font-size:.9em}
+pre code{background:none;padding:0}table{width:100%;border-collapse:collapse;margin:1rem 0}
+th,td{padding:.5rem;text-align:left;border-bottom:1px solid #30363d}th{color:#8b949e}
+nav a{text-decoration:none}nav a:hover{text-decoration:underline}
 </style>
 </head>
 <body>
-<div class="breadcrumb"><a href="/">Home</a> / <a href="/blog/">Blog</a> / What is Harness Theory?</div>
 
-<h1>What is Harness Theory? A New Framework for AI System Design</h1>
-<p><em>Published: April 16, 2026 · Reading time: 8 minutes</em></p>
+<nav style="background:#161b22;padding:1rem;border-radius:8px;margin-bottom:2rem">
+<a href="/" style="color:#58a6ff;margin-right:1rem">Home</a>
+<a href="/api/" style="color:#58a6ff;margin-right:1rem">API Reference</a>
+<a href="/guides/" style="color:#58a6ff;margin-right:1rem">Getting Started</a>
+<a href="/benchmarks/" style="color:#58a6ff;margin-right:1rem">Benchmarks</a>
+<a href="/examples/" style="color:#58a6ff;margin-right:1rem">Examples</a>
+<a href="/blog/" style="color:#58a6ff">Blog</a>
+</nav>
 
-<blockquote>"In AI applications, the system architecture (harness) matters more than the underlying model itself."</blockquote>
-
-<p><strong>Harness Theory</strong> is a framework for designing AI systems that prioritizes architecture over model selection. It proposes that the way you structure, orchestrate, and validate AI outputs — the "harness" — is more impactful than switching to a more powerful model.</p>
-
-<h2>Why Harness Theory Matters</h2>
-<p>Most AI teams focus on finding the "best" model. But in production, the model is the most replaceable component. What actually determines success is:</p>
-<ul>
-<li>How you structure inputs (information format design)</li>
-<li>What tools the model can access (tool chain orchestration)</li>
-<li>How you manage conversation context (context management)</li>
-<li>How you handle failures (recovery mechanisms)</li>
-<li>How you validate outputs (result validation)</li>
-</ul>
-<p>These five components together form the <strong>harness</strong> — and it's the only part that can't be directly copied by competitors.</p>
-
-<h2>The 7-Layer Ecosystem</h2>
+<h1>What is Harness Theory?</h1></p><p>*Why system architecture matters more than the underlying AI model.*</p><p><h2>The Core Insight</h2></p><p>In AI applications, the system architecture wrapping the model — the <strong>harness</strong> — is more important than the model itself.</p><p>A well-designed harness improves any model's performance by up to <strong>64%</strong>. Your competitive advantage lives in the harness, not the model.</p><p><h2>The 5-Step Pipeline</h2></p><p>Every harness in OpenClaw Medical follows the same pipeline:</p><p>``<code>
+Input → Context Build → Tool Chain → Model Reasoning → Validation → Recovery → Output
+</code>`<code></p><p><h3>1. Context Build</h3></p><p>Before asking the model anything, we build rich context:</p><p>- Patient demographics and medical history
+- Relevant lab results and imaging
+- Current medications
+- Known allergies
+- Prior diagnoses</p><p>The context manager ensures we stay within token limits while maximizing information density.</p><p><h3>2. Tool Chain</h3></p><p>The model doesn't work alone. MCP tools provide real-time data:</p><p>- <strong>PubMed</strong>: Search medical literature for evidence
+- <strong>ChEMBL</strong>: Query 2.4M+ drug compounds
+- <strong>OpenTargets</strong>: Get target-disease evidence scores
+- <strong>OMIM</strong>: Look up genetic disease information
+- <strong>OpenFDA</strong>: Check drug safety and adverse events</p><p>Tools run in parallel when possible, adding rich external knowledge.</p><p><h3>3. Model Reasoning</h3></p><p>With context and tool data loaded, the model reasons through the problem:</p><p>- Differential diagnosis generation
+- Treatment recommendation
+- Risk assessment
+- Prognosis prediction</p><p>The model is the "thinking engine" — but it's guided by the harness.</p><p><h3>4. Validation</h3></p><p>Every output is validated before delivery:</p><p>- <strong>Format checks</strong>: Required fields, confidence range
+- <strong>Consistency checks</strong>: Confidence-description alignment
+- <strong>Domain rules</strong>: Diagnosis requires differential ≥ 2
+- <strong>Safety checks</strong>: No absolute claims, no dangerous patterns</p><p>Bad outputs are caught before they reach users.</p><p><h3>5. Recovery</h3></p><p>When validation fails, the harness recovers gracefully:</p><p>- <strong>ESCALATE</strong>: Flag for human review
+- <strong>FALLBACK</strong>: Return safe default with low confidence
+- <strong>RETRY</strong>: Re-run with adjusted parameters</p><p>No silent failures. No garbage output.</p><p><h2>Why It Works</h2></p><p>| Factor | Raw Model | With Harness |
 <table>
-<tr><th>Layer</th><th>Component</th><th>Replaceable?</th></tr>
-<tr><td>L7</td><td>Business Value (diagnosis reports, drug candidates)</td><td>—</td></tr>
-<tr><td><strong>L6</strong></td><td><strong>Harness Design</strong> ⭐</td><td><strong>No — private advantage</strong></td></tr>
-<tr><td>L5</td><td>Agent Framework (OpenClaw, CrewAI)</td><td>Yes</td></tr>
-<tr><td>L4</td><td>Tool Integration (MCP, APIs)</td><td>Yes</td></tr>
-<tr><td>L3</td><td>Context Management</td><td>Yes</td></tr>
-<tr><td>L2</td><td>Reasoning Optimization (CoT, prompts)</td><td>Yes</td></tr>
-<tr><td>L1</td><td>Model (MIMO, Claude, GPT-4)</td><td>Yes</td></tr>
+<tr><th>Knowledge</th><th>Training data only</th><th>+ Real-time literature + drug databases</th></tr>
+<tr><td>Safety</td><td>No guardrails</td><td>Medical-grade validation</td></tr>
+<tr><td>Consistency</td><td>Variable</td><td>Deterministic pipeline</td></tr>
+<tr><td>Recovery</td><td>None</td><td>Automatic failure handling</td></tr>
+<tr><td>Accuracy</td><td>72.3%</td><td><strong>91.8%</strong></td></tr>
 </table>
-
-<h2>Performance Data: Medical AI Benchmark</h2>
-<p>We tested the harness approach with medical diagnosis using the OpenClaw-Medical-Harness framework:</p>
-<table>
-<tr><th>Configuration</th><th>Accuracy</th><th>Consistency</th></tr>
-<tr><td>Raw model (no harness)</td><td>72.3%</td><td>0.68</td></tr>
-<tr><td>+ Tool chain</td><td>79.1%</td><td>0.75</td></tr>
-<tr><td>+ Context management</td><td>84.5%</td><td>0.82</td></tr>
-<tr><td>+ Failure recovery</td><td>87.2%</td><td>0.86</td></tr>
-<tr><td><strong>Full harness</strong></td><td><strong>91.8%</strong></td><td><strong>0.93</strong></td></tr>
-</table>
-<p>The full harness improved accuracy by <strong>19.5 percentage points</strong> — without changing the model at all.</p>
-
-<h2>How Harness Theory Applies to Medical AI</h2>
-<p>In medical AI, reliability isn't optional. A diagnosis that's right 72% of the time is dangerous. Harness Theory addresses this by:</p>
-<ol>
-<li><strong>Structured pipelines</strong>: Symptoms → Differential Diagnosis → Workup → Confirmed Diagnosis (not free-form chat)</li>
-<li><strong>Tool integration</strong>: PubMed literature, OMIM genetics, ChEMBL drug data — real data, not hallucinated references</li>
-<li><strong>Validation</strong>: Detect absolute claims ("definitely cancer"), missing differentials, dangerous patterns</li>
-<li><strong>Recovery</strong>: When confidence is low, escalate to human experts instead of guessing</li>
-</ol>
-
-<h2>Implementing Harness Theory: The 5-Step Pipeline</h2>
-<pre><code>Input Data → Context Build → Tool Chain → Model Reasoning → Validation → Recovery → Output</code></pre>
-<p>Each step is designed to constrain the model's behavior toward reliable, verifiable outputs. The harness wraps the model like a safety net — it doesn't change what the model <em>can</em> do, but it ensures what it <em>does</em> do is correct.</p>
-
-<h2>FAQ</h2>
-<div class="faq">
-<h3>What is Harness Theory in AI?</h3>
-<p>Harness Theory is a framework that proposes system architecture design (the "harness") matters more than the underlying AI model. It defines 7 layers from Model (L1) to Business Value (L7). The harness design layer (L6) is the only layer that cannot be directly copied by competitors.</p>
-
-<h3>How much can a harness improve AI performance?</h3>
-<p>In medical AI benchmarks, a complete harness improved diagnostic accuracy from 72.3% (raw model) to 91.8%, and consistency from 0.68 to 0.93. This 19.5 percentage point improvement comes entirely from architecture, not model upgrades.</p>
-
-<h3>What are the 7 layers of the Harness ecosystem?</h3>
-<p>L1: Model layer (replaceable), L2: Reasoning optimization (prompt engineering, CoT), L3: Context management, L4: Tool integration (MCP protocol), L5: Agent framework, L6: Harness design (private competitive advantage), L7: Business value (diagnosis reports, drug candidates, health plans).</p>
-</div>
+2. <strong>Your context management</strong> — How you structure patient data
+3. <strong>Your validation</strong> — How you catch errors
+4. <strong>Your recovery</strong> — How you handle edge cases
+5. <strong>Your domain knowledge</strong> — How you encode medical expertise</p><p>Models are commodities. Harnesses are competitive advantages.</p><p><h2>Try It</h2></p><p></code>`<code>bash
+pip install openclaw-medical-harness
+</code>`<code></p><p></code>`<code>python
+from openclaw_medical_harness import DiagnosisHarness</p><p>h = DiagnosisHarness(specialty="neurology")
+r = h.execute({"symptoms": ["ptosis"], "patient": {"age": 35}})
+print(r["diagnosis"], r["confidence"])
+</code>``</p><p>---</p><p>*Read the full [architecture documentation](../architecture.md) for implementation details.*
 
 <hr>
-<p><a href="https://github.com/MoKangMedical/openclaw-medical-harness">OpenClaw-Medical-Harness</a> — Open-source medical AI agent framework built on Harness Theory. MIT License.</p>
-</body>
-</html>
+<p><a href="https://github.com/MoKangMedical/openclaw-medical-harness">GitHub</a> · <a href="https://pypi.org/project/openclaw-medical-harness/">PyPI</a></p>
+</body></html>

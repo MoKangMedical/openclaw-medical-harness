@@ -3,145 +3,78 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Getting Started — Build Your First Medical AI Agent in 5 Minutes | OpenClaw</title>
-<meta name="description" content="Step-by-step tutorial to build a medical AI agent in 5 minutes: install, configure MIMO model, run diagnosis, and deploy demo server. Complete beginner guide.">
-<link rel="canonical" href="https://mokangmedical.github.io/openclaw-medical-harness/guides/getting-started.html">
-<script type="application/ld+json">
-{
-  "@context":"https://schema.org","@type":"TechArticle","headline":"Getting Started — Build Your First Medical AI Agent in 5 Minutes","datePublished":"2026-04-16","proficiencyLevel":"Beginner","programmingLanguage":"Python","dependencies":"Python 3.10+, MIMO API key"
-}
-</script>
+<title>Getting Started Guide — OpenClaw Medical Harness</title>
+<meta name="description" content="Getting Started Guide. OpenClaw Medical Harness documentation.">
 <style>
-body{font-family:'Inter',system-ui,sans-serif;max-width:800px;margin:0 auto;padding:2rem;color:#1a1a2e;line-height:1.8}
-h1{font-size:2rem}h2{font-size:1.4rem;margin-top:2.5rem;border-bottom:2px solid #e0e0e0;padding-bottom:.3rem}
-h3{font-size:1.1rem;margin-top:1.5rem}
-pre{background:#1a1a2e;color:#e8edf5;padding:1.5rem;border-radius:8px;overflow-x:auto;font-size:.85rem;line-height:1.6}
-code{background:#f5f5f5;padding:.15rem .4rem;border-radius:4px;font-size:.9em}
-table{border-collapse:collapse;width:100%;margin:1rem 0}th,td{border:1px solid #ddd;padding:.5rem;text-align:left}th{background:#f9f9f9}
-.step{background:#f0f7ff;border-left:4px solid #1a73e8;padding:1rem 1.5rem;margin:1rem 0;border-radius:0 8px 8px 0}
-.step-num{font-weight:bold;color:#1a73e8}
-.output{background:#f8f9fa;border:1px solid #e0e0e0;padding:1rem;border-radius:8px;margin:1rem 0;font-family:monospace;font-size:.85rem}
-.warning{background:#fff8f0;border-left:4px solid #ff9800;padding:1rem;margin:1rem 0;border-radius:0 8px 8px 0}
+body{font-family:system-ui,-apple-system,sans-serif;max-width:900px;margin:0 auto;padding:2rem;color:#c9d1d9;background:#0d1117;line-height:1.7}
+h1,h2,h3{color:#fff}a{color:#58a6ff}pre{background:#1c2128;padding:1rem;border-radius:8px;overflow-x:auto}
+code{color:#3fb950;background:#1c2128;padding:.15rem .4rem;border-radius:4px;font-size:.9em}
+pre code{background:none;padding:0}table{width:100%;border-collapse:collapse;margin:1rem 0}
+th,td{padding:.5rem;text-align:left;border-bottom:1px solid #30363d}th{color:#8b949e}
+nav a{text-decoration:none}nav a:hover{text-decoration:underline}
 </style>
 </head>
 <body>
 
-<h1>Getting Started: Build Your First Medical AI Agent in 5 Minutes</h1>
-<p>This guide walks you through installing OpenClaw-Medical-Harness, configuring the MIMO model, running your first diagnosis, and deploying a demo server.</p>
+<nav style="background:#161b22;padding:1rem;border-radius:8px;margin-bottom:2rem">
+<a href="/" style="color:#58a6ff;margin-right:1rem">Home</a>
+<a href="/api/" style="color:#58a6ff;margin-right:1rem">API Reference</a>
+<a href="/guides/" style="color:#58a6ff;margin-right:1rem">Getting Started</a>
+<a href="/benchmarks/" style="color:#58a6ff;margin-right:1rem">Benchmarks</a>
+<a href="/examples/" style="color:#58a6ff;margin-right:1rem">Examples</a>
+<a href="/blog/" style="color:#58a6ff">Blog</a>
+</nav>
 
-<h2>Prerequisites</h2>
-<ul>
-<li>Python 3.10 or later</li>
-<li>MIMO API key (get one at <a href="https://platform.xiaomimimo.com">platform.xiaomimimo.com</a>)</li>
-</ul>
-
-<h2>Step 1: Install</h2>
-<div class="step">
-<span class="step-num">1/5</span> Install the package
-</div>
-<pre>pip install openclaw-medical-harness</pre>
-
-<h2>Step 2: Set API Key</h2>
-<div class="step">
-<span class="step-num">2/5</span> Configure your MIMO API key
-</div>
-<pre># Linux/Mac
-export MIMO_API_KEY="sk-your-key-here"
-
-# Windows
-set MIMO_API_KEY=sk-your-key-here</pre>
-
-<h2>Step 3: Run Your First Diagnosis</h2>
-<div class="step">
-<span class="step-num">3/5</span> Create a diagnosis agent
-</div>
-<pre>from openclaw_medical_harness import DiagnosisHarness, MIMOProvider
-
-# Create model provider and harness
-provider = MIMOProvider(api_key="sk-your-key")
-harness = DiagnosisHarness(specialty="neurology", provider=provider)
-
-# Run diagnosis
+<h1>Getting Started Guide</h1></p><p>Build your first medical AI agent in 5 minutes.</p><p><h2>Step 1: Install</h2></p><p>``<code>bash
+pip install openclaw-medical-harness
+</code>`<code></p><p><h2>Step 2: Create a Harness</h2></p><p></code>`<code>python
+from openclaw_medical_harness import DiagnosisHarness</p><p><h1>Create a neurology diagnosis harness</h1>
+<h1>Auto-selects MIMO model as default provider</h1>
+harness = DiagnosisHarness(specialty="neurology")
+</code>`<code></p><p><h2>Step 3: Execute</h2></p><p></code>`<code>python
 result = harness.execute({
     "symptoms": ["bilateral ptosis", "fatigable weakness", "diplopia"],
     "patient": {"age": 35, "sex": "F"}
-})
-
-# Print results
-print(f"Diagnosis: {result['diagnosis']}")
-print(f"Confidence: {result['confidence']:.2f}")
-print(f"Differential: {result['differential']}")
-print(f"Next steps: {result['next_steps']}")</pre>
-
-<div class="output">
-<strong>Output:</strong><br>
-Diagnosis: Myasthenia Gravis<br>
-Confidence: 0.85<br>
-Differential: ['Lambert-Eaton syndrome', 'Botulism', 'CPEO']<br>
-Next steps: ['AChR antibody test', 'Repetitive nerve stimulation', 'Ice pack test']
-</div>
-
-<h2>Step 4: Try Drug Discovery</h2>
-<div class="step">
-<span class="step-num">4/5</span> Run drug discovery pipeline
-</div>
-<pre>from openclaw_medical_harness import DrugDiscoveryHarness
-
-harness = DrugDiscoveryHarness(target_disease="NSCLC", provider=provider)
-
-result = harness.execute({"target": "EGFR", "disease": "NSCLC"})
-
-print(f"Target: {result['target']}")
-for c in result['candidates']:
-    print(f"  - {c['name']}: {c['activity']}")
-print(f"ADMET: {result['admet_profile']}")</pre>
-
-<div class="output">
-<strong>Output:</strong><br>
-Target: KRAS G12C<br>
-  - Sotorasib (AMG 510): IC50 &lt; 100 nM (KRAS G12C)<br>
-  - Adagrasib (MRTX849): IC50 ~10 nM (KRAS G12C)<br>
-  - Divarasib (GDC-6036): IC50 &lt; 10 nM<br>
-ADMET: {'absorption': 'moderate to good oral bioavailability...', 'toxicity': 'GI reactions, liver enzyme elevation...'}
-</div>
-
-<h2>Step 5: Deploy Demo Server</h2>
-<div class="step">
-<span class="step-num">5/5</span> Start the API server
-</div>
-<pre>pip install "openclaw-medical-harness[server]"
-MIMO_API_KEY=sk-your-key python demo_server.py</pre>
-<p>Open <a href="http://localhost:8000/docs">http://localhost:8000/docs</a> for the Swagger UI.</p>
-
-<h2>API Endpoints</h2>
-<table>
-<tr><th>Endpoint</th><th>Method</th><th>Description</th></tr>
-<tr><td><code>/diagnose</code></td><td>POST</td><td>Medical diagnosis from symptoms</td></tr>
-<tr><td><code>/drug-discovery</code></td><td>POST</td><td>Drug target screening & ADMET</td></tr>
-<tr><td><code>/health</code></td><td>POST</td><td>Personalized health management</td></tr>
-<tr><td><code>/health-check</code></td><td>GET</td><td>Server health status</td></tr>
-</table>
-
-<h2>Example: Call the API</h2>
-<pre>curl -X POST http://localhost:8000/diagnose \
-  -H "Content-Type: application/json" \
-  -d '{
-    "symptoms": ["bilateral ptosis", "fatigable weakness"],
-    "patient": {"age": 35, "sex": "F"},
-    "specialty": "neurology"
-  }'</pre>
-
-<h2>Next Steps</h2>
-<ul>
-<li><a href="/openclaw-medical-harness/guides/diagnosis-harness.html">Diagnosis Harness Guide</a> — Deep dive into differential diagnosis</li>
-<li><a href="/openclaw-medical-harness/guides/drug-discovery-harness.html">Drug Discovery Guide</a> — Target screening and ADMET</li>
-<li><a href="/openclaw-medical-harness/guides/model-providers.html">Model Providers</a> — Switch between MIMO, Claude, GPT-4</li>
-<li><a href="https://github.com/MoKangMedical/openclaw-medical-harness">GitHub</a> — Source code and issues</li>
-</ul>
-
-<div class="warning"><strong>Production Note</strong>: Use environment variables for API keys. Never commit keys to source control.</div>
+})</p><p>print(result["diagnosis"])    # Myasthenia Gravis
+print(result["confidence"])   # 0.85
+print(result["differential"]) # ["Lambert-Eaton", "Botulism", "CPEO"]
+print(result["next_steps"])   # ["AChR antibody", "RNS", "Ice pack test"]
+</code>`<code></p><p><h2>Step 4: Validate Results</h2></p><p></code>`<code>python
+from openclaw_medical_harness import ResultValidator</p><p>validator = ResultValidator(threshold=0.7)
+validation = validator.validate(result)</p><p>if validation.passed:
+    print("✅ Result validated")
+else:
+    print(f"⚠️ Issues: {validation.findings}")
+</code>`<code></p><p><h2>Step 5: Handle Failures</h2></p><p></code>`<code>python
+from openclaw_medical_harness import FailureRecovery, RecoveryStrategy</p><p>recovery = FailureRecovery(strategy=RecoveryStrategy.FALLBACK)</p><p>if not validation.passed:
+    safe_result = recovery.recover(result, validation)
+    print(f"Recovered with confidence: {safe_result['confidence']:.0%}")
+</code>`<code></p><p><h2>Full Example</h2></p><p></code>`<code>python
+from openclaw_medical_harness import (
+    DiagnosisHarness, ResultValidator, FailureRecovery, RecoveryStrategy
+)</p><p>def diagnose(symptoms, age, sex):
+    harness = DiagnosisHarness(specialty="neurology")
+    validator = ResultValidator(threshold=0.7)
+    recovery = FailureRecovery(strategy=RecoveryStrategy.FALLBACK)
+    
+    result = harness.execute({
+        "symptoms": symptoms,
+        "patient": {"age": age, "sex": sex}
+    })
+    
+    validation = validator.validate(result)
+    if not validation.passed:
+        result = recovery.recover(result, validation)
+    
+    return result</p><p><h1>Use it</h1>
+r = diagnose(["ptosis", "fatigable weakness"], 35, "F")
+print(f"{r['diagnosis']} ({r['confidence']:.0%})")
+</code>``</p><p><h2>What's Next?</h2></p><p>- [API Reference](../api/REFERENCE.md) — Full API documentation
+- [Examples](../examples/CODE_EXAMPLES.md) — More practical examples
+- [Benchmarks](../benchmarks/PERFORMANCE.md) — Performance data
+- [Harness Theory](../harness_theory.md) — Why architecture > model
+- [Architecture](../architecture.md) — System design details
 
 <hr>
-<p><a href="/openclaw-medical-harness/">← Back to Home</a> · <a href="https://github.com/MoKangMedical/openclaw-medical-harness">GitHub</a> · <a href="https://pypi.org/project/openclaw-medical-harness/">PyPI</a></p>
-</body>
-</html>
+<p><a href="https://github.com/MoKangMedical/openclaw-medical-harness">GitHub</a> · <a href="https://pypi.org/project/openclaw-medical-harness/">PyPI</a></p>
+</body></html>
