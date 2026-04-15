@@ -13,7 +13,6 @@ from __future__ import annotations
 
 import logging
 import time
-import logging
 from abc import ABC, abstractmethod
 
 logger = logging.getLogger(__name__)
@@ -257,23 +256,6 @@ class BaseHarness(ABC):
         self.validator = ResultValidator(config.validation_threshold)
         self._tool_registry: dict[str, Any] = {}
         self._tool_executions: list[ToolExecutionRecord] = []
-
-        # 模型提供者：支持传入实例或自动创建
-        self._model_provider_instance = None
-        provider_arg = kwargs.get("provider")
-        if provider_arg is not None:
-            if hasattr(provider_arg, "generate"):
-                # 已是ModelProvider实例
-                self._model_provider_instance = provider_arg
-            elif isinstance(provider_arg, str):
-                from .providers import create_provider
-                self._model_provider_instance = create_provider(provider_arg)
-        elif self.model_provider == "mimo":
-            # 默认尝试创建MIMO provider（从环境变量读key）
-            import os
-            if os.getenv("MIMO_API_KEY"):
-                from .providers import MIMOProvider
-                self._model_provider_instance = MIMOProvider()
 
         # 模型提供者：支持传入实例或自动创建
         self._model_provider_instance = None
