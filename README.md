@@ -160,6 +160,20 @@ The framework provides architecture patterns, not data storage. HIPAA compliance
 
 ---
 
+## Ecosystem — MoKangMedical
+
+OpenClaw-Medical-Harness is part of a larger biomedical AI ecosystem:
+
+| Project | Description | Status |
+|---------|-------------|--------|
+| [**ChroniCare OS**](https://mokangmedical.github.io/chronicdiseasemanagement/) | Hospital chronic disease management (HIS integration, risk stratification) | ✅ Active |
+| [**MediChat-RD**](https://mokangmedical.github.io/medichat-rd/) | Multi-agent medical diagnosis — rare disease edition (CrewAI) | ✅ Active |
+| [**MediPharma**](https://mokangmedical.github.io/medi-pharma/) | AI drug discovery (ChEMBL, OpenTargets, ADMET) | ✅ Active |
+| [**DrugMind**](https://mokangmedical.github.io/drugmind/) | Drug R&D digital twin collaboration platform | ✅ Active |
+| [**云思园**](https://mokangmedical.github.io/cloud-memorial/) | AI memorial platform — digital legacy & grief therapy | ✅ Active |
+| [**数字智者**](https://mokangmedical.github.io/digital-sage/) | Chat with 100+ historical philosophers & scientists | ✅ Active |
+| [**天眼**](https://mokangmedical.github.io/tianyan/) | Multi-agent population simulation for China market forecasting | ✅ Active |
+
 ## License
 
 MIT License — free to use, modify, and distribute.
