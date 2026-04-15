@@ -1,0 +1,134 @@
+# OpenPharma MCP Integration Guide
+
+How to integrate the [OpenPharma](https://github.com/openpharma-org/) ecosystem (50+ MCP servers) with OpenClaw Medical Harness.
+
+## What is OpenPharma?
+
+OpenPharma is a collection of **50+ specialized MCP servers** providing AI agents with access to authoritative pharmaceutical and biomedical data sources. All MIT-licensed, all using public APIs.
+
+## Available Servers
+
+### Drug & Regulatory
+| Server | Data Source | Use Case |
+|--------|-----------|----------|
+| FDA | openFDA API | Drug labels, adverse events, recalls, shortages |
+| EMA | EMA Public JSON | Drug approvals, EPARs, orphan designations, EU shortages |
+| DrugBank | SQLite (17,430+ drugs) | Comprehensive drug information |
+| ChEMBL | EMBL-EBI REST | Bioactive compounds, targets, mechanisms of action |
+| PubChem | PubChem REST | Chemical structures and compound properties |
+| OpenTargets | OpenTargets Platform | Target validation and genetic evidence |
+| ClinicalTrials | ClinicalTrials.gov API v2 | Clinical trial search and study information |
+
+### Genomics & Proteomics
+| Server | Data Source | Use Case |
+|--------|-----------|----------|
+| NCBI | E-utilities | Gene, Protein, Nucleotide, OMIM databases |
+| ClinVar | NCBI | Variant interpretation |
+| COSMIC | COSMIC | Somatic mutations in cancer |
+| GWAS Catalog | NHGRI-EBI | GWAS associations and studies |
+| gnomAD | gnomAD API | Population allele frequencies |
+| Ensembl | REST API | Genome annotation and variation |
+| GTEx | GTEx Portal | Tissue-specific gene expression |
+| GEO | NCBI E-utilities | Gene expression datasets |
+| UniProt | REST API | Protein sequences and functional annotation |
+| AlphaFold | AlphaFold DB API | Predicted protein structures |
+| PDB | RCSB PDB REST | Experimental protein structures |
+| STRING-db | STRING API | Protein-protein interaction networks |
+| BindingDB | BindingDB | Binding affinity data |
+
+### Pathways & Ontology
+| Server | Data Source | Use Case |
+|--------|-----------|----------|
+| Reactome | Content Service | Biological pathways and reactions |
+| KEGG | REST API | Metabolic and signaling pathways |
+| Gene Ontology | GO API | Gene function annotations |
+| HPO | HPO API | Human phenotype ontology |
+| Monarch | Monarch Initiative | Disease-gene-phenotype knowledge graph |
+
+### Cancer
+| Server | Data Source | Use Case |
+|--------|-----------|----------|
+| DepMap | DepMap Portal | Cancer dependency map |
+| cBioPortal | API | Cancer genomics data |
+
+### Metabolomics & Pharmacogenomics
+| Server | Data Source | Use Case |
+|--------|-----------|----------|
+| HMDB | HMDB | Human metabolome database |
+| ClinPGx | PharmGKB | Pharmacogenomics data |
+
+### Literature
+| Server | Data Source | Use Case |
+|--------|-----------|----------|
+| PubMed | NCBI E-utilities | Biomedical literature search |
+| bioRxiv | API | Preprint search and tracking |
+| OpenAlex | API | Scholarly works and citations |
+| CrossRef | REST API | DOI metadata, citations, 150M+ scholarly works |
+| CORE | API v3 | 200M+ open access research papers |
+
+### Clinical & Health Systems
+| Server | Data Source | Use Case |
+|--------|-----------|----------|
+| NLM Codes | NLM Clinical Tables | ICD-10/11, HCPCS, NPI coding |
+| CDC | CDC WONDER, Socrata | Disease surveillance, vaccination data |
+| Medicare | CMS Medicare API | Claims and provider data |
+| Medicaid | CMS DKAN | Formularies, drug pricing, enrollment |
+
+## Integration with Medical Harness
+
+### Option 1: Direct MCP Bridge
+
+```python
+# In openclaw_medical_harness/mcp_tools/openpharma_bridge.py
+OPENPHARMA_SERVERS = {
+    "fda": "https://github.com/openpharma-org/fda-mcp",
+    "chembl": "https://github.com/openpharma-org/chembl-mcp",
+    "opentargets": "https://github.com/openpharma-org/opentargets-mcp",
+    "clinicaltrials": "https://github.com/openpharma-org/ct-gov-mcp",
+    "pubmed": "https://github.com/openpharma-org/pubmed-mcp",
+    "uniprot": "https://github.com/openpharma-org/uniprot-mcp",
+    "alphafold": "https://github.com/openpharma-org/alphafold-mcp-server",
+    "pdb": "https://github.com/openpharma-org/pdb-mcp-server",
+    "stringdb": "https://github.com/openpharma-org/stringdb-mcp-server",
+    "bindingdb": "https://github.com/openpharma-org/bindingdb-mcp-server",
+    "reactome": "https://github.com/openpharma-org/reactome-mcp-server",
+    "kegg": "https://github.com/openpharma-org/kegg-mcp-server",
+    "clinvar": "https://github.com/openpharma-org/clinvar-mcp-server",
+    "cosmic": "https://github.com/openpharma-org/cosmic-mcp-server",
+    "depmap": "https://github.com/openpharma-org/depmap-mcp-server",
+    "cbioportal": "https://github.com/openpharma-org/cbioportal-mcp-server",
+    "hmdb": "https://github.com/openpharma-org/hmdb-mcp-server",
+    "clinpgx": "https://github.com/openpharma-org/clinpgx-mcp-server",
+}
+```
+
+### Option 2: BioClaw Integration
+
+BioClaw bundles all 50+ servers into a single Docker container:
+
+```bash
+docker run -p 8080:8080 ghcr.io/uh-joan/bioclaw:latest
+```
+
+Then connect from the harness:
+
+```python
+from openclaw_medical_harness import MedicalToolRegistry
+
+# Register OpenPharma tools via BioClaw
+registry = MedicalToolRegistry()
+registry.register_remote("bioclaw", url="http://localhost:8080")
+```
+
+## Why This Matters
+
+With OpenPharma integration, the Medical Harness gains access to:
+- **50+ authoritative biomedical databases**
+- **Drug regulatory data** (FDA + EMA)
+- **Genomics** (ClinVar, GWAS, gnomAD, Ensembl)
+- **Proteomics** (UniProt, AlphaFold, PDB, STRING)
+- **Cancer biology** (DepMap, cBioPortal, COSMIC)
+- **Pharmacogenomics** (PharmGKB)
+- **200M+ research papers** (PubMed, OpenAlex, CORE)
+
+This makes the harness the most comprehensive medical AI toolchain available.
