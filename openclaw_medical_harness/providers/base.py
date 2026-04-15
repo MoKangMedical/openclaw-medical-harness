@@ -31,11 +31,35 @@ class GenerationResult:
     raw_response: dict[str, Any] = field(default_factory=dict)
 
     def as_dict(self) -> dict[str, Any]:
-        """尝试将文本解析为dict。"""
+        """尝试将文本解析为dict。支持markdown代码块。"""
+        import re
+        text = self.text.strip()
+        if not text:
+            return {"raw_text": ""}
+
+        # 尝试直接解析
         try:
-            return json.loads(self.text)
+            return json.loads(text)
         except (json.JSONDecodeError, TypeError):
-            return {"raw_text": self.text}
+            pass
+
+        # 尝试从markdown代码块中提取JSON
+        match = re.search(r"```(?:json)?\s*\n?(.*?)\n?\s*```", text, re.DOTALL)
+        if match:
+            try:
+                return json.loads(match.group(1).strip())
+            except (json.JSONDecodeError, TypeError):
+                pass
+
+        # 尝试找到第一个{...}块
+        match = re.search(r"\{.*\}", text, re.DOTALL)
+        if match:
+            try:
+                return json.loads(match.group(0))
+            except (json.JSONDecodeError, TypeError):
+                pass
+
+        return {"raw_text": text}
 
 
 class ModelProvider(ABC):

@@ -112,6 +112,7 @@ class DrugDiscoveryHarness(BaseHarness):
                 "admet_profile": result.output.get("admet_profile", {}),
                 "optimization_suggestions": result.output.get("optimization", []),
                 "confidence": result.output.get("confidence", result.confidence),
+                "evidence": result.output.get("evidence", {}),
                 "harness_name": result.harness_name,
                 "execution_time_ms": result.execution_time_ms,
             }
@@ -121,6 +122,7 @@ class DrugDiscoveryHarness(BaseHarness):
             "admet_profile": {},
             "optimization_suggestions": [],
             "confidence": result.confidence,
+            "evidence": {},
             "harness_name": result.harness_name,
             "execution_time_ms": result.execution_time_ms,
         }
@@ -162,30 +164,85 @@ class DrugDiscoveryHarness(BaseHarness):
         context: dict[str, Any],
         tool_results: dict[str, Any],
     ) -> dict[str, Any]:
-        """药物发现推理。"""
+        """药物发现推理：结合工具数据+模型推理。"""
         patient = context.get("patient", {})
         disease = patient.get("disease", self.target_disease)
+        target = patient.get("target", "")
 
+        # 构建模型推理prompt
+        prompt = self._build_drug_prompt(disease, target, tool_results, context)
+
+        # 调用模型
+        model_result = self._call_model(prompt)
+
+        # 模型返回了结构化结果
+        if model_result.get("mode") != "fallback" and (
+            "target" in model_result or "candidates" in model_result
+        ):
+            return {
+                "target": model_result.get("target", target or "模型推荐靶点"),
+                "candidates": model_result.get("candidates", []),
+                "admet_profile": model_result.get("admet_profile", model_result.get("admet", {})),
+                "optimization": model_result.get("optimization", model_result.get("optimization_suggestions", [])),
+                "confidence": model_result.get("confidence", 0.6),
+                "evidence": {"source": "model", "provider": self.model_provider},
+            }
+
+        # 回退
         return {
-            "target": patient.get("target", "需要通过OpenTargets/ChEMBL查询"),
+            "target": target or "需要通过OpenTargets/ChEMBL查询",
             "candidates": [
-                {"name": "Candidate-1", "source": "ChEMBL", "activity": "IC50 < 100nM"},
-                {"name": "Candidate-2", "source": "Virtual Screening", "dock_score": -8.5},
-                {"name": "Candidate-3", "source": "ChEMBL", "activity": "IC50 < 50nM"},
+                {"name": "需模型推理", "source": "fallback", "note": "请配置MIMO_API_KEY"},
             ],
-            "admet_profile": {
-                "absorption": "High",
-                "distribution": "Moderate",
-                "metabolism": "CYP3A4 substrate",
-                "excretion": "Renal",
-                "toxicity": "Low risk",
-            },
-            "optimization": [
-                "改善水溶性：引入极性基团",
-                "降低CYP抑制：调整芳香环取代",
-            ],
-            "confidence": 0.65,
+            "admet_profile": {"note": "需模型推理"},
+            "optimization": ["请配置模型以获取优化建议"],
+            "confidence": 0.3,
+            "evidence": {"source": "fallback"},
         }
+
+    def _build_drug_prompt(
+        self,
+        disease: str,
+        target: str,
+        tool_results: dict[str, Any],
+        context: dict[str, Any],
+    ) -> str:
+        """构建药物发现推理prompt。"""
+        prompt = f"""你是一位AI药物发现与药物化学专家。请针对以下疾病进行候选药物发现分析。
+
+## 目标疾病
+{disease or '未指定'}
+"""
+        if target:
+            prompt += f"\n## 已知靶点\n{target}\n"
+
+        # 注入工具结果
+        if tool_results:
+            prompt += "\n## 数据源检索结果\n"
+            for tool_name, output in tool_results.items():
+                if isinstance(output, dict) and "error" not in output:
+                    associations = output.get("associations", [])
+                    if associations:
+                        prompt += f"\n### {tool_name} 靶点-疾病关联\n"
+                        for a in associations[:5]:
+                            prompt += f"- {a.get('disease_name', '')}: score={a.get('score', 0):.2f}\n"
+                    drugs = output.get("known_drugs", [])
+                    if drugs:
+                        prompt += f"\n### {tool_name} 已知药物\n"
+                        for d in drugs[:5]:
+                            prompt += f"- {d.get('drug_name', '')}: {d.get('mechanism', '')}\n"
+
+        prompt += """
+## 输出要求
+请以严格的JSON格式返回：
+{"target": "推荐靶点名称", "candidates": [{"name": "化合物名", "source": "来源", "activity": "活性数据"}], "admet_profile": {"absorption": "", "distribution": "", "metabolism": "", "excretion": "", "toxicity": ""}, "optimization": ["优化建议1", "优化建议2"], "confidence": 0.7}
+
+要求：
+- 候选化合物至少3个
+- ADMET预测要具体（如CYP酶亚型、logP范围等）
+- 优化建议要可操作
+"""
+        return prompt
 
     def _domain(self) -> str:
         return "drug_discovery"

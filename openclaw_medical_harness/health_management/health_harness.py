@@ -111,6 +111,7 @@ class HealthManagementHarness(BaseHarness):
                 "adherence_metrics": result.output.get("adherence", {}),
                 "effectiveness": result.output.get("effectiveness", {}),
                 "confidence": result.output.get("confidence", result.confidence),
+                "evidence": result.output.get("evidence", {}),
                 "harness_name": result.harness_name,
                 "execution_time_ms": result.execution_time_ms,
             }
@@ -120,6 +121,7 @@ class HealthManagementHarness(BaseHarness):
             "adherence_metrics": {},
             "effectiveness": {},
             "confidence": result.confidence,
+            "evidence": {},
             "harness_name": result.harness_name,
             "execution_time_ms": result.execution_time_ms,
         }
@@ -160,29 +162,91 @@ class HealthManagementHarness(BaseHarness):
         context: dict[str, Any],
         tool_results: dict[str, Any],
     ) -> dict[str, Any]:
-        """健康管理推理。"""
+        """健康管理推理：结合数据+模型推理。"""
         patient = context.get("patient", {})
+
+        # 构建prompt
+        prompt = self._build_health_prompt(patient, tool_results, context)
+
+        # 调用模型
+        model_result = self._call_model(prompt)
+
+        # 模型返回了结构化结果
+        if model_result.get("mode") != "fallback" and (
+            "assessment" in model_result or "plan" in model_result
+        ):
+            return {
+                "assessment": model_result.get("assessment", {}),
+                "plan": model_result.get("plan", {}),
+                "adherence": model_result.get("adherence", model_result.get("adherence_metrics", {})),
+                "effectiveness": model_result.get("effectiveness", {}),
+                "confidence": model_result.get("confidence", 0.6),
+                "evidence": {"source": "model", "provider": self.model_provider},
+            }
+
+        # 回退
+        age = patient.get("age", "未知")
         return {
             "assessment": {
-                "overall_risk": "moderate",
-                "key_findings": ["BMI偏高", "运动不足"],
-                "patient_age": patient.get("age", "unknown"),
+                "overall_risk": "需进一步评估",
+                "patient_age": age,
+                "note": "请配置MIMO_API_KEY以获取个性化方案",
             },
-            "plan": {
-                "diet": "地中海饮食为主",
-                "exercise": "每周150分钟中等强度",
-                "monitoring": "每周体重记录",
-            },
-            "adherence": {
-                "tracking_metrics": ["体重", "运动时长", "饮食日志"],
-                "check_interval_days": 7,
-            },
-            "effectiveness": {
-                "evaluation_points": ["2周", "1月", "3月"],
-                "success_criteria": "体重下降5%或BMI改善",
-            },
-            "confidence": 0.7,
+            "plan": {"note": "需模型推理"},
+            "adherence": {"tracking_metrics": ["待定"]},
+            "effectiveness": {"evaluation_points": ["待定"]},
+            "confidence": 0.3,
+            "evidence": {"source": "fallback"},
         }
+
+    def _build_health_prompt(
+        self,
+        patient: dict[str, Any],
+        tool_results: dict[str, Any],
+        context: dict[str, Any],
+    ) -> str:
+        """构建健康管理推理prompt。"""
+        age = patient.get("age", "未知")
+        goal = patient.get("health_goal", "未指定")
+        conditions = patient.get("conditions", [])
+        lab = patient.get("lab_results", {})
+        wearable = patient.get("wearable_data", {})
+
+        prompt = f"""你是一位{self.health_domain}方向的健康管理专家。请根据以下信息制定个性化健康管理方案。
+
+## 用户信息
+- 年龄: {age}
+- 健康目标: {goal}
+"""
+        if conditions:
+            cond_str = ", ".join(conditions) if isinstance(conditions, list) else str(conditions)
+            prompt += f"- 现有疾病/状况: {cond_str}\n"
+        if lab:
+            prompt += f"- 实验室结果: {lab}\n"
+        if wearable:
+            prompt += f"- 可穿戴数据: {wearable}\n"
+
+        # 注入工具结果
+        if tool_results:
+            prompt += "\n## 文献参考\n"
+            for tool_name, output in tool_results.items():
+                if isinstance(output, dict) and "error" not in output:
+                    articles = output.get("articles", [])
+                    for a in articles[:3]:
+                        prompt += f"- {a.get('title', '')}\n"
+
+        prompt += """
+## 输出要求
+请以严格的JSON格式返回：
+{"assessment": {"overall_risk": "low/moderate/high", "key_findings": ["发现1", "发现2"]}, "plan": {"diet": "", "exercise": "", "medication": "", "mental_health": ""}, "adherence": {"tracking_metrics": ["指标1"], "check_interval_days": 7}, "effectiveness": {"evaluation_points": ["时间点1"], "success_criteria": ""}, "confidence": 0.7}
+
+要求：
+- 方案要个性化，不要泛泛而谈
+- 饮食方案要具体（如每日热量、宏量素比例）
+- 运动方案要可执行（频率、强度、时长）
+- 依从性指标要可量化
+"""
+        return prompt
 
     def _domain(self) -> str:
         return "health_management"
