@@ -1,0 +1,50 @@
+name: variant_interpretation
+version: "1.0.0"
+description: >
+  Interpret genetic variants using ClinVar, gnomAD, and ACMG guidelines.
+  Classify pathogenicity and recommend clinical actions.
+author: MoKangMedical
+license: MIT
+category: genomics
+tags: [genomics, variant, ClinVar, ACMG, pathogenicity]
+
+input_schema:
+  type: object
+  required: [variant]
+  properties:
+    variant: {type: string, description: "HGVS notation"}
+    gene: {type: string}
+    zygosity: {type: string, enum: [heterozygous, homozygous, hemizygous]}
+    phenotype: {type: string}
+    family_segregation: {type: string}
+
+output_schema:
+  type: object
+  properties:
+    acmg_classification: {type: string, enum: [pathogenic, likely_pathogenic, VUS, likely_benign, benign]}
+    acmg_criteria: {type: array, items: {type: string}}
+    population_frequency: {type: number}
+    clinvar_significance: {type: string}
+    clinical_action: {type: string}
+    genetic_counseling_recommended: {type: boolean}
+    confidence: {type: number}
+
+tools:
+  - name: clinvar
+    required: true
+  - name: gnomad
+    required: true
+  - name: omim
+    required: false
+
+harness:
+  type: diagnosis
+  config:
+    use_acmg_guidelines: true
+
+validation:
+  required_output_fields: [acmg_classification, confidence]
+
+execution:
+  timeout_seconds: 90
+  model: mimo

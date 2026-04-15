@@ -1,0 +1,62 @@
+# OpenClaw Skill: Mental Health Screening
+name: mental_health_screening
+version: "1.0.0"
+description: >
+  Evidence-based mental health screening using PHQ-9, GAD-7, AUDIT-C
+  and other validated instruments. Risk assessment and referral guidance.
+
+author: MoKangMedical
+license: MIT
+category: mental
+tags: [mental-health, screening, depression, anxiety, phq9, gad7]
+
+input_schema:
+  type: object
+  required: [presenting_concerns]
+  properties:
+    presenting_concerns: {type: array, items: {type: string}}
+    age: {type: integer}
+    phq9_score: {type: integer, minimum: 0, maximum: 27}
+    gad7_score: {type: integer, minimum: 0, maximum: 21}
+    audit_c_score: {type: integer, minimum: 0, maximum: 12}
+    suicidal_ideation: {type: boolean}
+    previous_diagnoses: {type: array, items: {type: string}}
+    current_medications: {type: array, items: {type: string}}
+
+output_schema:
+  type: object
+  properties:
+    screening_results:
+      type: object
+      properties:
+        depression: {type: string}
+        anxiety: {type: string}
+        substance_use: {type: string}
+    risk_level: {type: string, enum: [low, moderate, high, critical]}
+    safety_plan_needed: {type: boolean}
+    recommended_interventions: {type: array, items: {type: string}}
+    specialist_referral: {type: string}
+    follow_up_timeline: {type: string}
+    confidence: {type: number}
+
+tools:
+  - name: pubmed_search
+    required: false
+
+harness:
+  type: diagnosis
+  config:
+    include_crisis_resources: true
+    crisis_hotline: "988 Suicide & Crisis Lifeline"
+
+validation:
+  required_output_fields: [risk_level, screening_results, confidence]
+  safety_patterns:
+    - pattern: "no further action needed"
+      severity: critical
+      when_field: suicidal_ideation
+      when_value: true
+
+execution:
+  timeout_seconds: 60
+  model: mimo

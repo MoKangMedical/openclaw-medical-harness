@@ -1,0 +1,66 @@
+# OpenClaw Skill: Diabetes Management
+name: diabetes_management
+version: "1.0.0"
+description: >
+  Comprehensive diabetes management skill. HbA1c trend analysis,
+  medication optimization, complication screening, lifestyle coaching.
+
+author: MoKangMedical
+license: MIT
+category: health
+tags: [diabetes, hba1c, insulin, chronic-disease, lifestyle]
+
+input_schema:
+  type: object
+  required: [patient]
+  properties:
+    patient:
+      type: object
+      properties:
+        age: {type: integer}
+        weight: {type: number}
+        height: {type: number}
+        diabetes_type: {type: string, enum: [type1, type2, gestational]}
+    lab_results:
+      type: object
+      properties:
+        hba1c: {type: number}
+        fasting_glucose: {type: number}
+        postprandial_glucose: {type: number}
+        creatinine: {type: number}
+        egfr: {type: number}
+        uacr: {type: number}
+    medications: {type: array, items: {type: string}}
+    lifestyle:
+      type: object
+      properties:
+        diet: {type: string}
+        exercise: {type: string}
+        smoking: {type: boolean}
+
+output_schema:
+  type: object
+  properties:
+    glycemic_status: {type: string}
+    hba1c_target: {type: number}
+    medication_adjustment: {type: array, items: {type: string}}
+    complication_screening: {type: array, items: {type: string}}
+    lifestyle_recommendations: {type: array, items: {type: string}}
+    next_hba1c_date: {type: string}
+    confidence: {type: number}
+
+tools:
+  - name: pubmed_search
+    required: false
+
+harness:
+  type: health_management
+  config:
+    follow_up_interval_days: 90
+
+validation:
+  required_output_fields: [glycemic_status, confidence]
+
+execution:
+  timeout_seconds: 60
+  model: mimo
