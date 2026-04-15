@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Architecture — OpenClaw Medical Harness</title>
+<meta name="description" content="Architecture. OpenClaw Medical Harness documentation.">
+<style>
+body{font-family:system-ui,-apple-system,sans-serif;max-width:900px;margin:0 auto;padding:2rem;color:#c9d1d9;background:#0d1117;line-height:1.7}
+h1,h2,h3{color:#fff}a{color:#58a6ff}pre{background:#1c2128;padding:1rem;border-radius:8px;overflow-x:auto}
+code{color:#3fb950;background:#1c2128;padding:.15rem .4rem;border-radius:4px;font-size:.9em}
+pre code{background:none;padding:0}table{width:100%;border-collapse:collapse;margin:1rem 0}
+th,td{padding:.5rem;text-align:left;border-bottom:1px solid #30363d}th{color:#8b949e}
+nav a{text-decoration:none}nav a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+
+<nav style="background:#161b22;padding:1rem;border-radius:8px;margin-bottom:2rem">
+<a href="/" style="color:#58a6ff;margin-right:1rem">Home</a>
+<a href="/api/" style="color:#58a6ff;margin-right:1rem">API Reference</a>
+<a href="/guides/" style="color:#58a6ff;margin-right:1rem">Getting Started</a>
+<a href="/benchmarks/" style="color:#58a6ff;margin-right:1rem">Benchmarks</a>
+<a href="/examples/" style="color:#58a6ff;margin-right:1rem">Examples</a>
+<a href="/blog/" style="color:#58a6ff">Blog</a>
+</nav>
+
+<h1>Architecture</h1></p><p><h2>Overview</h2></p><p>OpenClaw-Medical-Harness is built on <strong>Harness Theory</strong> — the principle that
+environment design (tools, context, validation, recovery) matters more than
+model selection for domain-specific AI performance.</p><p><h2>Harness Theory — The Core Insight</h2></p><p>``<code>
+Traditional AI thinking:
+  Better Model → Better Results</p><p>Harness Theory:
+  Better Environment → Better Results (even with the same model)</p><p>Key finding: Well-designed Harness architecture yields up to 64%
+performance improvement — with the SAME underlying model.
+</code>`<code></p><p><h3>Why Does This Work?</h3></p><p>LLMs are general-purpose reasoners. Their output quality depends heavily on:
+1. <strong>What information they receive</strong> (context quality)
+2. <strong>How information is structured</strong> (information format)
+3. <strong>What tools they can access</strong> (tool chain)
+4. <strong>How failures are handled</strong> (recovery)
+5. <strong>How outputs are checked</strong> (validation)</p><p>A Harness optimizes all five dimensions, while the model remains swappable.</p><p><h2>The Seven-Layer Ecosystem</h2></p><p></code>`<code>
+┌─────────────────────────────────────────────┐
+│  Layer 7: Business Value                     │
+│  Patient outcomes, clinical decisions        │
+├─────────────────────────────────────────────┤
+│  Layer 6: Harness Design ← WE ARE HERE      │
+│  Tool chains, context, recovery, validation  │
+├─────────────────────────────────────────────┤
+│  Layer 5: Agent Framework                    │
+│  OpenClaw, CrewAI, AutoGen, LangGraph       │
+├─────────────────────────────────────────────┤
+│  Layer 4: Tool Integration                   │
+│  MCP tools, APIs, databases                  │
+├─────────────────────────────────────────────┤
+│  Layer 3: Context Management                 │
+│  Token optimization, compression, memory     │
+├─────────────────────────────────────────────┤
+│  Layer 2: Reasoning Optimization             │
+│  Prompt engineering, chain-of-thought        │
+├─────────────────────────────────────────────┤
+│  Layer 1: Model Layer                        │
+│  Mimo, GPT-4, Claude, Llama, etc.           │
+└─────────────────────────────────────────────┘
+</code>`<code></p><p>Most frameworks focus on Layers 1-3. We focus on Layer 6 (Harness Design),
+which orchestrates all lower layers for maximum domain-specific performance.</p><p><h2>Three-Layer Medical Harness Architecture</h2></p><p><h3>Layer 1: Diagnostic Harness</h3></p><p></code>`<code>
+Symptoms Input ─→ Triage & Red Flags ─→ Differential Diagnosis
+                                              │
+                                    ┌─────────┼─────────┐
+                                    ▼         ▼         ▼
+                              Primary Dx   Alt Dx₁   Alt Dxₙ
+                                    │
+                                    ▼
+                         Workup Strategy ─→ Specialist Referral
+                                    │
+                                    ▼
+                           Confirmed Diagnosis
+</code>`<code></p><p><strong>Pipeline stages:</strong>
+1. <strong>Symptom Intake</strong> — Structure raw symptoms with metadata
+2. <strong>Red Flag Screening</strong> — Identify emergency indicators
+3. <strong>Differential Generation</strong> — Produce ranked differential list
+4. <strong>Evidence Gathering</strong> — Query PubMed, OMIM for supporting evidence
+5. <strong>Workup Planning</strong> — Recommend diagnostic tests
+6. <strong>Diagnosis Narrowing</strong> — Refine based on available evidence</p><p><strong>Key features:</strong>
+- Multi-disciplinary consultation routing
+- Rare disease knowledge base integration
+- Escalation protocols for uncertain cases
+- Step-wise reasoning chain with evidence tracking</p><p><h3>Layer 2: Drug Discovery Harness</h3></p><p></code>`<code>
+Disease Target ─→ Target Validation (OpenTargets)
+                        │
+                        ▼
+              Virtual Screening (ChEMBL)
+                        │
+                        ▼
+              ADMET Prediction ─→ Filter candidates
+                        │
+                        ▼
+              Lead Optimization ─→ Iterative improvement
+                        │
+                        ▼
+              Drug Candidate Profile
+</code>`<code></p><p><strong>Pipeline stages:</strong>
+1. <strong>Target Validation</strong> — Verify target-disease association via OpenTargets
+2. <strong>Virtual Screening</strong> — Screen compound libraries via ChEMBL
+3. <strong>ADMET Prediction</strong> — Predict absorption, distribution, metabolism, excretion, toxicity
+4. <strong>Lead Optimization</strong> — Iterative structural improvement
+5. <strong>Candidate Profiling</strong> — Complete drug-like property assessment</p><p><strong>Key features:</strong>
+- ChEMBL/OpenTargets data source integration
+- Molecular generation agent interface
+- Lipinski Rule of Five validation
+- Novelty scoring for compound prioritization</p><p><h3>Layer 3: Health Management Harness</h3></p><p></code>`<code>
+Patient Data ─→ Multi-Modal Aggregation
+   │  (labs, wearables, questionnaires)
+   ▼
+Health Assessment ─→ Risk Stratification
+   │
+   ▼
+Personalized Care Plan
+   │
+   ├── Medications
+   ├── Lifestyle modifications
+   ├── Monitoring schedule
+   └── Follow-up timeline
+   │
+   ▼
+Compliance Tracking ─→ Outcome Evaluation
+   │
+   ▼
+Plan Adjustment (continuous loop)
+</code>`<code></p><p><strong>Pipeline stages:</strong>
+1. <strong>Data Aggregation</strong> — Collect multi-modal health data
+2. <strong>Risk Assessment</strong> — Stratify risk across health domains
+3. <strong>Plan Generation</strong> — Create personalized, evidence-based care plans
+4. <strong>Compliance Monitoring</strong> — Track adherence to care plans
+5. <strong>Outcome Evaluation</strong> — Measure plan effectiveness
+6. <strong>Plan Adjustment</strong> — Iterate based on outcomes</p><p><strong>Key features:</strong>
+- Multi-modal data intake (questionnaires, wearables, labs)
+- Longitudinal follow-up agent
+- Compliance and adherence scoring
+- Evidence-based plan generation</p><p><h2>Core Infrastructure</h2></p><p><h3>Context Manager</h3></p><p>The context manager is where Harness theory becomes tangible. It determines
+HOW information flows to the model, directly impacting reasoning quality.</p><p><strong>Compression strategies:</strong>
+- </code>TRUNCATE<code> — Simple, fast, loses information
+- </code>SUMMARIZE<code> — LLM-assisted, preserves meaning
+- </code>HIERARCHICAL<code> — Keeps structure, drops details
+- </code>MEDICAL_PRIORITIZED<code> — Keeps clinical data, compresses metadata (default)</p><p><strong>Critical item retention:</strong> Allergies, drug interactions, and clinical alerts
+are NEVER compressed — they are always passed to the model.</p><p><h3>Failure Recovery</h3></p><p>Medical AI cannot silently fail. The recovery system implements multi-tier
+escalation:</p><p></code>`<code>
+Failure Detected
+     │
+     ▼
+Assess Severity ──→ CRITICAL → Human escalation required
+     │
+     ▼
+HIGH → Graceful degradation with uncertainty flags
+     │
+     ▼
+MEDIUM → Retry (up to max_retries)
+     │
+     ▼
+LOW → Accept with warnings
+</code>`<code></p><p><h3>Result Validator</h3></p><p>Four-layer validation pipeline:</p><p>1. <strong>Structural</strong> — Required fields, correct types
+2. <strong>Consistency</strong> — No internal contradictions
+3. <strong>Domain</strong> — Medical domain-specific rules
+4. <strong>Safety</strong> — Dangerous pattern detection</p><p><h2>MCP Tool Integration</h2></p><p>Medical data sources are integrated via the Model Context Protocol:</p><p>| Tool | Source | Domain | Harness |
+<table>
+<tr><th>PubMed Search</th><th>NCBI E-utilities</th><th>Literature</th><th>All</th></tr>
+<tr><td>ChEMBL Query</td><td>EMBL-EBI</td><td>Drug data</td><td>Drug Discovery</td></tr>
+<tr><td>OpenTargets</td><td>OpenTargets Platform</td><td>Target-disease</td><td>Diagnosis, Drug Discovery</td></tr>
+<tr><td>OMIM Lookup</td><td>Johns Hopkins</td><td>Genetics</td><td>Diagnosis</td></tr>
+<tr><td>OpenFDA Safety</td><td>US FDA</td><td>Drug safety</td><td>Drug Discovery, Health Mgmt</td></tr>
+</table>
+Harness tool interface and the MCP protocol.</p><p><h2>Multi-Agent Orchestration</h2></p><p>Two modes, one interface:</p><p><h3>OpenClaw Native Mode</h3>
+- Uses OpenClaw's Skill system for agent routing
+- Agents are defined as OpenClaw Skills
+- Context flows through OpenClaw's native management</p><p><h3>CrewAI Compatible Mode</h3>
+- Maps to CrewAI Agent/Crew/Task API
+- Familiar for CrewAI users
+- Same Harness infrastructure underneath</p><p><h3>Agent Roles</h3></p><p>| Role | Responsibility | Tools |
+<table>
+<tr><th>Diagnostic Agent</th><th>Clinical reasoning, differential diagnosis</th><th>PubMed, OMIM</th></tr>
+<tr><td>Literature Agent</td><td>Evidence retrieval and synthesis</td><td>PubMed</td></tr>
+<tr><td>Drug Agent</td><td>Pharmacology, interactions, dosing</td><td>ChEMBL, OpenFDA</td></tr>
+<tr><td>Communication Agent</td><td>Patient-facing explanations</td><td>—</td><td></p><p><h2>Comparison with Alternatives</h2></p><p></td><td>Dimension</td><td>OpenClaw-MH</td><td>AutoGen</td><td>CrewAI</td><td>LangGraph</td></tr>
+<tr><td>Architecture</td><td>Harness-centric</td><td>Chat-based</td><td>Role-based</td><td>State machine</td></tr>
+<tr><td>Medical focus</td><td>66 skills</td><td>None</td><td>None</td><td>None</td></tr>
+<tr><td>Data sources</td><td>5 MCP tools</td><td>Manual</td><td>Manual</td><td>Manual</td></tr>
+<tr><td>Failure handling</td><td>Multi-tier recovery</td><td>Manual</td><td>Basic retry</td><td>Manual</td></tr>
+<tr><td>Validation</td><td>Domain-specific</td><td>None</td><td>None</td><td>None</td></tr>
+<tr><td>Context strategy</td><td>Medical-aware</td><td>Token window</td><td>Simple</td><td>Graph state</td></tr>
+<tr><td>Performance theory</td><td>Harness (+64%)</td><td>Model-dependent</td><td>Model-dependent</td><td>Model-dependent</td></tr>
+</table>
+
+<hr>
+<p><a href="https://github.com/MoKangMedical/openclaw-medical-harness">GitHub</a> · <a href="https://pypi.org/project/openclaw-medical-harness/">PyPI</a></p>
+</body></html>

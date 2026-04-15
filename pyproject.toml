@@ -7,7 +7,7 @@ name = "openclaw-medical-harness"
 version = "0.2.0"
 description = "Medical AI Agent Orchestration Framework for OpenClaw — Built on Harness Theory"
 readme = "README.md"
-license = {text = "MIT"}
+license = "MIT"
 requires-python = ">=3.10"
 authors = [
     {name = "MoKangMedical", email = "mokangmedical@example.com"},
@@ -17,7 +17,6 @@ classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Healthcare Industry",
     "Intended Audience :: Science/Research",
-    "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",

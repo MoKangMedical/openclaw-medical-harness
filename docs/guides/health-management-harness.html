@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Health Management Harness Guide — Personalized Care Plans with AI | OpenClaw</title>
+<meta name="description" content="Build personalized health management plans with AI: assessment, diet prescriptions, exercise programs, adherence tracking, and effectiveness evaluation. Supports diabetes, weight management, and more.">
+<link rel="canonical" href="https://mokangmedical.github.io/openclaw-medical-harness/guides/health-management-harness.html">
+<style>
+body{font-family:'Inter',system-ui,sans-serif;max-width:800px;margin:0 auto;padding:2rem;color:#1a1a2e;line-height:1.8}
+h1{font-size:2rem}h2{font-size:1.4rem;margin-top:2rem;border-bottom:2px solid #e0e0e0;padding-bottom:.3rem}
+pre{background:#1a1a2e;color:#e8edf5;padding:1.5rem;border-radius:8px;overflow-x:auto;font-size:.85rem}
+code{background:#f5f5f5;padding:.15rem .4rem;border-radius:4px;font-size:.9em}
+table{border-collapse:collapse;width:100%;margin:1rem 0}th,td{border:1px solid #ddd;padding:.5rem;text-align:left}th{background:#f9f9f9}
+</style>
+</head>
+<body>
+<h1>Health Management Harness Guide</h1>
+<p>The Health Management Harness generates personalized care plans with specific diet, exercise, medication, and monitoring recommendations.</p>
+
+<h2>Quick Start</h2>
+<pre>from openclaw_medical_harness import HealthManagementHarness, MIMOProvider
+
+provider = MIMOProvider(api_key="your-key")
+harness = HealthManagementHarness(health_domain="diabetes", provider=provider)
+
+result = harness.execute({
+    "conditions": ["type 2 diabetes"],
+    "lab_results": {"hba1c": 7.2, "fasting_glucose": 130},
+    "patient": {"age": 55}
+})
+
+print(result["assessment"])  # Risk level, key findings
+print(result["plan"])        # Diet: 1600-1800kcal, 55% carb low GI
+print(result["adherence"])   # Tracking metrics
+print(result["confidence"])  # 0.70</pre>
+
+<h2>Domains</h2>
+<table>
+<tr><th>Domain</th><th>Use Case</th><th>Key Metrics</th></tr>
+<tr><td>diabetes</td><td>T1D/T2D management</td><td>HbA1c, fasting glucose, hypoglycemia events</td></tr>
+<tr><td>weight_management</td><td>Weight loss/gain</td><td>BMI, body composition, calorie balance</td></tr>
+<tr><td>cardiovascular</td><td>Heart health</td><td>BP, LDL, exercise capacity</td></tr>
+<tr><td>general</td><td>Wellness optimization</td><td>Activity, sleep, nutrition</td></tr>
+</table>
+
+<h2>Input Schema</h2>
+<table>
+<tr><th>Field</th><th>Type</th><th>Description</th></tr>
+<tr><td>conditions</td><td>list[str]</td><td>Existing medical conditions</td></tr>
+<tr><td>lab_results</td><td>dict</td><td>Lab values (HbA1c, glucose, lipids, etc.)</td></tr>
+<tr><td>wearable_data</td><td>dict</td><td>Steps, heart rate, sleep data</td></tr>
+<tr><td>health_goal</td><td>str</td><td>Target outcome (e.g., "HbA1c &lt; 7.0%")</td></tr>
+<tr><td>patient.age</td><td>int</td><td>Patient age</td></tr>
+</table>
+
+<h2>Result Schema</h2>
+<table>
+<tr><th>Field</th><th>Description</th></tr>
+<tr><td>assessment</td><td>Risk level, key findings, recommendations</td></tr>
+<tr><td>plan</td><td>Diet, exercise, medication, mental health specifics</td></tr>
+<tr><td>adherence_metrics</td><td>What to track, check intervals</td></tr>
+<tr><td>effectiveness</td><td>Evaluation timepoints, success criteria</td></tr>
+<tr><td>confidence</td><td>Overall confidence (0-1)</td></tr>
+</table>
+
+<h2>Example Output (Diabetes)</h2>
+<pre>{
+  "assessment": {
+    "overall_risk": "moderate",
+    "key_findings": [
+      "HbA1c 7.2% above target of 7.0%",
+      "Fasting glucose 130 mg/dL elevated"
+    ]
+  },
+  "plan": {
+    "diet": "1600-1800 kcal/day, 55% carb (low GI), 20% protein, 25% fat",
+    "exercise": "5 days/week moderate aerobic (30-40 min), 2 days strength training",
+    "monitoring": "Weekly fasting glucose, monthly HbA1c"
+  },
+  "adherence": {
+    "tracking_metrics": ["Fasting glucose", "Food diary", "Exercise log"],
+    "check_interval_days": 7
+  },
+  "effectiveness": {
+    "evaluation_points": ["2 weeks", "1 month", "3 months"],
+    "success_criteria": "HbA1c &lt; 7.0% at 3 months"
+  }
+}</pre>
+
+<hr>
+<p><a href="/openclaw-medical-harness/">← Back</a> · <a href="https://github.com/MoKangMedical/openclaw-medical-harness">GitHub</a></p>
+</body>
+</html>

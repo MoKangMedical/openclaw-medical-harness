@@ -1,0 +1,51 @@
+name: pharmacogenomics_guidance
+version: "1.0.0"
+description: >
+  Pharmacogenomic guidance based on genetic variants and drug metabolism.
+  CYP450 phenotype prediction, dose adjustment recommendations.
+author: MoKangMedical
+license: MIT
+category: pharmacogenomics
+tags: [pharmacogenomics, CYP450, drug-metabolism, dose-adjustment, PharmGKB]
+
+input_schema:
+  type: object
+  required: [drug, genotype]
+  properties:
+    drug: {type: string}
+    genotype:
+      type: object
+      description: "CYP genotype results, e.g. CYP2D6: *1/*4"
+    age: {type: integer}
+    weight: {type: number}
+    kidney_function: {type: string}
+    liver_function: {type: string}
+
+output_schema:
+  type: object
+  properties:
+    metabolizer_phenotype: {type: string}
+    drug_response: {type: string}
+    dose_recommendation: {type: string}
+    alternative_drugs: {type: array, items: {type: string}}
+    warnings: {type: array, items: {type: string}}
+    guideline_source: {type: string}
+    confidence: {type: number}
+
+tools:
+  - name: clinpgx
+    required: true
+  - name: fda
+    required: false
+
+harness:
+  type: diagnosis
+  config:
+    use_cpic_guidelines: true
+
+validation:
+  required_output_fields: [metabolizer_phenotype, drug_response, confidence]
+
+execution:
+  timeout_seconds: 60
+  model: mimo

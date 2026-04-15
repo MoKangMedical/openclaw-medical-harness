@@ -1,0 +1,56 @@
+# OpenClaw Skill: Drug Interaction Check
+name: drug_interaction_check
+version: "1.0.0"
+description: >
+  Check for drug-drug interactions, contraindications, and
+  adverse effects using FDA and DrugBank data.
+
+author: MoKangMedical
+license: MIT
+category: clinical
+tags: [drug-interactions, safety, contraindications, pharmacology]
+
+input_schema:
+  type: object
+  required: [medications]
+  properties:
+    medications: {type: array, items: {type: string}}
+    new_medication: {type: string}
+    conditions: {type: array, items: {type: string}}
+    allergies: {type: array, items: {type: string}}
+
+output_schema:
+  type: object
+  properties:
+    interactions:
+      type: array
+      items:
+        type: object
+        properties:
+          drug_a: {type: string}
+          drug_b: {type: string}
+          severity: {type: string, enum: [major, moderate, minor]}
+          effect: {type: string}
+          recommendation: {type: string}
+    contraindications: {type: array, items: {type: string}}
+    allergy_warnings: {type: array, items: {type: string}}
+    overall_risk: {type: string}
+    confidence: {type: number}
+
+tools:
+  - name: fda
+    required: true
+  - name: drugbank
+    required: false
+
+harness:
+  type: diagnosis
+  config:
+    include_minor: false
+
+validation:
+  required_output_fields: [interactions, overall_risk, confidence]
+
+execution:
+  timeout_seconds: 60
+  model: mimo

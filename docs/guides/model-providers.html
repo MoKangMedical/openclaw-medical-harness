@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Model Providers Guide — MIMO, Claude, GPT-4, Ollama | OpenClaw</title>
+<meta name="description" content="Configure pluggable model providers for medical AI: Xiaomi MIMO (default), Anthropic Claude, OpenAI GPT-4, and local Ollama. OpenAI-compatible API format.">
+<link rel="canonical" href="https://mokangmedical.github.io/openclaw-medical-harness/guides/model-providers.html">
+<style>
+body{font-family:'Inter',system-ui,sans-serif;max-width:800px;margin:0 auto;padding:2rem;color:#1a1a2e;line-height:1.8}
+h1{font-size:2rem}h2{font-size:1.4rem;margin-top:2rem;border-bottom:2px solid #e0e0e0;padding-bottom:.3rem}
+pre{background:#1a1a2e;color:#e8edf5;padding:1.5rem;border-radius:8px;overflow-x:auto;font-size:.85rem}
+code{background:#f5f5f5;padding:.15rem .4rem;border-radius:4px;font-size:.9em}
+table{border-collapse:collapse;width:100%;margin:1rem 0}th,td{border:1px solid #ddd;padding:.5rem;text-align:left}th{background:#f9f9f9}
+.callout{background:#fff8f0;border-left:4px solid #ffb800;padding:1rem;margin:1rem 0;border-radius:0 8px 8px 0}
+</style>
+</head>
+<body>
+<h1>Model Providers Guide</h1>
+<p>OpenClaw-Medical-Harness supports pluggable model providers. The model is intentionally the most replaceable component — your competitive advantage lives in the harness design.</p>
+
+<h2>Supported Providers</h2>
+<table>
+<tr><th>Provider</th><th>Model</th><th>API Format</th><th>Auth</th></tr>
+<tr><td>Xiaomi MIMO</td><td>mimo-v2-pro</td><td>OpenAI compatible</td><td>API Key</td></tr>
+<tr><td>Anthropic Claude</td><td>claude-sonnet-4-20250514</td><td>OpenAI compatible</td><td>API Key</td></tr>
+<tr><td>OpenAI</td><td>gpt-4o</td><td>OpenAI native</td><td>API Key</td></tr>
+<tr><td>Ollama</td><td>Any local model</td><td>OpenAI compatible</td><td>None</td></tr>
+</table>
+
+<h2>MIMO (Default)</h2>
+<pre>from openclaw_medical_harness import MIMOProvider
+
+# Option 1: Pass key directly
+provider = MIMOProvider(api_key="sk-xxx")
+
+# Option 2: Environment variable
+# export MIMO_API_KEY="sk-xxx"
+provider = MIMOProvider()
+
+# Use with harness
+harness = DiagnosisHarness(specialty="neurology", provider=provider)</pre>
+
+<div class="callout"><strong>MIMO API Details</strong><br>
+Base URL: https://api.xiaomimimo.com/v1<br>
+Models: mimo-v2-pro (default), mimo-v2-flash<br>
+Format: OpenAI Chat Completions compatible</div>
+
+<h2>Claude</h2>
+<pre>from openclaw_medical_harness.providers import create_provider
+
+provider = create_provider("claude", api_key="sk-ant-xxx")
+harness = DiagnosisHarness(specialty="neurology", provider=provider)</pre>
+
+<h2>GPT-4</h2>
+<pre>from openclaw_medical_harness.providers import create_provider
+
+provider = create_provider("openai", api_key="sk-xxx")
+harness = DiagnosisHarness(specialty="neurology", provider=provider)</pre>
+
+<h2>Ollama (Local)</h2>
+<pre>from openclaw_medical_harness.providers import create_provider
+
+provider = create_provider("ollama", base_url="http://localhost:11434/v1")
+harness = DiagnosisHarness(specialty="neurology", provider=provider)</pre>
+
+<h2>Custom Provider</h2>
+<pre>from openclaw_medical_harness.providers.base import ModelProvider, GenerationResult
+
+class MyProvider(ModelProvider):
+    @property
+    def name(self) -> str:
+        return "my-provider"
+
+    @property
+    def model(self) -> str:
+        return "my-model"
+
+    def generate(self, prompt: str, **kwargs) -> GenerationResult:
+        # Your API call here
+        return GenerationResult(text="response", model=self.model)
+
+# Register and use
+from openclaw_medical_harness.providers import register_provider
+register_provider("my-provider", MyProvider)
+provider = create_provider("my-provider")</pre>
+
+<h2>Fallback Behavior</h2>
+<p>If no model provider is configured (no API key), the harness operates in <strong>fallback mode</strong> using knowledge base matching only. This is useful for testing but not recommended for production.</p>
+
+<hr>
+<p><a href="/openclaw-medical-harness/">← Back</a> · <a href="https://github.com/MoKangMedical/openclaw-medical-harness">GitHub</a></p>
+</body>
+</html>

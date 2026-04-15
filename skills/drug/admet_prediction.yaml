@@ -1,0 +1,59 @@
+# OpenClaw Skill: ADMET Prediction
+name: admet_prediction
+version: "1.0.0"
+description: >
+  Predict Absorption, Distribution, Metabolism, Excretion, and Toxicity
+  for drug candidates using molecular descriptors and ML models.
+
+author: MoKangMedical
+license: MIT
+category: drug
+tags: [admet, drug-safety, molecular-descriptors, pharmacokinetics]
+
+input_schema:
+  type: object
+  required: [smiles]
+  properties:
+    smiles: {type: string, description: "SMILES notation of compound"}
+    name: {type: string, description: "Compound name (optional)"}
+    predictions:
+      type: array
+      items: {type: string}
+      description: "Specific ADMET properties to predict"
+
+output_schema:
+  type: object
+  properties:
+    compound: {type: string}
+    admet_profile:
+      type: object
+      properties:
+        absorption: {type: number, description: "0-1 score"}
+        distribution: {type: number}
+        metabolism: {type: number}
+        excretion: {type: number}
+        toxicity: {type: number}
+    lipinski_violations: {type: integer}
+    drug_likeness: {type: string}
+    warnings: {type: array, items: {type: string}}
+    confidence: {type: number}
+
+tools:
+  - name: rdkit
+    required: true
+  - name: chembl
+    required: false
+  - name: bindingdb
+    required: false
+
+harness:
+  type: drug_discovery
+  config:
+    use_ml_models: true
+
+validation:
+  required_output_fields: [compound, admet_profile, confidence]
+
+execution:
+  timeout_seconds: 60
+  model: mimo

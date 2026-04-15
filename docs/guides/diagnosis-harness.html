@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diagnosis Harness Guide — Differential Diagnosis with AI | OpenClaw</title>
+<meta name="description" content="Complete guide to using the Diagnosis Harness: structured differential diagnosis, confidence scoring, rare disease knowledge base, OMIM integration, and PubMed evidence retrieval.">
+<link rel="canonical" href="https://mokangmedical.github.io/openclaw-medical-harness/guides/diagnosis-harness.html">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "Diagnosis Harness Guide — Differential Diagnosis with AI",
+  "description": "Complete guide to structured differential diagnosis using the OpenClaw-Medical-Harness framework.",
+  "datePublished": "2026-04-16",
+  "proficiencyLevel": "Beginner",
+  "dependencies": "openclaw-medical-harness, MIMO API key",
+  "programmingLanguage": "Python"
+}
+</script>
+<style>
+body{font-family:'Inter',system-ui,sans-serif;max-width:800px;margin:0 auto;padding:2rem;color:#1a1a2e;line-height:1.8}
+h1{font-size:2rem}h2{font-size:1.4rem;margin-top:2rem;border-bottom:2px solid #e0e0e0;padding-bottom:.3rem}
+h3{font-size:1.1rem;margin-top:1.5rem}
+code{background:#f5f5f5;padding:.15rem .4rem;border-radius:4px;font-size:.9em}
+pre{background:#1a1a2e;color:#e8edf5;padding:1.5rem;border-radius:8px;overflow-x:auto;font-size:.85rem;line-height:1.6}
+table{border-collapse:collapse;width:100%;margin:1rem 0}th,td{border:1px solid #ddd;padding:.5rem;text-align:left}th{background:#f9f9f9}
+.breadcrumb{color:#666;font-size:.85rem;margin-bottom:1rem}
+.breadcrumb a{color:#1a73e8;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="breadcrumb"><a href="/">Home</a> / <a href="/openclaw-medical-harness/">OpenClaw</a> / Guides / Diagnosis Harness</div>
+
+<h1>Diagnosis Harness Guide</h1>
+<p>The Diagnosis Harness provides structured differential diagnosis with confidence scoring, knowledge base matching, and model-backed reasoning.</p>
+
+<h2>Installation</h2>
+<pre>pip install openclaw-medical-harness</pre>
+
+<h2>Quick Start</h2>
+<pre>from openclaw_medical_harness import DiagnosisHarness, MIMOProvider
+
+# Create provider and harness
+provider = MIMOProvider(api_key="your-key")
+harness = DiagnosisHarness(specialty="neurology", provider=provider)
+
+# Run diagnosis
+result = harness.execute({
+    "symptoms": ["bilateral ptosis", "fatigable weakness", "diplopia"],
+    "patient": {"age": 35, "sex": "F"}
+})
+
+print(result["diagnosis"])    # Myasthenia Gravis
+print(result["confidence"])   # 0.85
+print(result["differential"]) # ["Lambert-Eaton", "Botulism", "CPEO"]
+print(result["next_steps"])   # ["AChR antibody", "RNS", "Ice pack test"]</pre>
+
+<h2>Result Schema</h2>
+<table>
+<tr><th>Field</th><th>Type</th><th>Description</th></tr>
+<tr><td><code>diagnosis</code></td><td>str</td><td>Primary diagnosis</td></tr>
+<tr><td><code>confidence</code></td><td>float (0-1)</td><td>Confidence score</td></tr>
+<tr><td><code>differential</code></td><td>list[str]</td><td>Differential diagnoses (≥2 for high-risk)</td></tr>
+<tr><td><code>next_steps</code></td><td>list[str]</td><td>Recommended tests/workup</td></tr>
+<tr><td><code>reasoning</code></td><td>str</td><td>Model's reasoning process</td></tr>
+<tr><td><code>evidence</code></td><td>dict</td><td>Data source info (model/knowledge_base/fallback)</td></tr>
+<tr><td><code>execution_time_ms</code></td><td>float</td><td>Total execution time</td></tr>
+</table>
+
+<h2>Specialties</h2>
+<p>Pass any specialty string. The harness adapts the system prompt:</p>
+<pre>harness = DiagnosisHarness(specialty="cardiology")
+harness = DiagnosisHarness(specialty="pulmonology")
+harness = DiagnosisHarness(specialty="gastroenterology")</pre>
+
+<h2>How It Works</h2>
+<ol>
+<li><strong>Knowledge Base Match</strong>: Cross-reference symptoms against built-in rare disease KB</li>
+<li><strong>Tool Chain</strong>: Query PubMed, OMIM, OpenTargets for evidence</li>
+<li><strong>Model Reasoning</strong>: Send enriched prompt to MIMO/Claude/GPT for clinical reasoning</li>
+<li><strong>Validation</strong>: Check for absolute claims, missing differentials, safety issues</li>
+<li><strong>Recovery</strong>: If confidence &lt; 0.4, degrade gracefully or escalate to human</li>
+</ol>
+
+<h2>Safety Validation</h2>
+<p>The harness automatically flags:</p>
+<ul>
+<li>Absolute claims: "肯定是MG", "100%确诊"</li>
+<li>Missing differential for high-risk diagnoses (cancer, acute, emergency)</li>
+<li>Dangerous patterns: "不需要进一步检查", "忽略症状"</li>
+<li>Confidence out of range (&gt;1 or &lt;0)</li>
+</ul>
+
+<h2>Model Providers</h2>
+<table>
+<tr><th>Provider</th><th>Setup</th></tr>
+<tr><td>MIMO (default)</td><td><code>MIMOProvider(api_key="sk-xxx")</code></td></tr>
+<tr><td>Claude</td><td><code>create_provider("claude", api_key="sk-ant-xxx")</code></td></tr>
+<tr><td>GPT-4</td><td><code>create_provider("openai", api_key="sk-xxx")</code></td></tr>
+<tr><td>Ollama</td><td><code>create_provider("ollama", base_url="http://localhost:11434")</code></td></tr>
+</table>
+
+<hr>
+<p><a href="/openclaw-medical-harness/">← Back to Home</a> · <a href="https://github.com/MoKangMedical/openclaw-medical-harness">GitHub</a></p>
+</body>
+</html>

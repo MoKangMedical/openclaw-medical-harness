@@ -1,0 +1,61 @@
+# OpenClaw Skill: Drug Target Validation
+name: drug_target_validation
+version: "1.0.0"
+description: >
+  Validate drug targets using genetic evidence, expression data,
+  and pathway analysis. Integrates OpenTargets, GWAS Catalog, gnomAD.
+
+author: MoKangMedical
+license: MIT
+category: drug
+tags: [drug-discovery, target-validation, opentargets, genomics]
+
+input_schema:
+  type: object
+  required: [target, disease]
+  properties:
+    target: {type: string, description: "Gene symbol or Ensembl ID"}
+    disease: {type: string, description: "Disease name or EFO ID"}
+    evidence_types:
+      type: array
+      items: {type: string}
+      description: "genetic, somatic, drugs, pathways, expression, animal_models"
+
+output_schema:
+  type: object
+  properties:
+    target_id: {type: string}
+    disease_id: {type: string}
+    overall_score: {type: number}
+    evidence_summary:
+      type: object
+      properties:
+        genetic: {type: number}
+        somatic: {type: number}
+        drugs: {type: number}
+        pathways: {type: number}
+    is_druggable: {type: boolean}
+    existing_drugs: {type: array, items: {type: string}}
+    confidence: {type: number}
+
+tools:
+  - name: opentargets
+    required: true
+  - name: gwas_catalog
+    required: true
+  - name: gnomad
+    required: false
+  - name: reactome
+    required: false
+
+harness:
+  type: drug_discovery
+  config:
+    min_evidence_score: 0.5
+
+validation:
+  required_output_fields: [target_id, disease_id, overall_score, confidence]
+
+execution:
+  timeout_seconds: 120
+  model: mimo

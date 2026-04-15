@@ -1,0 +1,65 @@
+# OpenClaw Skill: Emergency Triage
+name: emergency_triage
+version: "1.0.0"
+description: >
+  Emergency department triage using ESI (Emergency Severity Index).
+  Vital sign interpretation, red flag identification, disposition planning.
+
+author: MoKangMedical
+license: MIT
+category: emergency
+tags: [emergency, triage, ESI, vital-signs, red-flags, disposition]
+
+input_schema:
+  type: object
+  required: [chief_complaint]
+  properties:
+    chief_complaint: {type: string}
+    vital_signs:
+      type: object
+      properties:
+        bp_systolic: {type: integer}
+        bp_diastolic: {type: integer}
+        heart_rate: {type: integer}
+        respiratory_rate: {type: integer}
+        temperature: {type: number}
+        spo2: {type: number}
+        gcs: {type: integer}
+    pain_score: {type: integer, minimum: 0, maximum: 10}
+    age: {type: integer}
+    medical_history: {type: array, items: {type: string}}
+    allergies: {type: array, items: {type: string}}
+
+output_schema:
+  type: object
+  properties:
+    esi_level: {type: integer, minimum: 1, maximum: 5, description: "1=Resuscitation, 5=Non-urgent"}
+    acuity: {type: string}
+    red_flags: {type: array, items: {type: string}}
+    immediate_actions: {type: array, items: {type: string}}
+    differential_ems: {type: array, items: {type: string}}
+    disposition: {type: string, enum: [resuscitation, critical-care, admit, observe, discharge]}
+    specialist_consult: {type: string}
+    confidence: {type: number}
+
+tools: []
+
+harness:
+  type: diagnosis
+  config:
+    emergency_mode: true
+    min_confidence_threshold: 0.5
+
+validation:
+  required_output_fields: [esi_level, acuity, red_flags, disposition, confidence]
+  safety_patterns:
+    - pattern: "can wait"
+      severity: critical
+      when_field: esi_level
+      when_value_max: 2
+
+execution:
+  timeout_seconds: 30
+  max_tokens: 2048
+  temperature: 0.1
+  model: mimo

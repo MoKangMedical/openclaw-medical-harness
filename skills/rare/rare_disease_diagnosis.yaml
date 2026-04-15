@@ -1,0 +1,90 @@
+# OpenClaw Skill: Rare Disease Diagnosis
+name: rare_disease_diagnosis
+version: "1.0.0"
+description: >
+  Specialized rare disease diagnostic skill. Integrates OMIM, Orphanet,
+  ClinVar for undiagnosed patients. Supports phenotypic matching and
+  genetic test recommendation.
+
+author: MoKangMedical
+license: MIT
+compatibility:
+  openclaw: ">=2026.4"
+  python: ">=3.10"
+category: rare
+tags: [rare-disease, omim, phenotypic-matching, genetic-testing]
+
+input_schema:
+  type: object
+  required: [symptoms]
+  properties:
+    symptoms:
+      type: array
+      items: {type: string}
+      description: "Presenting symptoms (use HPO terms when possible)"
+    age_of_onset:
+      type: integer
+      description: "Age when symptoms first appeared (months)"
+    family_history:
+      type: array
+      items: {type: string}
+      description: "Family history of similar conditions"
+    consanguinity:
+      type: boolean
+      description: "Parents related?"
+    genetic_results:
+      type: object
+      description: "Any existing genetic test results"
+
+output_schema:
+  type: object
+  properties:
+    suspected_conditions:
+      type: array
+      items:
+        type: object
+        properties:
+          name: {type: string}
+          omim_id: {type: string}
+          inheritance: {type: string}
+          phenotype_match_score: {type: number}
+          supporting_features: {type: array, items: {type: string}}
+    recommended_genetic_tests:
+      type: array
+      items: {type: string}
+    hpo_terms:
+      type: array
+      items: {type: string}
+    specialist_referral: {type: string}
+    confidence: {type: number}
+
+tools:
+  - name: omim_lookup
+    required: true
+  - name: hpo_query
+    required: true
+  - name: clinvar_search
+    required: false
+  - name: monarch_kg
+    required: false
+
+harness:
+  type: diagnosis
+  config:
+    enable_rare_disease_screening: true
+    max_differentials: 10
+    min_confidence_threshold: 0.2
+
+recovery:
+  strategy: escalate
+  escalation_message: "Consider referral to a genetics clinic or undiagnosed diseases program."
+
+validation:
+  strict_mode: false
+  required_output_fields: [suspected_conditions, recommended_genetic_tests, confidence]
+
+execution:
+  timeout_seconds: 180
+  max_tokens: 4096
+  temperature: 0.2
+  model: mimo

@@ -1,0 +1,59 @@
+# OpenClaw Skill: Clinical Trial Matching
+name: clinical_trial_matching
+version: "1.0.0"
+description: >
+  Match patients to eligible clinical trials based on diagnosis,
+  demographics, and inclusion/exclusion criteria.
+
+author: MoKangMedical
+license: MIT
+category: clinical
+tags: [clinical-trials, patient-matching, eligibility, recruitment]
+
+input_schema:
+  type: object
+  required: [diagnosis]
+  properties:
+    diagnosis: {type: string}
+    age: {type: integer}
+    sex: {type: string}
+    stage: {type: string}
+    prior_treatments: {type: array, items: {type: string}}
+    biomarkers: {type: object}
+    location: {type: string}
+    willing_to_travel: {type: boolean}
+
+output_schema:
+  type: object
+  properties:
+    eligible_trials:
+      type: array
+      items:
+        type: object
+        properties:
+          nct_id: {type: string}
+          title: {type: string}
+          phase: {type: string}
+          status: {type: string}
+          match_score: {type: number}
+          locations: {type: array, items: {type: string}}
+    total_trials_found: {type: integer}
+    confidence: {type: number}
+
+tools:
+  - name: clinicaltrials
+    required: true
+  - name: pubmed_search
+    required: false
+
+harness:
+  type: diagnosis
+  config:
+    max_results: 10
+
+validation:
+  required_output_fields: [eligible_trials, total_trials_found, confidence]
+
+execution:
+  timeout_seconds: 120
+  model: mimo

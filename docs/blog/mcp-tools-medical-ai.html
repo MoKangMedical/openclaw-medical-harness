@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MCP Tools for Medical AI: PubMed, ChEMBL, OpenTargets Integration Guide | OpenClaw</title>
+<meta name="description" content="Complete guide to MCP (Model Context Protocol) tools for medical AI: PubMed literature search, ChEMBL drug data, OpenTargets target-disease associations, OMIM genetics, and OpenFDA safety signals. Free APIs, no auth required.">
+<link rel="canonical" href="https://mokangmedical.github.io/openclaw-medical-harness/blog/mcp-tools-medical-ai.html">
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org","@type":"Article","headline":"MCP Tools for Medical AI: PubMed, ChEMBL, OpenTargets Integration","datePublished":"2026-04-16","author":{"@type":"Organization","name":"MoKangMedical"},"keywords":["MCP","medical AI tools","PubMed API","ChEMBL","OpenTargets","drug safety"]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+    {"@type":"Question","name":"What is MCP in AI?","acceptedAnswer":{"@type":"Answer","text":"MCP (Model Context Protocol) is a standard protocol for connecting AI models to external data sources and tools. In medical AI, MCP enables LLMs to query real databases like PubMed, ChEMBL, and OpenTargets during reasoning, replacing hallucinated references with verified data."}},
+    {"@type":"Question","name":"What free APIs are available for drug discovery?","acceptedAnswer":{"@type":"Answer","text":"Key free APIs for drug discovery: (1) ChEMBL at ebi.ac.uk/chembl/api/data/ for 2.4M compound bioactivity records, (2) OpenTargets at api.platform.opentargets.org for target-disease associations, (3) PubMed E-utilities at eutils.ncbi.nlm.nih.gov for biomedical literature, (4) OpenFDA at api.fda.gov for drug adverse events. None require authentication."}},
+    {"@type":"Question","name":"How to search PubMed programmatically?","acceptedAnswer":{"@type":"Answer","text":"Use NCBI E-utilities API: (1) esearch.fcgi to search and get PMIDs, (2) esummary.fcgi to fetch article metadata. Rate limit: 3 requests/second without API key. Example: curl 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=myasthenia+gravis&retmax=5&retmode=json'"}}
+  ]
+}
+</script>
+<style>
+body{font-family:'Inter',system-ui,sans-serif;max-width:800px;margin:0 auto;padding:2rem;color:#1a1a2e;line-height:1.8}
+h1{font-size:2rem}h2{font-size:1.4rem;margin-top:2rem;border-bottom:2px solid #e0e0e0;padding-bottom:.3rem}
+h3{font-size:1.1rem;margin-top:1.5rem}code{background:#f5f5f5;padding:.15rem .4rem;border-radius:4px;font-size:.9em}
+pre{background:#1a1a2e;color:#e8edf5;padding:1.5rem;border-radius:8px;overflow-x:auto;font-size:.85rem}
+table{border-collapse:collapse;width:100%;margin:1rem 0}th,td{border:1px solid #ddd;padding:.5rem;text-align:left}th{background:#f9f9f9}
+.faq{background:#f8f9fa;padding:1.5rem;border-radius:8px;margin:1rem 0}
+.faq h3{color:#1a73e8;margin-top:.5rem}.faq p{margin-top:.3rem}
+.endpoint{background:#f0f7ff;padding:.8rem 1rem;border-radius:8px;margin:.5rem 0;font-family:monospace;font-size:.85rem}
+</style>
+</head>
+<body>
+
+<h1>MCP Tools for Medical AI: PubMed, ChEMBL, OpenTargets Integration</h1>
+<p><em>Published: April 16, 2026 · Reading time: 10 minutes</em></p>
+
+<p>Medical AI agents need <strong>real data</strong>, not hallucinated references. The MCP (Model Context Protocol) standard enables LLMs to query live biomedical databases during reasoning. This guide covers the 5 key free APIs for medical AI development.</p>
+
+<h2>What is MCP?</h2>
+<p><strong>MCP (Model Context Protocol)</strong> is a standard for connecting AI models to external tools and data sources. Instead of the model hallucinating a PubMed citation, the MCP tool queries PubMed in real-time and returns verified results.</p>
+
+<h2>The 5 Essential Medical MCP Tools</h2>
+<table>
+<tr><th>Tool</th><th>Purpose</th><th>Data Size</th><th>API URL</th><th>Auth</th></tr>
+<tr><td>PubMed</td><td>Literature search</td><td>36M+ articles</td><td>eutils.ncbi.nlm.nih.gov</td><td>No</td></tr>
+<tr><td>ChEMBL</td><td>Drug compound data</td><td>2.4M compounds</td><td>ebi.ac.uk/chembl/api/data</td><td>No</td></tr>
+<tr><td>OpenTargets</td><td>Target-disease association</td><td>65K+ targets</td><td>api.platform.opentargets.org</td><td>No</td></tr>
+<tr><td>OMIM</td><td>Genetic disease data</td><td>16K+ entries</td><td>api.omim.org</td><td>API Key</td></tr>
+<tr><td>OpenFDA</td><td>Drug safety signals</td><td>20M+ reports</td><td>api.fda.gov</td><td>No</td></tr>
+</table>
+
+<h2>1. PubMed — Literature Search</h2>
+<p>Search 36+ million biomedical articles. Two-step process: (1) search for PMIDs, (2) fetch article details.</p>
+<div class="endpoint">GET https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=myasthenia+gravis&retmax=5&retmode=json</div>
+<div class="endpoint">GET https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id=12345,67890&retmode=json</div>
+<p><strong>Rate limit</strong>: 3 requests/second without API key, 10/second with key.</p>
+
+<h3>Python Implementation</h3>
+<pre>import httpx
+
+def search_pubmed(query: str, max_results: int = 5):
+    resp = httpx.get("https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi",
+        params={"db": "pubmed", "term": query, "retmax": max_results, "retmode": "json"})
+    ids = resp.json()["esearchresult"]["idlist"]
+
+    resp2 = httpx.get("https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi",
+        params={"db": "pubmed", "id": ",".join(ids), "retmode": "json"})
+    return [resp2.json()["result"][pmid]["title"] for pmid in ids]</pre>
+
+<h2>2. ChEMBL — Drug Compound Data</h2>
+<p>Query 2.4 million compounds with bioactivity data against 15,000+ targets.</p>
+<div class="endpoint">GET https://www.ebi.ac.uk/chembl/api/data/molecule/search.json?q=aspirin&limit=5</div>
+<div class="endpoint">GET https://www.ebi.ac.uk/chembl/api/data/activity.json?target_chembl_id=CHEMBL203&standard_type=IC50&limit=10</div>
+
+<h2>3. OpenTargets — Target-Disease Associations</h2>
+<p>GraphQL API for target-disease association scores (0-1) based on genetics, genomics, drugs, and literature.</p>
+<pre># Search for target
+query SearchTarget($queryString: String!) {
+    search(queryString: $queryString, entityNames: ["target"], page: {index: 0, size: 3}) {
+        hits { id name description }
+    }
+}
+
+# Get target-disease associations
+query TargetDisease($ensemblId: String!) {
+    target(ensemblId: $ensemblId) {
+        associatedDiseases(page: {index: 0, size: 5}) {
+            rows { disease { id name } score }
+        }
+    }
+}</pre>
+
+<h2>4. OMIM — Genetic Disease Database</h2>
+<p>16,000+ entries for Mendelian disease-gene-phenotype relationships. Requires free API key from omim.org.</p>
+<div class="endpoint">GET https://api.omim.org/api/entry?mimNumber=254200&apiKey=YOUR_KEY&format=json</div>
+
+<h2>5. OpenFDA — Drug Safety Signals</h2>
+<p>20+ million adverse event reports. Search by drug name, reaction, or date range.</p>
+<div class="endpoint">GET https://api.fda.gov/drug/event.json?search=patient.drug.openfda.brand_name:aspirin&limit=5</div>
+
+<h2>Using MCP Tools in OpenClaw-Medical-Harness</h2>
+<pre>from openclaw_medical_harness import MedicalToolRegistry
+
+registry = MedicalToolRegistry()
+
+# Get tools for diagnosis harness
+tools = registry.get_tools_for_harness("diagnosis")
+# → [pubmed_search, omim_lookup, opentargets_association]
+
+# Use a specific tool
+pubmed = registry.get("pubmed_search")
+result = pubmed.execute({"query": "myasthenia gravis treatment"}, {})
+for article in result["articles"]:
+    print(article["title"], article["url"])</pre>
+
+<h2>FAQ</h2>
+<div class="faq">
+<h3>What is MCP in AI?</h3>
+<p>MCP (Model Context Protocol) is a standard for connecting AI models to external data sources. In medical AI, MCP enables LLMs to query real databases like PubMed and ChEMBL during reasoning, replacing hallucinated references with verified data.</p>
+
+<h3>What free APIs are available for drug discovery?</h3>
+<p>Key free APIs: (1) ChEMBL for 2.4M compound bioactivity records, (2) OpenTargets for target-disease associations, (3) PubMed E-utilities for biomedical literature, (4) OpenFDA for drug adverse events. None require authentication.</p>
+
+<h3>How to search PubMed programmatically?</h3>
+<p>Use NCBI E-utilities: esearch.fcgi to get PMIDs, esummary.fcgi to fetch metadata. Rate limit: 3 req/sec without key, 10 req/sec with key. Example: curl 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=query&retmode=json'</p>
+</div>
+
+<hr>
+<p><a href="https://github.com/MoKangMedical/openclaw-medical-harness">OpenClaw-Medical-Harness</a> — All 5 MCP tools pre-configured and ready to use. MIT License.</p>
+</body>
+</html>

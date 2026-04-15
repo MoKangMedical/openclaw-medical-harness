@@ -1,0 +1,71 @@
+# OpenClaw Skill: Oncology Staging
+name: oncology_staging
+version: "1.0.0"
+description: >
+  Cancer staging using TNM classification (AJCC 8th edition).
+  Treatment pathway recommendation based on stage and guidelines.
+
+author: MoKangMedical
+license: MIT
+category: oncology
+tags: [cancer, staging, TNM, AJCC, treatment-pathway]
+
+input_schema:
+  type: object
+  required: [cancer_type]
+  properties:
+    cancer_type: {type: string}
+    tnm:
+      type: object
+      properties:
+        t: {type: string}
+        n: {type: string}
+        m: {type: string}
+    biomarkers:
+      type: object
+      description: "ER, PR, HER2, PD-L1, KRAS, EGFR, etc."
+    histology: {type: string}
+    grade: {type: string}
+    patient_age: {type: integer}
+    performance_status: {type: integer, minimum: 0, maximum: 4}
+
+output_schema:
+  type: object
+  properties:
+    ajcc_stage: {type: string}
+    stage_group: {type: string}
+    treatment_pathways:
+      type: array
+      items:
+        type: object
+        properties:
+          regimen: {type: string}
+          line: {type: string}
+          evidence_level: {type: string}
+          biomarker_match: {type: boolean}
+    clinical_trials_recommended: {type: array, items: {type: string}}
+    prognosis_estimate: {type: string}
+    confidence: {type: number}
+
+tools:
+  - name: pubmed_search
+    required: false
+  - name: clinicaltrials
+    required: false
+  - name: cbioportal
+    required: false
+  - name: depmap
+    required: false
+
+harness:
+  type: diagnosis
+  config:
+    include_clinical_trials: true
+    guideline_source: "NCCN"
+
+validation:
+  required_output_fields: [ajcc_stage, treatment_pathways, confidence]
+
+execution:
+  timeout_seconds: 120
+  model: mimo

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>API Reference — OpenClaw-Medical-Harness Python SDK</title>
+<meta name="description" content="Complete API reference for OpenClaw-Medical-Harness: DiagnosisHarness, DrugDiscoveryHarness, HealthManagementHarness, MIMOProvider, MedicalToolRegistry, MultiAgentOrchestrator.">
+<link rel="canonical" href="https://mokangmedical.github.io/openclaw-medical-harness/api/">
+<style>
+body{font-family:'Inter',system-ui,sans-serif;max-width:800px;margin:0 auto;padding:2rem;color:#1a1a2e;line-height:1.8}
+h1{font-size:2rem}h2{font-size:1.4rem;margin-top:2.5rem;border-bottom:2px solid #e0e0e0;padding-bottom:.3rem}
+h3{font-size:1.1rem;margin-top:1.5rem}
+pre{background:#1a1a2e;color:#e8edf5;padding:1.5rem;border-radius:8px;overflow-x:auto;font-size:.85rem}
+code{background:#f5f5f5;padding:.15rem .4rem;border-radius:4px;font-size:.9em}
+table{border-collapse:collapse;width:100%;margin:1rem 0}th,td{border:1px solid #ddd;padding:.5rem;text-align:left}th{background:#f9f9f9}
+.cls{background:#f0f7ff;padding:.3rem .6rem;border-radius:6px;font-family:monospace;font-weight:bold}
+.method{background:#f8f9fa;padding:.5rem 1rem;border-radius:8px;margin:.5rem 0;font-family:monospace;font-size:.85rem}
+</style>
+</head>
+<body>
+
+<h1>API Reference</h1>
+<p>Complete Python API for OpenClaw-Medical-Harness v0.2.0.</p>
+
+<h2>Core Classes</h2>
+
+<h3><span class="cls">DiagnosisHarness</span></h3>
+<div class="method">DiagnosisHarness(specialty: str = "neurology", provider: ModelProvider | None = None, **kwargs)</div>
+<table>
+<tr><th>Method</th><th>Returns</th><th>Description</th></tr>
+<tr><td><code>execute(input_data: dict) → dict</code></td><td>dict</td><td>Run diagnosis pipeline</td></tr>
+</table>
+<p><strong>Input</strong>: <code>{"symptoms": [...], "patient": {"age": int, "sex": str}}</code></p>
+<p><strong>Output</strong>: <code>{"diagnosis": str, "confidence": float, "differential": list, "next_steps": list, "evidence": dict}</code></p>
+
+<h3><span class="cls">DrugDiscoveryHarness</span></h3>
+<div class="method">DrugDiscoveryHarness(target_disease: str = "", provider: ModelProvider | None = None, **kwargs)</div>
+<table>
+<tr><th>Method</th><th>Returns</th><th>Description</th></tr>
+<tr><td><code>execute(input_data: dict) → dict</code></td><td>dict</td><td>Run drug discovery pipeline</td></tr>
+<tr><td><code>validate_target(target: str, disease: str) → dict</code></td><td>dict</td><td>Validate target-disease association</td></tr>
+</table>
+<p><strong>Input</strong>: <code>{"target": str, "disease": str}</code></p>
+<p><strong>Output</strong>: <code>{"target": str, "candidates": list, "admet_profile": dict, "optimization_suggestions": list, "confidence": float}</code></p>
+
+<h3><span class="cls">HealthManagementHarness</span></h3>
+<div class="method">HealthManagementHarness(health_domain: str = "general", provider: ModelProvider | None = None, **kwargs)</div>
+<table>
+<tr><th>Method</th><th>Returns</th><th>Description</th></tr>
+<tr><td><code>execute(input_data: dict) → dict</code></td><td>dict</td><td>Run health management pipeline</td></tr>
+<tr><td><code>conduct_follow_up(patient_id: str, data: dict) → dict</code></td><td>dict</td><td>Execute follow-up assessment</td></tr>
+</table>
+<p><strong>Input</strong>: <code>{"conditions": [...], "lab_results": dict, "patient": {"age": int}}</code></p>
+<p><strong>Output</strong>: <code>{"assessment": dict, "plan": dict, "adherence_metrics": dict, "effectiveness": dict, "confidence": float}</code></p>
+
+<h2>Model Providers</h2>
+
+<h3><span class="cls">MIMOProvider</span></h3>
+<div class="method">MIMOProvider(api_key: str = "", base_url: str = "", model: str = "", timeout: float = 60.0)</div>
+<table>
+<tr><th>Method</th><th>Returns</th><th>Description</th></tr>
+<tr><td><code>generate(prompt, system, temperature, max_tokens) → GenerationResult</code></td><td>GenerationResult</td><td>Generate text</td></tr>
+<tr><td><code>generate_json(prompt, ...) → dict</code></td><td>dict</td><td>Generate and parse JSON</td></tr>
+</table>
+<p><strong>Environment</strong>: <code>MIMO_API_KEY</code>, <code>MIMO_BASE_URL</code>, <code>MIMO_MODEL</code></p>
+
+<h3><span class="cls">GenerationResult</span></h3>
+<table>
+<tr><th>Field</th><th>Type</th><th>Description</th></tr>
+<tr><td><code>text</code></td><td>str</td><td>Generated text</td></tr>
+<tr><td><code>model</code></td><td>str</td><td>Model name</td></tr>
+<tr><td><code>tokens_used</code></td><td>int</td><td>Total tokens</td></tr>
+<tr><td><code>finish_reason</code></td><td>str</td><td>"stop", "length", or "error"</td></tr>
+<tr><td><code>raw_response</code></td><td>dict</td><td>Full API response</td></tr>
+</table>
+
+<h2>Orchestrator</h2>
+
+<h3><span class="cls">MultiAgentOrchestrator</span></h3>
+<div class="method">MultiAgentOrchestrator(mode: str = "openclaw", model: str = "mimo", max_agents: int = 10)</div>
+<table>
+<tr><th>Method</th><th>Returns</th><th>Description</th></tr>
+<tr><td><code>add_agent(role, name, specialty, tools, ...) → str</code></td><td>str</td><td>Add agent to orchestration</td></tr>
+<tr><td><code>remove_agent(name) → bool</code></td><td>bool</td><td>Remove agent</td></tr>
+<tr><td><code>run(objective, context, consensus_rounds) → ConsensusResult</code></td><td>ConsensusResult</td><td>Execute multi-agent reasoning</td></tr>
+<tr><td><code>clear() → None</code></td><td>None</td><td>Reset all agents</td></tr>
+</table>
+
+<h3><span class="cls">AgentRole</span></h3>
+<p>Enum: <code>DIAGNOSTIC</code>, <code>LITERATURE</code>, <code>DRUG</code>, <code>COMMUNICATION</code></p>
+
+<h3><span class="cls">ConsensusResult</span></h3>
+<table>
+<tr><th>Field</th><th>Type</th><th>Description</th></tr>
+<tr><td><code>final_diagnosis</code></td><td>str</td><td>Consensus conclusion</td></tr>
+<tr><td><code>confidence</code></td><td>float</td><td>Aggregate confidence</td></tr>
+<tr><td><code>agent_results</code></td><td>dict</td><td>Individual agent outputs</td></tr>
+<tr><td><code>disagreements</code></td><td>list</td><td>Unresolved differences</td></tr>
+<tr><td><code>escalation_needed</code></td><td>bool</td><td>Whether human review is recommended</td></tr>
+</table>
+
+<h2>Tool Registry</h2>
+
+<h3><span class="cls">MedicalToolRegistry</span></h3>
+<div class="method">MedicalToolRegistry(mcp_client: Any | None = None)</div>
+<table>
+<tr><th>Method</th><th>Returns</th><th>Description</th></tr>
+<tr><td><code>get(name) → MCPToolAdapter | None</code></td><td>MCPToolAdapter</td><td>Get tool by name</td></tr>
+<tr><td><code>get_tools_for_harness(type) → list</code></td><td>list</td><td>Get compatible tools</td></tr>
+<tr><td><code>list_all() → list</code></td><td>list</td><td>List all tool definitions</td></tr>
+<tr><td><code>register(definition, override) → None</code></td><td>None</td><td>Register custom tool</td></tr>
+</table>
+<p><strong>Pre-registered tools</strong>: <code>pubmed_search</code>, <code>chembl_query</code>, <code>opentargets_association</code>, <code>omim_lookup</code>, <code>openfae_safety</code></p>
+
+<h2>Factory</h2>
+
+<h3><span class="cls">create_provider</span></h3>
+<div class="method">create_provider(provider_name: str = "mimo", **kwargs) → ModelProvider</div>
+<p>Creates model provider by name: <code>"mimo"</code>, <code>"claude"</code>, <code>"openai"</code>, <code>"ollama"</code></p>
+
+<hr>
+<p><a href="/openclaw-medical-harness/">← Back</a> · <a href="https://github.com/MoKangMedical/openclaw-medical-harness">GitHub</a> · <a href="https://pypi.org/project/openclaw-medical-harness/">PyPI</a></p>
+</body>
+</html>

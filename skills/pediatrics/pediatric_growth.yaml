@@ -1,0 +1,50 @@
+name: pediatric_growth_assessment
+version: "1.0.0"
+description: >
+  Pediatric growth chart analysis using WHO/CDC standards.
+  Growth velocity tracking, failure-to-thrive screening, puberty staging.
+author: MoKangMedical
+license: MIT
+category: pediatrics
+tags: [pediatrics, growth-chart, WHO, CDC, development]
+
+input_schema:
+  type: object
+  required: [age_months, sex]
+  properties:
+    age_months: {type: integer}
+    sex: {type: string, enum: [male, female]}
+    weight_kg: {type: number}
+    height_cm: {type: number}
+    head_circumference_cm: {type: number}
+    birth_weight_kg: {type: number}
+    gestational_age_weeks: {type: integer}
+    previous_measurements: {type: array, items: {type: object}}
+
+output_schema:
+  type: object
+  properties:
+    percentiles:
+      type: object
+      properties:
+        weight: {type: number}
+        height: {type: number}
+        bmi: {type: number}
+        head_circumference: {type: number}
+    growth_velocity: {type: string}
+    growth_pattern: {type: string}
+    concerns: {type: array, items: {type: string}}
+    recommendations: {type: array, items: {type: string}}
+    confidence: {type: number}
+
+harness:
+  type: health_management
+  config:
+    standards: "WHO_under_2_CDC_over_2"
+
+validation:
+  required_output_fields: [percentiles, growth_pattern, confidence]
+
+execution:
+  timeout_seconds: 30
+  model: mimo

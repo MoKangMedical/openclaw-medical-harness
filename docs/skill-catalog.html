@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Skill Catalog — OpenClaw Medical Harness</title>
+<meta name="description" content="14 medical AI skills for diagnosis, drug discovery, health management, and more.">
+<style>
+body{font-family:system-ui,-apple-system,sans-serif;max-width:900px;margin:0 auto;padding:2rem;color:#c9d1d9;background:#0d1117;line-height:1.7}
+h1,h2,h3{color:#fff}a{color:#58a6ff}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;margin:1rem 0}
+.card{background:#161b22;border:1px solid #30363d;border-radius:10px;padding:1.2rem}
+.card h3{margin-bottom:.3rem;font-size:1rem}
+.card .cat{color:#8b949e;font-size:.8rem;margin-bottom:.5rem}
+.card p{font-size:.9rem;margin-bottom:.5rem}
+.tag{display:inline-block;background:#21262d;padding:.1rem .4rem;border-radius:6px;font-size:.75rem;color:#8b949e;margin:.1rem}
+nav{background:#161b22;padding:1rem;border-radius:8px;margin-bottom:2rem}
+nav a{color:#58a6ff;margin-right:1rem;text-decoration:none}
+table{width:100%;border-collapse:collapse;margin:1rem 0}
+th,td{padding:.5rem;text-align:left;border-bottom:1px solid #30363d}
+</style>
+</head>
+<body>
+<nav><a href="/">Home</a><a href="/api/reference.html">API</a><a href="/guides/getting-started.html">Getting Started</a><a href="/skill-catalog.html">Skills</a><a href="/benchmarks/performance.html">Benchmarks</a></nav>
+
+<h1>🧠 Medical Skill Catalog</h1>
+<p>14 specialized medical AI skills, each with validated input/output schemas, MCP tool integration, and safety rules.</p>
+
+<div class="grid">
+
+<div class="card">
+<h3>🩺 Diagnostic Reasoning</h3>
+<div class="cat">Clinical</div>
+<p>Structured differential diagnosis from symptoms using evidence-based protocols.</p>
+<span class="tag">diagnosis</span><span class="tag">differential</span><span class="tag">evidence-based</span>
+</div>
+
+<div class="card">
+<h3>🔬 Rare Disease Diagnosis</h3>
+<div class="cat">Rare Disease</div>
+<p>Phenotypic matching with OMIM/HPO. Genetic test recommendation for undiagnosed patients.</p>
+<span class="tag">rare-disease</span><span class="tag">OMIM</span><span class="tag">HPO</span>
+</div>
+
+<div class="card">
+<h3>💊 Drug Target Validation</h3>
+<div class="cat">Drug Discovery</div>
+<p>Validate targets using OpenTargets genetic evidence, GWAS, expression data.</p>
+<span class="tag">target-validation</span><span class="tag">OpenTargets</span><span class="tag">GWAS</span>
+</div>
+
+<div class="card">
+<h3>🧪 ADMET Prediction</h3>
+<div class="cat">Drug Discovery</div>
+<p>Predict absorption, distribution, metabolism, excretion, toxicity for drug candidates.</p>
+<span class="tag">ADMET</span><span class="tag">RDKit</span><span class="tag">drug-safety</span>
+</div>
+
+<div class="card">
+<h3>🩸 Diabetes Management</h3>
+<div class="cat">Health Management</div>
+<p>HbA1c trends, medication optimization, complication screening, lifestyle coaching.</p>
+<span class="tag">diabetes</span><span class="tag">HbA1c</span><span class="tag">chronic-disease</span>
+</div>
+
+<div class="card">
+<h3>📋 Clinical Trial Matching</h3>
+<div class="cat">Clinical</div>
+<p>Match patients to eligible trials on ClinicalTrials.gov by diagnosis, biomarkers, location.</p>
+<span class="tag">clinical-trials</span><span class="tag">matching</span><span class="tag">recruitment</span>
+</div>
+
+<div class="card">
+<h3>⚠️ Drug Interaction Check</h3>
+<div class="cat">Clinical</div>
+<p>Drug-drug interaction detection, contraindication screening, allergy warnings.</p>
+<span class="tag">interactions</span><span class="tag">safety</span><span class="tag">FDA</span>
+</div>
+
+<div class="card">
+<h3>🧠 Mental Health Screening</h3>
+<div class="cat">Mental Health</div>
+<p>PHQ-9, GAD-7, AUDIT-C screening with risk assessment and crisis detection.</p>
+<span class="tag">mental-health</span><span class="tag">PHQ-9</span><span class="tag">crisis</span>
+</div>
+
+<div class="card">
+<h3>🎗️ Oncology Staging</h3>
+<div class="cat">Oncology</div>
+<p>TNM classification (AJCC 8th), treatment pathways, biomarker-guided therapy.</p>
+<span class="tag">cancer</span><span class="tag">TNM</span><span class="tag">NCCN</span>
+</div>
+
+<div class="card">
+<h3>🚑 Emergency Triage</h3>
+<div class="cat">Emergency</div>
+<p>ESI triage, vital sign interpretation, red flag identification, disposition.</p>
+<span class="tag">emergency</span><span class="tag">ESI</span><span class="tag">triage</span>
+</div>
+
+<div class="card">
+<h3>📷 Imaging Report</h3>
+<div class="cat">Imaging</div>
+<p>CT/MRI/X-ray/Ultrasound report analysis. Critical value detection, structured findings.</p>
+<span class="tag">radiology</span><span class="tag">CT</span><span class="tag">MRI</span>
+</div>
+
+<div class="card">
+<h3>🧬 Variant Interpretation</h3>
+<div class="cat">Genomics</div>
+<p>ACMG pathogenicity classification using ClinVar, gnomAD, OMIM.</p>
+<span class="tag">genomics</span><span class="tag">ACMG</span><span class="tag">ClinVar</span>
+</div>
+
+<div class="card">
+<h3>👶 Pediatric Growth</h3>
+<div class="cat">Pediatrics</div>
+<p>WHO/CDC growth charts, percentiles, velocity tracking, FTT screening.</p>
+<span class="tag">pediatrics</span><span class="tag">growth-chart</span><span class="tag">WHO</span>
+</div>
+
+<div class="card">
+<h3>💉 Pharmacogenomics</h3>
+<div class="cat">Pharmacogenomics</div>
+<p>CYP450 phenotype prediction, dose adjustment, alternative drug recommendations.</p>
+<span class="tag">PGx</span><span class="tag">CYP450</span><span class="tag">PharmGKB</span>
+</div>
+
+</div>
+
+<h2>Skill Architecture</h2>
+<table>
+<tr><th>Skill</th><th>Harness Type</th><th>MCP Tools</th><th>Timeout</th></tr>
+<tr><td>Diagnostic Reasoning</td><td>diagnosis</td><td>PubMed, OMIM, OpenFDA</td><td>120s</td></tr>
+<tr><td>Rare Disease</td><td>diagnosis</td><td>OMIM, HPO, ClinVar, Monarch</td><td>180s</td></tr>
+<tr><td>Target Validation</td><td>drug_discovery</td><td>OpenTargets, GWAS, gnomAD, Reactome</td><td>120s</td></tr>
+<tr><td>ADMET</td><td>drug_discovery</td><td>RDKit, ChEMBL, BindingDB</td><td>60s</td></tr>
+<tr><td>Diabetes</td><td>health_management</td><td>PubMed</td><td>60s</td></tr>
+<tr><td>Clinical Trial</td><td>diagnosis</td><td>ClinicalTrials.gov, PubMed</td><td>120s</td></tr>
+<tr><td>Drug Interaction</td><td>diagnosis</td><td>FDA, DrugBank</td><td>60s</td></tr>
+<tr><td>Mental Health</td><td>diagnosis</td><td>PubMed</td><td>60s</td></tr>
+<tr><td>Oncology</td><td>diagnosis</td><td>PubMed, ClinicalTrials, cBioPortal, DepMap</td><td>120s</td></tr>
+<tr><td>Emergency Triage</td><td>diagnosis</td><td>—</td><td>30s</td></tr>
+<tr><td>Imaging</td><td>diagnosis</td><td>—</td><td>60s</td></tr>
+<tr><td>Variant</td><td>diagnosis</td><td>ClinVar, gnomAD, OMIM</td><td>90s</td></tr>
+<tr><td>Pediatric</td><td>health_management</td><td>—</td><td>30s</td></tr>
+<tr><td>Pharmacogenomics</td><td>diagnosis</td><td>PharmGKB, FDA</td><td>60s</td></tr>
+</table>
+
+<hr>
+<p><a href="https://github.com/MoKangMedical/openclaw-medical-harness/tree/main/skills">GitHub Source</a> · <a href="https://github.com/MoKangMedical/openclaw-medical-harness">Main Repo</a></p>
+</body></html>

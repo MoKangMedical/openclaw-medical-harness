@@ -1,5 +1,10 @@
 # OpenClaw-Medical-Harness
 
+[![CI](https://github.com/MoKangMedical/openclaw-medical-harness/actions/workflows/ci.yml/badge.svg)](https://github.com/MoKangMedical/openclaw-medical-harness/actions/workflows/ci.yml)
+[![PyPI](https://img.shields.io/pypi/v/openclaw-medical-harness)](https://pypi.org/project/openclaw-medical-harness/)
+[![Python](https://img.shields.io/pypi/pyversions/openclaw-medical-harness)](https://pypi.org/project/openclaw-medical-harness/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
 **Open-source medical AI agent orchestration framework built on Harness Theory.**
 
 OpenClaw-Medical-Harness is a Python framework for building reliable medical AI agents. It provides a structured 5-step pipeline (Tool Chain → Context Management → Model Reasoning → Validation → Recovery) that makes any LLM — MIMO, Claude, GPT-4, or local models — perform medical reasoning with safety guarantees.
@@ -160,6 +165,28 @@ The framework provides architecture patterns, not data storage. HIPAA compliance
 
 ---
 
+## Ecosystem — MoKangMedical
+
+OpenClaw-Medical-Harness is part of a larger biomedical AI ecosystem:
+
+| Project | Description | Status |
+|---------|-------------|--------|
+| [**ChroniCare OS**](https://mokangmedical.github.io/chronicdiseasemanagement/) | Hospital chronic disease management (HIS integration, risk stratification) | ✅ Active |
+| [**MediChat-RD**](https://mokangmedical.github.io/medichat-rd/) | Multi-agent medical diagnosis — rare disease edition (CrewAI) | ✅ Active |
+| [**MediPharma**](https://mokangmedical.github.io/medi-pharma/) | AI drug discovery (ChEMBL, OpenTargets, ADMET) | ✅ Active |
+| [**DrugMind**](https://mokangmedical.github.io/drugmind/) | Drug R&D digital twin collaboration platform | ✅ Active |
+| [**云思园**](https://mokangmedical.github.io/cloud-memorial/) | AI memorial platform — digital legacy & grief therapy | ✅ Active |
+| [**数字智者**](https://mokangmedical.github.io/digital-sage/) | Chat with 100+ historical philosophers & scientists | ✅ Active |
+| [**天眼**](https://mokangmedical.github.io/tianyan/) | Multi-agent population simulation for China market forecasting | ✅ Active |
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
+## ⭐ Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=MoKangMedical/openclaw-medical-harness&type=Date)](https://star-history.com/#MoKangMedical/openclaw-medical-harness&Date)
+
 ## License
 
 MIT License — free to use, modify, and distribute.
@@ -170,4 +197,5 @@ MIT License — free to use, modify, and distribute.
 
 - **GitHub**: [MoKangMedical/openclaw-medical-harness](https://github.com/MoKangMedical/openclaw-medical-harness)
 - **PyPI**: [openclaw-medical-harness](https://pypi.org/project/openclaw-medical-harness/)
+- **Ecosystem Hub**: [mokangmedical.github.io/hub](https://mokangmedical.github.io/hub/)
 - **Docs**: [Harness Theory](https://github.com/MoKangMedical/openclaw-medical-harness/blob/main/docs/harness_theory.md)
