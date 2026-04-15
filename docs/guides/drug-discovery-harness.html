@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Drug Discovery Harness Guide — Target Screening to Lead Optimization | OpenClaw</title>
+<meta name="description" content="Complete guide to AI-powered drug discovery: target validation via OpenTargets, compound screening via ChEMBL, ADMET prediction, and lead optimization. Includes real EGFR/NSCLC example.">
+<link rel="canonical" href="https://mokangmedical.github.io/openclaw-medical-harness/guides/drug-discovery-harness.html">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"TechArticle","headline":"Drug Discovery Harness Guide","datePublished":"2026-04-16","proficiencyLevel":"Beginner","programmingLanguage":"Python"}
+</script>
+<style>
+body{font-family:'Inter',system-ui,sans-serif;max-width:800px;margin:0 auto;padding:2rem;color:#1a1a2e;line-height:1.8}
+h1{font-size:2rem}h2{font-size:1.4rem;margin-top:2rem;border-bottom:2px solid #e0e0e0;padding-bottom:.3rem}
+pre{background:#1a1a2e;color:#e8edf5;padding:1.5rem;border-radius:8px;overflow-x:auto;font-size:.85rem}
+code{background:#f5f5f5;padding:.15rem .4rem;border-radius:4px;font-size:.9em}
+table{border-collapse:collapse;width:100%;margin:1rem 0}th,td{border:1px solid #ddd;padding:.5rem;text-align:left}th{background:#f9f9f9}
+.pipeline{background:#f0f7ff;padding:1rem;border-radius:8px;font-family:monospace;text-align:center;margin:1rem 0}
+</style>
+</head>
+<body>
+<h1>Drug Discovery Harness Guide</h1>
+<p>The Drug Discovery Harness provides a structured 4-stage pipeline from target validation to lead optimization, integrated with real biomedical APIs.</p>
+
+<h2>Quick Start</h2>
+<pre>from openclaw_medical_harness import DrugDiscoveryHarness, MIMOProvider
+
+provider = MIMOProvider(api_key="your-key")
+harness = DrugDiscoveryHarness(target_disease="NSCLC", provider=provider)
+
+result = harness.execute({"target": "EGFR", "disease": "NSCLC"})
+
+print(result["target"])        # EGFR
+print(result["candidates"])    # Real compounds with IC50 values
+print(result["admet_profile"]) # Absorption, metabolism, toxicity
+print(result["confidence"])    # 0.70</pre>
+
+<h2>The 4-Stage Pipeline</h2>
+<div class="pipeline">Target Validation → Virtual Screening → ADMET Prediction → Lead Optimization</div>
+
+<h3>Stage 1: Target Validation</h3>
+<p>Validates target-disease association using OpenTargets GraphQL API. Returns association score (0-1), known drugs, and evidence sources.</p>
+
+<h3>Stage 2: Virtual Screening</h3>
+<p>Screens ChEMBL compound database for bioactivity data against the target. Returns compounds with IC50/EC50 values, mechanism of action, and clinical trial status.</p>
+
+<h3>Stage 3: ADMET Prediction</h3>
+<p>Predicts pharmacokinetic properties:</p>
+<table>
+<tr><th>Property</th><th>Description</th><th>Key Metrics</th></tr>
+<tr><td>Absorption</td><td>Oral bioavailability</td><td>logP, solubility, permeability</td></tr>
+<tr><td>Distribution</td><td>Tissue penetration</td><td>Plasma protein binding, Vd</td></tr>
+<tr><td>Metabolism</td><td>Hepatic clearance</td><td>CYP3A4/2D6 substrate/inhibitor</td></tr>
+<tr><td>Excretion</td><td>Elimination</td><td>Renal vs hepatic, half-life</td></tr>
+<tr><td>Toxicity</td><td>Safety profile</td><td>hERG, hepatotoxicity, genotoxicity</td></tr>
+</table>
+
+<h3>Stage 4: Lead Optimization</h3>
+<p>Suggests specific molecular modifications based on ADMET results. Example: "Improve solubility: introduce polar groups. Reduce CYP inhibition: adjust aromatic substitution."</p>
+
+<h2>Result Schema</h2>
+<table>
+<tr><th>Field</th><th>Type</th><th>Description</th></tr>
+<tr><td><code>target</code></td><td>str</td><td>Target name (e.g., EGFR)</td></tr>
+<tr><td><code>candidates</code></td><td>list[dict]</td><td>Compounds with name, source, activity</td></tr>
+<tr><td><code>admet_profile</code></td><td>dict</td><td>ADMET properties</td></tr>
+<tr><td><code>optimization_suggestions</code></td><td>list[str]</td><td>Lead optimization recommendations</td></tr>
+<tr><td><code>confidence</code></td><td>float</td><td>Overall confidence (0-1)</td></tr>
+<tr><td><code>evidence</code></td><td>dict</td><td>Data source (model/fallback)</td></tr>
+</table>
+
+<h2>Integrated APIs</h2>
+<table>
+<tr><th>Tool</th><th>Purpose</th><th>Auth</th></tr>
+<tr><td>ChEMBL</td><td>Compound bioactivity (2.4M compounds)</td><td>No</td></tr>
+<tr><td>OpenTargets</td><td>Target-disease association</td><td>No</td></tr>
+<tr><td>PubMed</td><td>Literature evidence</td><td>No</td></tr>
+<tr><td>OpenFDA</td><td>Drug safety signals</td><td>No</td></tr>
+</table>
+
+<hr>
+<p><a href="/openclaw-medical-harness/">← Back</a> · <a href="https://github.com/MoKangMedical/openclaw-medical-harness">GitHub</a></p>
+</body>
+</html>
