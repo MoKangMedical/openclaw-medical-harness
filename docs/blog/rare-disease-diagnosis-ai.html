@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI for Rare Disease Diagnosis: Differential Diagnosis with Confidence Scoring | OpenClaw</title>
+<meta name="description" content="How structured AI diagnosis pipelines solve rare disease diagnostic odyssey. Covers Myasthenia Gravis, Spinocerebellar Ataxia, and OMIM integration. Includes confidence scoring and safety validation.">
+<link rel="canonical" href="https://mokangmedical.github.io/openclaw-medical-harness/blog/rare-disease-diagnosis-ai.html">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "AI for Rare Disease Diagnosis: Differential Diagnosis with Confidence Scoring",
+  "description": "Structured AI diagnosis pipelines solve rare disease diagnostic odyssey through differential diagnosis, confidence scoring, and safety validation.",
+  "datePublished": "2026-04-16",
+  "author": {"@type": "Organization", "name": "MoKangMedical"},
+  "keywords": ["rare disease diagnosis", "AI diagnosis", "differential diagnosis", "myasthenia gravis", "spinocerebellar ataxia", "OMIM"]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {"@type": "Question", "name": "How many rare diseases exist?", "acceptedAnswer": {"@type": "Answer", "text": "There are approximately 7,000-10,000 known rare diseases affecting 300-400 million people worldwide. 80% have a genetic origin. The average time to diagnosis (diagnostic odyssey) is 5-7 years."}},
+    {"@type": "Question", "name": "Can AI diagnose rare diseases?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. AI systems with structured diagnostic pipelines can perform differential diagnosis for rare diseases by: (1) matching symptoms against knowledge bases like OMIM, (2) using LLMs for clinical reasoning beyond the knowledge base, (3) integrating with PubMed for evidence-based support, (4) providing confidence scores and flagging uncertainty. Our framework diagnosed Myasthenia Gravis (0.85 confidence) and Spinocerebellar Ataxia (0.70 confidence, not in knowledge base)."}},
+    {"@type": "Question", "name": "What is OMIM?", "acceptedAnswer": {"@type": "Answer", "text": "OMIM (Online Mendelian Inheritance in Man) is a comprehensive database of human genes and genetic disorders. It catalogs over 16,000 entries with gene-phenotype relationships, inheritance patterns, and clinical descriptions. API available at api.omim.org."}}
+  ]
+}
+</script>
+<style>
+body{font-family:'Inter',system-ui,sans-serif;max-width:800px;margin:0 auto;padding:2rem;color:#1a1a2e;line-height:1.8}
+h1{font-size:2rem}h2{font-size:1.4rem;margin-top:2rem;border-bottom:2px solid #e0e0e0;padding-bottom:.3rem}
+h3{font-size:1.1rem;margin-top:1.5rem}code{background:#f5f5f5;padding:.15rem .4rem;border-radius:4px;font-size:.9em}
+blockquote{border-left:4px solid #6c5ce7;padding-left:1rem;margin:1rem 0;color:#555}
+table{border-collapse:collapse;width:100%;margin:1rem 0}th,td{border:1px solid #ddd;padding:.5rem;text-align:left}th{background:#f9f9f9}
+.faq{background:#f8f9fa;padding:1.5rem;border-radius:8px;margin:1rem 0}
+.faq h3{color:#1a73e8;margin-top:.5rem}.faq p{margin-top:.3rem}
+.stat{display:inline-block;background:#f0f7ff;padding:.5rem 1rem;border-radius:8px;margin:.3rem;font-weight:bold}
+.case-study{background:#fff8f0;border:1px solid #ffd699;padding:1.5rem;border-radius:8px;margin:1rem 0}
+</style>
+</head>
+<body>
+
+<h1>AI for Rare Disease Diagnosis: Differential Diagnosis with Confidence Scoring</h1>
+<p><em>Published: April 16, 2026 · Reading time: 9 minutes</em></p>
+
+<p>There are approximately <span class="stat">7,000-10,000</span> known rare diseases affecting <span class="stat">300-400 million</span> people worldwide. The average time to diagnosis — the "diagnostic odyssey" — is <span class="stat">5-7 years</span>. AI can compress this to minutes.</p>
+
+<h2>The Diagnostic Odyssey Problem</h2>
+<p>80% of rare diseases have a genetic origin. But most physicians encounter them rarely (by definition), leading to:</p>
+<ul>
+<li>Average of <strong>7.3 physicians</strong> consulted before diagnosis</li>
+<li><strong>30%</strong> of rare disease patients are initially misdiagnosed</li>
+<li><strong>5-7 years</strong> average delay from symptom onset to confirmed diagnosis</li>
+</ul>
+
+<h2>How AI Solves This: The Structured Pipeline</h2>
+<p>A reliable AI diagnosis system isn't just "chatting with a medical LLM." It requires:</p>
+<ol>
+<li><strong>Knowledge base matching</strong>: Cross-reference symptoms against OMIM, Orphanet, internal databases</li>
+<li><strong>LLM reasoning</strong>: Handle cases outside the knowledge base</li>
+<li><strong>Evidence integration</strong>: Pull relevant literature from PubMed</li>
+<li><strong>Confidence scoring</strong>: Quantify certainty, flag when human review is needed</li>
+<li><strong>Safety validation</strong>: Detect absolute claims, require differential lists for high-risk diagnoses</li>
+</ol>
+
+<h2>Case Study 1: Myasthenia Gravis (In Knowledge Base)</h2>
+<div class="case-study">
+<p><strong>Patient</strong>: 35F, bilateral ptosis, fatigable weakness, diplopia</p>
+<p><strong>AI Output</strong>:</p>
+<ul>
+<li>Diagnosis: <strong>Myasthenia Gravis</strong></li>
+<li>Confidence: <strong>0.85</strong></li>
+<li>Differential: Lambert-Eaton syndrome, Botulism, Chronic progressive external ophthalmoplegia (CPEO)</li>
+<li>Next steps: AChR antibody test, Repetitive nerve stimulation, Ice pack test</li>
+</ul>
+<p><strong>Data source</strong>: Model (MIMO v2 Pro)</p>
+</div>
+
+<h2>Case Study 2: Spinocerebellar Ataxia (NOT in Knowledge Base)</h2>
+<div class="case-study">
+<p><strong>Patient</strong>: 45M, progressive gait ataxia, dysarthria, nystagmus, peripheral neuropathy</p>
+<p><strong>AI Output</strong>:</p>
+<ul>
+<li>Diagnosis: <strong>Spinocerebellar Ataxia (SCA)</strong></li>
+<li>Confidence: <strong>0.70</strong></li>
+<li>Differential: Multiple System Atrophy (MSA), Vitamin B12 Deficiency, Paraneoplastic Cerebellar Degeneration</li>
+<li>Next steps: Brain MRI, Nerve conduction studies, Genetic testing for SCAs</li>
+</ul>
+<p><strong>Data source</strong>: Model (MIMO v2 Pro) — <strong>knowledge base had no match</strong></p>
+</div>
+
+<h2>Why Confidence Scoring Matters</h2>
+<p>Confidence scoring is critical for medical AI safety. Our framework enforces:</p>
+<ul>
+<li>Confidence below <strong>0.7</strong> triggers validation warnings</li>
+<li>Confidence below <strong>0.4</strong> triggers graceful degradation</li>
+<li>Confidence below <strong>0.2</strong> triggers human expert escalation</li>
+<li>Any diagnosis containing "cancer", "malignant", "acute" <strong>requires a differential list</strong></li>
+</ul>
+
+<h2>Key APIs for Rare Disease AI</h2>
+<table>
+<tr><th>Resource</th><th>Purpose</th><th>URL</th></tr>
+<tr><td>OMIM</td><td>Mendelian disease-gene-phenotype</td><td>api.omim.org</td></tr>
+<tr><td>Orphanet</td><td>Rare disease database</td><td>orphadata.com</td></tr>
+<tr><td>ClinVar</td><td>Clinical variant interpretations</td><td>ncbi.nlm.nih.gov/clinvar</td></tr>
+<tr><td>GeneReviews</td><td>Expert-authored disease reviews</td><td>ncbi.nlm.nih.gov/books/NBK1116</td></tr>
+<tr><td>PubMed</td><td>Literature evidence</td><td>eutils.ncbi.nlm.nih.gov</td></tr>
+</table>
+
+<h2>FAQ</h2>
+<div class="faq">
+<h3>How many rare diseases exist?</h3>
+<p>There are approximately 7,000-10,000 known rare diseases affecting 300-400 million people worldwide. 80% have a genetic origin. The average diagnostic odyssey is 5-7 years.</p>
+
+<h3>Can AI diagnose rare diseases?</h3>
+<p>Yes. AI with structured pipelines performs differential diagnosis by matching symptoms against knowledge bases (OMIM), using LLMs for clinical reasoning, integrating PubMed evidence, and providing confidence scores. Our framework diagnosed Myasthenia Gravis (0.85 confidence) and Spinocerebellar Ataxia (0.70, not in knowledge base).</p>
+
+<h3>What is OMIM?</h3>
+<p>OMIM (Online Mendelian Inheritance in Man) is a comprehensive database of human genes and genetic disorders. It catalogs over 16,000 entries with gene-phenotype relationships, inheritance patterns, and clinical descriptions. Free API at api.omim.org.</p>
+</div>
+
+<hr>
+<p><a href="https://github.com/MoKangMedical/openclaw-medical-harness">OpenClaw-Medical-Harness</a> — Rare disease diagnosis with OMIM integration and safety validation. MIT License.</p>
+</body>
+</html>
