@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Examples — OpenClaw Medical Harness</title>
+<meta name="description" content="Examples. OpenClaw Medical Harness documentation.">
+<style>
+body{font-family:system-ui,-apple-system,sans-serif;max-width:900px;margin:0 auto;padding:2rem;color:#c9d1d9;background:#0d1117;line-height:1.7}
+h1,h2,h3{color:#fff}a{color:#58a6ff}pre{background:#1c2128;padding:1rem;border-radius:8px;overflow-x:auto}
+code{color:#3fb950;background:#1c2128;padding:.15rem .4rem;border-radius:4px;font-size:.9em}
+pre code{background:none;padding:0}table{width:100%;border-collapse:collapse;margin:1rem 0}
+th,td{padding:.5rem;text-align:left;border-bottom:1px solid #30363d}th{color:#8b949e}
+nav a{text-decoration:none}nav a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+
+<nav style="background:#161b22;padding:1rem;border-radius:8px;margin-bottom:2rem">
+<a href="/" style="color:#58a6ff;margin-right:1rem">Home</a>
+<a href="/api/" style="color:#58a6ff;margin-right:1rem">API Reference</a>
+<a href="/guides/" style="color:#58a6ff;margin-right:1rem">Getting Started</a>
+<a href="/benchmarks/" style="color:#58a6ff;margin-right:1rem">Benchmarks</a>
+<a href="/examples/" style="color:#58a6ff;margin-right:1rem">Examples</a>
+<a href="/blog/" style="color:#58a6ff">Blog</a>
+</nav>
+
+<h1>Examples</h1></p><p>Practical examples for OpenClaw Medical Harness.</p><p><h2>1. Quick Diagnosis</h2></p><p>``<code>python
+from openclaw_medical_harness import DiagnosisHarness</p><p>harness = DiagnosisHarness(specialty="neurology")
+result = harness.execute({
+    "symptoms": ["bilateral ptosis", "fatigable weakness", "diplopia"],
+    "patient": {"age": 35, "sex": "F"}
+})</p><p>print(f"Diagnosis: {result['diagnosis']}")
+print(f"Confidence: {result['confidence']:.0%}")
+print(f"Differential: {', '.join(result['differential'])}")
+print(f"Next steps: {', '.join(result['next_steps'])}")
+</code>`<code></p><p><h2>2. Drug Discovery Pipeline</h2></p><p></code>`<code>python
+from openclaw_medical_harness import DrugDiscoveryHarness</p><p>harness = DrugDiscoveryHarness(target_disease="Myasthenia Gravis")
+result = harness.execute({
+    "target": "AChE",
+    "disease": "Myasthenia Gravis",
+    "constraints": {"max_mw": 500}
+})</p><p>print(f"Target: {result['target']}")
+for c in result['candidates']:
+    print(f"  - {c['name']}: IC50 = {c['ic50']} nM")</p><p>print(f"\nADMET Profile:")
+for k, v in result['admet_profile'].items():
+    print(f"  {k}: {v:.0%}")
+</code>`<code></p><p><h2>3. Health Management</h2></p><p></code>`<code>python
+from openclaw_medical_harness import HealthManagementHarness</p><p>harness = HealthManagementHarness(health_domain="diabetes")
+result = harness.execute({
+    "conditions": ["type 2 diabetes"],
+    "lab_results": {"hba1c": 7.2, "fasting_glucose": 145},
+    "patient": {"age": 55, "weight": 82},
+    "medications": ["metformin 1000mg bid"]
+})</p><p>print(f"Risk: {result['assessment']['risk_level']}")
+print(f"Adherence: {result['adherence_metrics']}")
+print(f"Effectiveness: {result['effectiveness']}")
+</code>`<code></p><p><h2>4. Multi-Agent Consultation</h2></p><p></code>`<code>python
+from openclaw_medical_harness import MedicalOrchestrator</p><p>orch = MedicalOrchestrator(mode="openclaw")
+orch.add_agent("diagnostician", specialty="neurology")
+orch.add_agent("literature_reviewer")
+orch.add_agent("pharmacologist")
+orch.add_agent("ethics_reviewer")</p><p>result = orch.run(
+    task="鉴别诊断：35岁女性，双眼睑下垂3个月，疲劳后加重",
+    context={
+        "symptoms": ["bilateral ptosis", "fatigable weakness", "diplopia"],
+        "medical_history": ["hypothyroidism"],
+        "lab_results": {"AChR_antibody": "pending"}
+    },
+    consensus_rounds=2
+)</p><p>print(f"Consensus: {result['final_diagnosis']} ({result['confidence']:.0%})")
+for opinion in result['agent_opinions']:
+    agent = opinion.get('agent', 'unknown')
+    print(f"  {agent}: {opinion}")
+</code>`<code></p><p><h2>5. Validation & Recovery</h2></p><p></code>`<code>python
+from openclaw_medical_harness import (
+    DiagnosisHarness, ResultValidator, FailureRecovery, RecoveryStrategy
+)</p><p>harness = DiagnosisHarness(specialty="neurology")
+validator = ResultValidator(threshold=0.7)
+recovery = FailureRecovery(strategy=RecoveryStrategy.FALLBACK)</p><p><h1>Execute diagnosis</h1>
+result = harness.execute({
+    "symptoms": ["random_symptom_xyz"],
+    "patient": {"age": 30}
+})</p><p><h1>Validate</h1>
+validation = validator.validate(result)</p><p>if not validation.passed:
+    print(f"Validation failed: {validation.findings}")
+    result = recovery.recover(result, validation)
+    print(f"Recovered with confidence: {result['confidence']:.0%}")
+else:
+    print(f"Diagnosis: {result['diagnosis']}")
+</code>`<code></p><p><h2>6. Custom MCP Tool</h2></p><p></code>`<code>python
+from openclaw_medical_harness import MedicalToolRegistry</p><p>registry = MedicalToolRegistry()</p><p><h1>Use PubMed tool</h1>
+pubmed = registry.get("pubmed")
+papers = pubmed.search("myasthenia gravis treatment guidelines", max_results=5)
+for paper in papers:
+    print(f"  {paper['title']} ({paper['year']})")
+    print(f"    PMID: {paper['pmid']}")</p><p><h1>Use OpenTargets</h1>
+opentargets = registry.get("opentargets")
+evidence = opentargets.get_target_disease_evidence("ENSG00000198523", "EFO_0003767")
+print(f"Evidence count: {len(evidence)}")
+</code>`<code></p><p><h2>7. Demo Server</h2></p><p></code>`<code>python
+<h1>demo_server.py</h1>
+from fastapi import FastAPI
+from openclaw_medical_harness import DiagnosisHarness</p><p>app = FastAPI(title="Medical Harness API")
+harness = DiagnosisHarness(specialty="neurology")</p><p>@app.post("/diagnose")
+def diagnose(symptoms: list[str], age: int, sex: str):
+    return harness.execute({
+        "symptoms": symptoms,
+        "patient": {"age": age, "sex": sex}
+    })
+</code>`<code></p><p></code>`<code>bash
+pip install "openclaw-medical-harness[server]"
+uvicorn demo_server:app --reload
+<h1>→ http://localhost:8000/docs</h1>
+</code>``
+
+<hr>
+<p><a href="https://github.com/MoKangMedical/openclaw-medical-harness">GitHub</a> · <a href="https://pypi.org/project/openclaw-medical-harness/">PyPI</a></p>
+</body></html>

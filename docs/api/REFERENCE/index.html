@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>API Reference — OpenClaw Medical Harness</title>
+<meta name="description" content="API Reference. OpenClaw Medical Harness documentation.">
+<style>
+body{font-family:system-ui,-apple-system,sans-serif;max-width:900px;margin:0 auto;padding:2rem;color:#c9d1d9;background:#0d1117;line-height:1.7}
+h1,h2,h3{color:#fff}a{color:#58a6ff}pre{background:#1c2128;padding:1rem;border-radius:8px;overflow-x:auto}
+code{color:#3fb950;background:#1c2128;padding:.15rem .4rem;border-radius:4px;font-size:.9em}
+pre code{background:none;padding:0}table{width:100%;border-collapse:collapse;margin:1rem 0}
+th,td{padding:.5rem;text-align:left;border-bottom:1px solid #30363d}th{color:#8b949e}
+nav a{text-decoration:none}nav a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+
+<nav style="background:#161b22;padding:1rem;border-radius:8px;margin-bottom:2rem">
+<a href="/" style="color:#58a6ff;margin-right:1rem">Home</a>
+<a href="/api/" style="color:#58a6ff;margin-right:1rem">API Reference</a>
+<a href="/guides/" style="color:#58a6ff;margin-right:1rem">Getting Started</a>
+<a href="/benchmarks/" style="color:#58a6ff;margin-right:1rem">Benchmarks</a>
+<a href="/examples/" style="color:#58a6ff;margin-right:1rem">Examples</a>
+<a href="/blog/" style="color:#58a6ff">Blog</a>
+</nav>
+
+<h1>API Reference</h1></p><p>Complete API documentation for OpenClaw Medical Harness v0.2.0.</p><p><h2>Installation</h2></p><p>``<code>bash
+pip install openclaw-medical-harness          # Core
+pip install "openclaw-medical-harness[server]" # + FastAPI demo server
+pip install "openclaw-medical-harness[crewai]" # + CrewAI integration
+pip install "openclaw-medical-harness[all]"    # Everything
+</code>`<code></p><p>---</p><p><h2>Core Classes</h2></p><p><h3>DiagnosisHarness</h3></p><p>Diagnostic reasoning harness for clinical decision support.</p><p></code>`<code>python
+from openclaw_medical_harness import DiagnosisHarness</p><p>harness = DiagnosisHarness(specialty="neurology")</p><p>result = harness.execute({
+    "symptoms": ["bilateral ptosis", "fatigable weakness"],
+    "patient": {"age": 35, "sex": "F"},
+    "medical_history": ["hypothyroidism"],
+    "lab_results": {"AChR_antibody": "positive"}
+})
+</code>`<code></p><p><strong>Parameters:</strong>
+<table>
+<tr><th>Param</th><th>Type</th><th>Default</th><th>Description</th></tr>
+<tr><td></code>specialty<code></td><td>str</td><td></code>"general"<code></td><td>neurology, cardiology, pulmonology, gastroenterology, general</td></tr>
+<tr><td></code>provider<code></td><td>ModelProvider</td><td>None</td><td>Model provider (auto-selects MIMO)</td></tr>
+<tr><td></code>config<code></td><td>dict</td><td>None</td><td>Override defaults</td></tr>
+</table>
+</code>`<code>python
+{
+    "diagnosis": "Myasthenia Gravis",        # str: Primary diagnosis
+    "confidence": 0.85,                       # float: 0.0-1.0
+    "differential": ["LEMS", "CPEO"],         # list: Alternative diagnoses
+    "next_steps": ["AChR antibody", "RNS"],   # list: Recommended workup
+    "evidence": ["Classic MG pattern"],       # list: Supporting evidence
+    "harness_name": "diagnosis_neurology",    # str
+    "execution_time_ms": 1234,                # int
+    "recovery_applied": False                 # bool
+}
+</code>`<code></p><p><strong>Methods:</strong>
+- </code>execute(input_data)<code> — Run full diagnostic pipeline
+- </code>query_rare_disease_kb(symptoms)<code> — Search rare disease knowledge base
+- </code>request_multidisciplinary_consult(specialties, context)<code> — Request MDT consultation
+- </code>get_status()<code> — Get harness health status</p><p>---</p><p><h3>DrugDiscoveryHarness</h3></p><p>Drug discovery pipeline: target validation → screening → ADMET → optimization.</p><p></code>`<code>python
+from openclaw_medical_harness import DrugDiscoveryHarness</p><p>harness = DrugDiscoveryHarness(target_disease="Myasthenia Gravis")</p><p>result = harness.execute({
+    "target": "AChE",
+    "disease": "Myasthenia Gravis",
+    "constraints": {"max_mw": 500, "min_logp": -1}
+})
+</code>`<code></p><p><strong>Returns:</strong>
+</code>`<code>python
+{
+    "target": "AChE",
+    "candidates": [                           # list: Drug candidates
+        {"name": "Pyridostigmine", "ic50": 0.5, "source": "ChEMBL"},
+    ],
+    "admet_profile": {                        # dict: ADMET scores (0-1)
+        "absorption": 0.85,
+        "distribution": 0.72,
+        "metabolism": 0.68,
+        "excretion": 0.91,
+        "toxicity": 0.15
+    },
+    "optimization_suggestions": ["Improve oral bioavailability"],
+    "confidence": 0.78,
+    "harness_name": "drug_discovery",
+    "execution_time_ms": 2345,
+    "recovery_applied": False
+}
+</code>`<code></p><p><strong>Methods:</strong>
+- </code>execute(input_data)<code> — Run drug discovery pipeline
+- </code>validate_target(target, disease)<code> — Validate a specific target</p><p>---</p><p><h3>HealthManagementHarness</h3></p><p>Health management, adherence tracking, and outcome assessment.</p><p></code>`<code>python
+from openclaw_medical_harness import HealthManagementHarness</p><p>harness = HealthManagementHarness(health_domain="diabetes")</p><p>result = harness.execute({
+    "conditions": ["type 2 diabetes"],
+    "lab_results": {"hba1c": 7.2, "fasting_glucose": 145},
+    "patient": {"age": 55, "weight": 82, "height": 175},
+    "medications": ["metformin 1000mg bid"]
+})
+</code>`<code></p><p><strong>Domains:</strong> </code>diabetes<code>, </code>weight_management<code>, </code>cardiovascular<code>, </code>general<code></p><p><strong>Methods:</strong>
+- </code>execute(input_data)<code> — Run health assessment
+- </code>conduct_follow_up(patient_id, metrics)<code> — Schedule follow-up</p><p>---</p><p><h3>MedicalOrchestrator</h3></p><p>Multi-agent orchestration with consensus.</p><p></code>`<code>python
+from openclaw_medical_harness import MedicalOrchestrator</p><p>orchestrator = MedicalOrchestrator(mode="openclaw")
+orchestrator.add_agent("diagnostician", specialty="neurology")
+orchestrator.add_agent("literature_reviewer")
+orchestrator.add_agent("pharmacologist")
+orchestrator.add_agent("ethics_reviewer")</p><p>result = orchestrator.run(
+    task="鉴别诊断：35岁女性，双眼睑下垂",
+    context={"symptoms": ["ptosis", "fatigable weakness"]},
+    consensus_rounds=2
+)
+</code>`<code></p><p><strong>Modes:</strong> </code>openclaw<code> (native), </code>crewai<code> (via CrewAI)</p><p>---</p><p><h2>MCP Tools</h2></p><p><h3>MedicalToolRegistry</h3></p><p></code>`<code>python
+from openclaw_medical_harness import MedicalToolRegistry</p><p>registry = MedicalToolRegistry()
+tools = registry.list_tools()           # All tools
+pubmed = registry.get("pubmed")         # Specific tool
+drug_tools = registry.list_tools(category="drug")  # By category
+</code>`<code></p><p><strong>Built-in Tools:</strong></p><p>| Tool | Category | Description | Auth Required |
+<table>
+<tr><th></code>pubmed<code></th><th>literature</th><th>PubMed article search & retrieval</th><th>No</th></tr>
+<tr><td></code>chembl<code></td><td>drug</td><td>ChEMBL compound database (2.4M+)</td><td>No</td></tr>
+<tr><td></code>opentargets<code></td><td>drug</td><td>OpenTargets target-disease evidence</td><td>No</td></tr>
+<tr><td></code>omim<code></td><td>genetics</td><td>Online Mendelian Inheritance in Man</td><td>API Key</td></tr>
+<tr><td></code>openfda<code></td><td>drug</td><td>FDA drug safety & adverse events</td><td>No</td></tr>
+</table>
+from openclaw_medical_harness import ResultValidator</p><p>validator = ResultValidator(threshold=0.7, strict_mode=False)
+validation = validator.validate(result, domain="diagnosis")
+</code>`<code></p><p><strong>Validation Rules:</strong></p><p>| Rule | Level | Trigger |
+<table>
+<tr><th>Required fields</th><th>ERROR</th><th>Missing diagnosis/confidence</th></tr>
+<tr><td>Confidence range</td><td>ERROR</td><td>Not in 0.0-1.0</td></tr>
+<tr><td>Absolute terms</td><td>ERROR</td><td>"definitely", "100%", "cure"</td></tr>
+<tr><td>Dangerous patterns</td><td>ERROR</td><td>"no need for testing", "ignore symptoms"</td></tr>
+<tr><td>Confidence mismatch</td><td>WARN</td><td>High confidence + uncertain language</td></tr>
+</table>
+from openclaw_medical_harness import FailureRecovery, RecoveryStrategy</p><p>recovery = FailureRecovery(strategy=RecoveryStrategy.FALLBACK)
+recovered = recovery.recover(failed_result, validation)
+</code>`<code></p><p><strong>Strategies:</strong>
+- </code>ESCALATE<code> — Flag for human review
+- </code>FALLBACK<code> — Return safe default with low confidence
+- </code>RETRY<code> — Re-run with adjusted parameters</p><p>---</p><p><h2>Context Management</h2></p><p><h3>ContextManager</h3></p><p></code>`<code>python
+from openclaw_medical_harness import ContextManager</p><p>cm = ContextManager({"max_tokens": 8000})
+ctx = cm.build(input_data)
+compressed = cm.compress(ctx)    # When exceeding max_tokens
+merged = cm.merge(base, extra)
+</code>`<code></p><p>---</p><p><h2>Configuration</h2></p><p><h3>HarnessConfig</h3></p><p></code>`<code>python
+from openclaw_medical_harness import HarnessConfig, CompressionStrategy</p><p>config = HarnessConfig(
+    name="my_harness",
+    max_context_tokens=8000,
+    validation_threshold=0.7,
+    recovery_strategy="fallback",
+    compression=CompressionStrategy.SUMMARIZE,
+    tool_timeout=30,
+    model_temperature=0.3
+)
+</code>`<code></p><p>---</p><p><h2>Result Types</h2></p><p></code>`<code>python
+from openclaw_medical_harness import HarnessResult, HarnessStatus</p><p>HarnessStatus.SUCCESS    # Pipeline completed
+HarnessStatus.RECOVERED  # Recovery was applied
+HarnessStatus.FAILED     # Irrecoverable failure
+</code>``
+
+<hr>
+<p><a href="https://github.com/MoKangMedical/openclaw-medical-harness">GitHub</a> · <a href="https://pypi.org/project/openclaw-medical-harness/">PyPI</a></p>
+</body></html>

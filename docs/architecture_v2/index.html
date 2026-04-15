@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Architecture — OpenClaw Medical Harness</title>
+<meta name="description" content="Architecture. OpenClaw Medical Harness documentation.">
+<style>
+body{font-family:system-ui,-apple-system,sans-serif;max-width:900px;margin:0 auto;padding:2rem;color:#c9d1d9;background:#0d1117;line-height:1.7}
+h1,h2,h3{color:#fff}a{color:#58a6ff}pre{background:#1c2128;padding:1rem;border-radius:8px;overflow-x:auto}
+code{color:#3fb950;background:#1c2128;padding:.15rem .4rem;border-radius:4px;font-size:.9em}
+pre code{background:none;padding:0}table{width:100%;border-collapse:collapse;margin:1rem 0}
+th,td{padding:.5rem;text-align:left;border-bottom:1px solid #30363d}th{color:#8b949e}
+nav a{text-decoration:none}nav a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+
+<nav style="background:#161b22;padding:1rem;border-radius:8px;margin-bottom:2rem">
+<a href="/" style="color:#58a6ff;margin-right:1rem">Home</a>
+<a href="/api/" style="color:#58a6ff;margin-right:1rem">API Reference</a>
+<a href="/guides/" style="color:#58a6ff;margin-right:1rem">Getting Started</a>
+<a href="/benchmarks/" style="color:#58a6ff;margin-right:1rem">Benchmarks</a>
+<a href="/examples/" style="color:#58a6ff;margin-right:1rem">Examples</a>
+<a href="/blog/" style="color:#58a6ff">Blog</a>
+</nav>
+
+<h1>Architecture</h1></p><p>System design of the OpenClaw Medical Harness.</p><p><h2>Overview</h2></p><p>``<code>
+┌─────────────────────────────────────────────────────────────────────┐
+│                   OpenClaw Medical Harness v0.2.0                  │
+├─────────────────┬───────────────────┬───────────────────────────────┤
+│  Diagnosis      │  Drug Discovery   │  Health Management            │
+│  Harness        │  Harness          │  Harness                      │
+├─────────────────┴───────────────────┴───────────────────────────────┤
+│                   Medical Orchestrator (Multi-Agent)               │
+│              OpenClaw Mode  │  CrewAI Mode                         │
+├────────────────────────────────────────────────────────────────────┤
+│  MCP Tools: PubMed │ ChEMBL │ OpenTargets │ OMIM │ OpenFDA │ RDKit│
+├────────────────────────────────────────────────────────────────────┤
+│  Context Manager → Model Reasoning → Validation → Recovery        │
+├────────────────────────────────────────────────────────────────────┤
+│  Providers: MIMO │ GPT-4 │ Claude │ Ollama                        │
+└────────────────────────────────────────────────────────────────────┘
+</code>`<code></p><p><h2>Component Design</h2></p><p><h3>Harness Layer</h3></p><p>Each harness is a specialized pipeline:</p><p><strong>Diagnosis Harness</strong>
+- Input: symptoms, patient demographics, lab results, medical history
+- Pipeline: symptom analysis → differential generation → workup recommendation
+- Output: diagnosis, confidence, differential, next steps, evidence</p><p><strong>Drug Discovery Harness</strong>
+- Input: target, disease, molecular constraints
+- Pipeline: target validation → compound screening → ADMET → optimization
+- Output: candidates, ADMET profile, optimization suggestions</p><p><strong>Health Management Harness</strong>
+- Input: conditions, lab results, medications, patient goals
+- Pipeline: assessment → plan generation → adherence tracking → effectiveness
+- Output: assessment, plan, adherence metrics, effectiveness trends</p><p><h3>Orchestrator Layer</h3></p><p>The MedicalOrchestrator coordinates multiple agents:</p><p></code>`<code>
+                    ┌──────────────┐
+                    │  Orchestrator │
+                    └──────┬───────┘
+           ┌───────────────┼───────────────┐
+           ▼               ▼               ▼
+    ┌──────────┐    ┌──────────┐    ┌──────────┐
+    │Diagnostician│  │Literature │    │Pharmaco- │
+    │Agent       │    │Reviewer   │    │logist    │
+    └──────────┘    └──────────┘    └──────────┘
+           │               │               │
+           └───────────────┼───────────────┘
+                           ▼
+                    ┌──────────┐
+                    │ Consensus │
+                    │ Round     │
+                    └──────────┘
+</code>`<code></p><p>Agents share context but generate independent opinions. The orchestrator runs consensus rounds where agents can revise their positions based on peer feedback.</p><p><h3>Tool Layer (MCP)</h3></p><p>Tools are accessed through the MedicalToolRegistry:</p><p></code>`<code>
+Registry
+├── pubmed        (Literature search)
+├── chembl        (Compound database)
+├── opentargets   (Target-disease evidence)
+├── omim          (Genetic disease info)
+├── openfda       (Drug safety)
+└── rdkit         (Molecular analysis)
+</code>`<code></p><p>Each tool implements a standard interface:
+- </code>search(query, **kwargs)<code> — Search/query
+- </code>get(id)<code> — Retrieve specific record
+- </code>validate(data)<code> — Validate tool data</p><p><h3>Validation Layer</h3></p><p>Results go through multi-level validation:</p><p>1. <strong>Format</strong> — Required fields, type checking, range validation
+2. <strong>Consistency</strong> — Confidence-description alignment
+3. <strong>Domain</strong> — Specialty-specific rules (e.g., diagnosis needs differential)
+4. <strong>Safety</strong> — Absolute terms, dangerous patterns</p><p><h3>Recovery Layer</h3></p><p>Failed validations trigger recovery strategies:</p><p>- <strong>ESCALATE</strong> — Log for human review, return error
+- <strong>FALLBACK</strong> — Return safe default (low confidence)
+- <strong>RETRY</strong> — Re-run with adjusted parameters (up to 3 times)</p><p><h2>Data Flow</h2></p><p></code>`<code>
+User Input
+    │
+    ▼
+┌──────────────┐
+│ Context Build │ ← Patient history, labs, medications
+└──────┬───────┘
+       │
+       ▼
+┌──────────────┐
+│ Tool Chain   │ ← PubMed, ChEMBL, OpenTargets (parallel)
+└──────┬───────┘
+       │
+       ▼
+┌──────────────┐
+│ Model        │ ← MIMO / GPT-4 / Claude
+│ Reasoning    │
+└──────┬───────┘
+       │
+       ▼
+┌──────────────┐     ┌──────────────┐
+│ Validation   │────▶│ Recovery     │ (if failed)
+└──────┬───────┘     └──────┬───────┘
+       │                    │
+       ▼                    ▼
+┌──────────────────────────────┐
+│ Output                       │
+│ diagnosis, confidence, etc.  │
+└──────────────────────────────┘
+</code>`<code></p><p><h2>Extension Points</h2></p><p><h3>Adding a New Harness</h3></p><p>1. Inherit from </code>BaseHarness<code>
+2. Implement </code>execute(input_data) -> dict<code>
+3. Register in the harness factory</p><p><h3>Adding a New Tool</h3></p><p>1. Implement the tool interface (</code>search<code>, </code>get<code>, </code>validate<code>)
+2. Register in </code>MedicalToolRegistry<code>
+3. Add category and metadata</p><p><h3>Adding a New Provider</h3></p><p>1. Inherit from </code>ModelProvider<code>
+2. Implement </code>generate(prompt, context, tools) -> str`
+3. Register in the provider factory</p><p><h2>Security</h2></p><p>- No PHI storage — all processing is stateless by default
+- Tool calls go through configured providers
+- Validation catches unsafe outputs before delivery
+- Recovery prevents silent failures</p><p><h2>Performance</h2></p><p>See [Benchmarks](benchmarks/PERFORMANCE.md) for detailed performance data.</p><p>Key metrics:
+- Average latency: 4.5s (full harness)
+- Accuracy: 91.8% (vs 72.3% raw model)
+- Consistency: 0.93 (vs 0.68 raw model)
+
+<hr>
+<p><a href="https://github.com/MoKangMedical/openclaw-medical-harness">GitHub</a> · <a href="https://pypi.org/project/openclaw-medical-harness/">PyPI</a></p>
+</body></html>
