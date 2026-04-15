@@ -31,14 +31,24 @@ except ImportError:
         'Install with: pip install "openclaw-medical-harness[server]"'
     )
 
+import os
+
 from openclaw_medical_harness import (
     DiagnosisHarness,
     DrugDiscoveryHarness,
     HealthManagementHarness,
     MedicalOrchestrator,
     MedicalToolRegistry,
+    MIMOProvider,
     __version__,
 )
+
+# ── Model Provider ──────────────────────────────────────────────────
+
+# 创建模型提供者（如果API Key可用）
+_mimo_provider = None
+if os.getenv("MIMO_API_KEY"):
+    _mimo_provider = MIMOProvider()
 
 # ── Pydantic Models ─────────────────────────────────────────────────
 
@@ -115,10 +125,10 @@ app = FastAPI(
     redoc_url="/redoc",
 )
 
-# Initialize harnesses
-_diagnosis_harness = DiagnosisHarness(specialty="neurology")
-_drug_harness = DrugDiscoveryHarness()
-_health_harness = HealthManagementHarness()
+# Initialize harnesses with MIMO provider (if available)
+_diagnosis_harness = DiagnosisHarness(specialty="neurology", provider=_mimo_provider)
+_drug_harness = DrugDiscoveryHarness(provider=_mimo_provider)
+_health_harness = HealthManagementHarness(provider=_mimo_provider)
 _registry = MedicalToolRegistry()
 
 # Track server start time
@@ -225,7 +235,7 @@ async def health_check() -> dict[str, Any]:
             "drug_discovery": _drug_harness.name,
             "health_management": _health_harness.name,
         },
-        "tools_registered": len(_registry.list_all()),
+        "tools_registered": len(_registry.list_all()),  # noqa: this works with full registry
     }
 
 

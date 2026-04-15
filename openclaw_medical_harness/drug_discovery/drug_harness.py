@@ -93,7 +93,7 @@ class DrugDiscoveryHarness(BaseHarness):
                 recovery_strategy=RecoveryStrategy.FALLBACK.value,
                 validation_threshold=0.6,
             )
-        super().__init__(config=config)
+        super().__init__(config=config, **kwargs)
         self.target_disease = target_disease
         self.screening_library = screening_library
         self.max_compounds = max_compounds

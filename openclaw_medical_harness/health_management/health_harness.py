@@ -87,7 +87,7 @@ class HealthManagementHarness(BaseHarness):
                 recovery_strategy=RecoveryStrategy.FALLBACK.value,
                 validation_threshold=0.6,
             )
-        super().__init__(config=config)
+        super().__init__(config=config, **kwargs)
         self.health_domain = health_domain
         self.follow_up_interval_days = follow_up_interval_days
         self._patient_history: dict[str, list[Any]] = {}

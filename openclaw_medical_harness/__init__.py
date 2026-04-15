@@ -13,7 +13,7 @@ Medical AI Agent Orchestration Framework for OpenClaw — Built on Harness Theor
 - HealthManagementHarness: 评估→方案→随访
 """
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 __author__ = "MoKangMedical"
 
 from .base import (
@@ -39,10 +39,19 @@ from .drug_discovery import DrugDiscoveryHarness, DrugDiscoveryResult, CompoundP
 from .health_management import HealthManagementHarness, HealthPlan, HealthAssessment
 
 # Agent orchestration
-from .agents import MedicalOrchestrator
+from .agents import (
+    MultiAgentOrchestrator,
+    MedicalOrchestrator,
+    OrchestrationMode,
+    AgentRole,
+    ConsensusResult,
+)
 
 # MCP tools
-from .mcp_tools import MedicalToolRegistry
+from .mcp_tools import MedicalToolRegistry, MCPToolAdapter, MCPCategory
+
+# Model providers
+from .providers import ModelProvider, MIMOProvider, create_provider
 
 __all__ = [
     # Base
@@ -79,7 +88,17 @@ __all__ = [
     "HealthPlan",
     "HealthAssessment",
     # Agents
+    "MultiAgentOrchestrator",
     "MedicalOrchestrator",
+    "OrchestrationMode",
+    "AgentRole",
+    "ConsensusResult",
     # MCP Tools
     "MedicalToolRegistry",
+    "MCPToolAdapter",
+    "MCPCategory",
+    # Providers
+    "ModelProvider",
+    "MIMOProvider",
+    "create_provider",
 ]
