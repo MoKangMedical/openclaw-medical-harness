@@ -165,6 +165,26 @@ The framework provides architecture patterns, not data storage. HIPAA compliance
 
 ---
 
+## 📐 理论基础
+
+### Harness 理论
+
+在AI领域，Harness（环境设计）比模型本身更重要。优秀的Harness设计（工具链+信息格式+上下文管理+失败恢复+结果验证）能使性能提升64%。
+
+OpenClaw-Medical-Harness 是 Harness 理论的完整实现：5步执行管道（Input → Context Build → Tool Chain → Model Reasoning → Validation → Recovery → Output）将任何 LLM 包装为可靠的医疗推理引擎。框架本身的价值在于 Harness，而非底层模型——换模型不换框架，即可获得医疗级可靠性。
+
+### 红杉论点
+
+> 下一代万亿美元公司是伪装成服务公司的软件公司。从卖工具到卖结果。
+
+OpenClaw-Medical-Harness 的三层 Harness（诊断、药物发现、健康管理）正体现了这一转变：从提供 AI 推理工具，到直接交付经过验证的诊断结论、药物候选和健康方案。
+
+### 理论宪法
+
+本项目遵循理论宪法四卷八章统一框架，将医疗AI评估体系建立在可验证、可复现、可扩展的理论根基之上。详见 [Harness Theory 文档](https://github.com/MoKangMedical/openclaw-medical-harness/blob/main/docs/harness_theory.md)。
+
+---
+
 ## Ecosystem — MoKangMedical
 
 OpenClaw-Medical-Harness is part of a larger biomedical AI ecosystem:
