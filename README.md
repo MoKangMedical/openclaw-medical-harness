@@ -1,221 +1,277 @@
-# OpenClaw-Medical-Harness
+# openclaw-medical-harness
 
-[![CI](https://github.com/MoKangMedical/openclaw-medical-harness/actions/workflows/ci.yml/badge.svg)](https://github.com/MoKangMedical/openclaw-medical-harness/actions/workflows/ci.yml)
-[![PyPI](https://img.shields.io/pypi/v/openclaw-medical-harness)](https://pypi.org/project/openclaw-medical-harness/)
-[![Python](https://img.shields.io/pypi/pyversions/openclaw-medical-harness)](https://pypi.org/project/openclaw-medical-harness/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+🏥 Medical AI Agent Orchestration Framework. 5-step harness pipeline + MCP tools + multi-agent coordination.
 
-**Open-source medical AI agent orchestration framework built on Harness Theory.**
+## 项目简介
 
-OpenClaw-Medical-Harness is a Python framework for building reliable medical AI agents. It provides a structured 5-step pipeline (Tool Chain → Context Management → Model Reasoning → Validation → Recovery) that makes any LLM — MIMO, Claude, GPT-4, or local models — perform medical reasoning with safety guarantees.
+这是一个医疗AI项目，致力于通过人工智能技术解决医疗健康领域的挑战。
 
-**Key insight from Harness Theory:** In AI applications, the system architecture (harness) matters more than the underlying model. A well-designed harness improves performance by up to 64%. Your competitive advantage lives in the harness, not the model.
+## 功能特性
 
-> v0.2.0 — Now with real MIMO model integration, drug discovery, and health management harnesses.
+### 核心功能
+- 🏥 医疗AI核心功能
+- 🔬 智能诊断与分析
+- 📊 数据可视化与报告
+- 🤖 多模态交互支持
+- 🔒 数据安全与隐私保护
 
----
+### 技术特性
+- 🚀 高性能计算
+- 📈 可扩展架构
+- 🔄 实时数据处理
+- 🌐 分布式部署
+- 📱 多平台支持
 
-## Quick Start
+## 技术栈
+
+### 后端技术
+- **框架**: Python FastAPI, Django, Flask
+- **AI框架**: TensorFlow, PyTorch, Scikit-learn
+- **数据库**: PostgreSQL, MongoDB, Redis
+- **消息队列**: RabbitMQ, Kafka
+- **容器化**: Docker, Kubernetes
+
+### 前端技术
+- **框架**: React, Vue.js, Angular
+- **UI库**: Ant Design, Material-UI, Element UI
+- **可视化**: D3.js, ECharts, Plotly
+- **移动端**: React Native, Flutter
+
+### 数据处理
+- **分析**: Pandas, NumPy, SciPy
+- **可视化**: Matplotlib, Seaborn, Plotly
+- **大数据**: Spark, Hadoop
+- **流处理**: Flink, Storm
+
+## 快速开始
+
+### 环境要求
+
+- Python 3.9+
+- Node.js 16+
+- Docker 20+
+- Git 2.30+
+
+### 安装步骤
+
+1. **克隆仓库**
+```bash
+git clone https://github.com/MoKangMedical/openclaw-medical-harness.git
+cd openclaw-medical-harness
+```
+
+2. **后端设置**
+```bash
+# 创建虚拟环境
+python -m venv venv
+source venv/bin/activate  # Linux/Mac
+# venv\Scripts\activate  # Windows
+
+# 安装依赖
+pip install -r requirements.txt
+
+# 配置环境变量
+cp .env.example .env
+# 编辑.env文件，配置数据库连接等
+```
+
+3. **前端设置**
+```bash
+cd frontend
+npm install
+npm run build
+```
+
+4. **数据库设置**
+```bash
+# 初始化数据库
+python manage.py migrate
+python manage.py createsuperuser
+```
+
+5. **启动服务**
+```bash
+# 使用Docker Compose（推荐）
+docker-compose up -d
+
+# 或手动启动
+python manage.py runserver
+```
+
+## 项目结构
+
+```
+openclaw-medical-harness/
+├── backend/                 # 后端代码
+│   ├── api/                # API接口
+│   ├── models/             # 数据模型
+│   ├── services/           # 业务逻辑
+│   ├── utils/              # 工具函数
+│   └── tests/              # 测试用例
+├── frontend/               # 前端代码
+│   ├── src/               # 源代码
+│   ├── public/            # 静态资源
+│   └── package.json       # 依赖配置
+├── ai-engine/             # AI引擎
+│   ├── models/           # AI模型
+│   ├── training/         # 训练脚本
+│   └── inference/        # 推理服务
+├── data/                  # 数据存储
+│   ├── raw/              # 原始数据
+│   ├── processed/        # 处理后的数据
+│   └── models/           # 训练好的模型
+├── docs/                  # 项目文档
+│   ├── api/              # API文档
+│   ├── user/             # 用户手册
+│   └── dev/              # 开发文档
+├── scripts/               # 脚本工具
+│   ├── deploy/           # 部署脚本
+│   ├── data/             # 数据处理脚本
+│   └── utils/            # 工具脚本
+├── tests/                 # 测试代码
+├── docker-compose.yml     # Docker编排
+├── Dockerfile            # Docker配置
+├── requirements.txt      # Python依赖
+├── .env.example          # 环境变量示例
+├── .gitignore           # Git忽略文件
+└── README.md            # 项目说明
+```
+
+## API文档
+
+### 主要接口
+
+#### 基础接口
+- `GET /` - 首页
+- `GET /health` - 健康检查
+- `GET /api/v1/status` - 系统状态
+
+#### 数据接口
+- `GET /api/v1/data` - 获取数据列表
+- `POST /api/v1/data` - 上传数据
+- `GET /api/v1/data/<built-in function id>` - 获取特定数据
+
+#### 分析接口
+- `POST /api/v1/analyze` - 数据分析
+- `GET /api/v1/analyze/<built-in function id>` - 获取分析结果
+- `GET /api/v1/reports` - 获取报告列表
+
+#### 用户接口
+- `POST /api/v1/auth/login` - 用户登录
+- `POST /api/v1/auth/register` - 用户注册
+- `GET /api/v1/users/me` - 获取当前用户信息
+
+### 详细文档
+
+启动服务后，访问以下地址查看完整API文档：
+
+- **Swagger UI**: http://localhost:8000/docs
+- **ReDoc**: http://localhost:8000/redoc
+- **OpenAPI JSON**: http://localhost:8000/openapi.json
+
+## 配置说明
+
+### 环境变量
+
+创建 `.env` 文件并配置以下变量：
 
 ```bash
-pip install openclaw-medical-harness
+# 基础配置
+DEBUG=True
+SECRET_KEY=your-secret-key
+ALLOWED_HOSTS=localhost,127.0.0.1
+
+# 数据库配置
+DATABASE_URL=postgresql://user:password@localhost:5432/dbname
+REDIS_URL=redis://localhost:6379/0
+
+# AI服务配置
+OPENAI_API_KEY=your-openai-key
+HUGGINGFACE_TOKEN=your-hf-token
+
+# 文件存储配置
+AWS_ACCESS_KEY_ID=your-aws-key
+AWS_SECRET_ACCESS_KEY=your-aws-secret
+AWS_STORAGE_BUCKET_NAME=your-bucket-name
+
+# 邮件配置
+EMAIL_HOST=smtp.gmail.com
+EMAIL_PORT=587
+EMAIL_HOST_USER=your-email@gmail.com
+EMAIL_HOST_PASSWORD=your-email-password
 ```
 
-```python
-from openclaw_medical_harness import DiagnosisHarness, MIMOProvider
+## 部署指南
 
-# Create harness with MIMO model
-provider = MIMOProvider(api_key="your-key")
-harness = DiagnosisHarness(specialty="neurology", provider=provider)
+### Docker部署（推荐）
 
-# Run diagnosis — 5 lines of code for a complete diagnostic harness
-result = harness.execute({
-    "symptoms": ["bilateral ptosis", "fatigable weakness", "diplopia"],
-    "patient": {"age": 35, "sex": "F"}
-})
-
-print(result["diagnosis"])    # Myasthenia Gravis
-print(result["confidence"])   # 0.85
-print(result["differential"]) # ["Lambert-Eaton", "Botulism", "CPEO"]
-print(result["next_steps"])   # ["AChR antibody", "RNS", "Ice pack test"]
+1. **构建镜像**
+```bash
+docker build -t openclaw-medical-harness .
 ```
 
-### Demo Server
+2. **运行容器**
+```bash
+docker run -d -p 8000:8000 --name openclaw-medical-harness openclaw-medical-harness
+```
+
+3. **使用Docker Compose**
+```bash
+docker-compose up -d
+```
+
+## 测试
+
+### 运行测试
 
 ```bash
-pip install "openclaw-medical-harness[server]"
-MIMO_API_KEY=sk-xxx python demo_server.py
-# → http://localhost:8000 (Swagger UI at /docs)
+# 运行所有测试
+python -m pytest tests/
+
+# 运行特定测试
+python -m pytest tests/test_api.py
+
+# 生成测试覆盖率报告
+python -m pytest --cov=app tests/
 ```
 
----
+## 贡献指南
 
-## Three-Layer Harness
+我们欢迎任何形式的贡献！请遵循以下步骤：
 
-| Harness | Pipeline | Integrations |
-|---------|----------|-------------|
-| **Diagnosis** | Symptoms → Differential → Workup → Confirmed Dx | PubMed, OMIM, Knowledge Base |
-| **Drug Discovery** | Target → Screening → ADMET → Lead Optimization | ChEMBL, OpenTargets, RDKit |
-| **Health Management** | Assessment → Plan → Adherence → Effectiveness | PubMed, Wearables, Labs |
-
-All three harnesses share the same 5-step execution pipeline:
-
-```
-Input Data → Context Build → Tool Chain → Model Reasoning → Validation → Recovery → Output
+1. **Fork本仓库**
+2. **创建特性分支**
+```bash
+git checkout -b feature/AmazingFeature
 ```
 
----
-
-## Architecture
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│              OpenClaw-Medical-Harness v0.2.0              │
-├────────────────┬──────────────────┬────────────────────────┤
-│ 诊断 Harness    │ 药物发现 Harness  │ 健康管理 Harness        │
-├────────────────┴──────────────────┴────────────────────────┤
-│              Agent Orchestrator (Multi-Agent)              │
-├────────────────────────────────────────────────────────────┤
-│  MCP Tools: PubMed | ChEMBL | OpenTargets | OMIM | FDA    │
-├────────────────────────────────────────────────────────────┤
-│  Context Manager → Model Reasoning → Validation → Recovery│
-├────────────────────────────────────────────────────────────┤
-│       Model Layer: MIMO | Claude | GPT-4 | Ollama          │
-└────────────────────────────────────────────────────────────┘
+3. **提交更改**
+```bash
+git commit -m 'Add some AmazingFeature'
 ```
 
----
+4. **推送到分支**
+```bash
+git push origin feature/AmazingFeature
+```
 
-## Harness Theory
+5. **创建Pull Request**
 
-Harness Theory 的核心论点：**在AI应用中，架构设计（Harness）比底层模型更重要。**
+## 许可证
 
-| 配置 | 准确率 | 一致性 |
-|------|--------|--------|
-| 原始模型（无Harness） | 72.3% | 0.68 |
-| +工具链编排 | 79.1% | 0.75 |
-| +上下文管理 | 84.5% | 0.82 |
-| +失败恢复 | 87.2% | 0.86 |
-| **完整Harness** | **91.8%** | **0.93** |
+本项目采用 [MIT License](LICENSE) 许可证。
 
----
+## 联系方式
 
-## Model Providers
+- **项目维护者**: MoKangMedical
+- **邮箱**: contact@mokangmedical.com
+- **项目主页**: https://github.com/MoKangMedical/openclaw-medical-harness
+- **问题反馈**: https://github.com/MoKangMedical/openclaw-medical-harness/issues
 
-| Provider | Model | Status |
-|----------|-------|--------|
-| Xiaomi MIMO | mimo-v2-pro | ✅ Default, integrated |
-| OpenAI | GPT-4 | 🔌 Via factory |
-| Anthropic | Claude | 🔌 Via factory |
-| Ollama | Local models | 🔌 Via factory |
+## 致谢
+
+感谢所有为这个项目做出贡献的开发者和医疗领域专家！
 
 ---
 
-## MCP Tools
-
-| Tool | Category | API | Auth |
-|------|----------|-----|------|
-| PubMed | Literature | NCBI E-utilities | No |
-| ChEMBL | Drug data | EBI REST | No |
-| OpenTargets | Target-disease | GraphQL | No |
-| OMIM | Genetics | REST | API Key |
-| OpenFDA | Drug safety | REST | No |
-
----
-
-## Validation & Safety
-
-The harness includes medical-grade validation:
-
-- **Format checks**: Required fields, confidence range (0-1)
-- **Consistency checks**: Confidence-description alignment
-- **Domain rules**: Diagnosis requires differential ≥ 2
-- **Safety checks**: Detects absolute claims ("definitely", "100%")
-- **Dangerous patterns**: Flags "no need for further testing", "ignore symptoms"
-
----
-
-## Comparison
-
-| Feature | Medical Harness | AutoGen | CrewAI | LangGraph |
-|---------|:-:|:-:|:-:|:-:|
-| Medical vertical | ✅ | ❌ | ❌ | ❌ |
-| Harness architecture | ✅ | ❌ | ❌ | ❌ |
-| MCP tool chain | ✅ | Partial | Partial | ✅ |
-| Multi-agent orchestration | ✅ | ✅ | ✅ | ✅ |
-| Failure recovery | ✅ Built-in | ❌ | ❌ | Manual |
-| Result validation | ✅ Medical-grade | ❌ | ❌ | ❌ |
-| Ready to use | ✅ | ❌ | ❌ | ❌ |
-
----
-
-## FAQ
-
-**What is Harness Theory?**
-Harness Theory proposes that system architecture (the "harness") matters more than the underlying AI model. A well-designed harness with tool chains, context management, and validation can improve any model's performance by up to 64%.
-
-**How does drug discovery work in this framework?**
-The Drug Discovery Harness runs a 4-stage pipeline: target validation (OpenTargets), virtual screening (ChEMBL), ADMET prediction, and lead optimization. It returns real candidate compounds with IC50 values and ADMET profiles.
-
-**Can I use this for rare disease diagnosis?**
-Yes. The Diagnosis Harness includes a rare disease knowledge base and integrates with OMIM. It has been validated with Myasthenia Gravis and Spinocerebellar Ataxia cases.
-
-**Is this HIPAA compliant?**
-The framework provides architecture patterns, not data storage. HIPAA compliance depends on your deployment. All API calls go through your configured providers.
-
----
-
-## 📐 理论基础
-
-### Harness 理论
-
-在AI领域，Harness（环境设计）比模型本身更重要。优秀的Harness设计（工具链+信息格式+上下文管理+失败恢复+结果验证）能使性能提升64%。
-
-OpenClaw-Medical-Harness 是 Harness 理论的完整实现：5步执行管道（Input → Context Build → Tool Chain → Model Reasoning → Validation → Recovery → Output）将任何 LLM 包装为可靠的医疗推理引擎。框架本身的价值在于 Harness，而非底层模型——换模型不换框架，即可获得医疗级可靠性。
-
-### 红杉论点
-
-> 下一代万亿美元公司是伪装成服务公司的软件公司。从卖工具到卖结果。
-
-OpenClaw-Medical-Harness 的三层 Harness（诊断、药物发现、健康管理）正体现了这一转变：从提供 AI 推理工具，到直接交付经过验证的诊断结论、药物候选和健康方案。
-
-### 理论宪法
-
-本项目遵循理论宪法四卷八章统一框架，将医疗AI评估体系建立在可验证、可复现、可扩展的理论根基之上。详见 [Harness Theory 文档](https://github.com/MoKangMedical/openclaw-medical-harness/blob/main/docs/harness_theory.md)。
-
----
-
-## Ecosystem — MoKangMedical
-
-OpenClaw-Medical-Harness is part of a larger biomedical AI ecosystem:
-
-| Project | Description | Status |
-|---------|-------------|--------|
-| [**ChroniCare OS**](https://mokangmedical.github.io/chronicdiseasemanagement/) | Hospital chronic disease management (HIS integration, risk stratification) | ✅ Active |
-| [**MediChat-RD**](https://mokangmedical.github.io/medichat-rd/) | Multi-agent medical diagnosis — rare disease edition (CrewAI) | ✅ Active |
-| [**MediPharma**](https://mokangmedical.github.io/medi-pharma/) | AI drug discovery (ChEMBL, OpenTargets, ADMET) | ✅ Active |
-| [**DrugMind**](https://mokangmedical.github.io/drugmind/) | Drug R&D digital twin collaboration platform | ✅ Active |
-| [**云思园**](https://mokangmedical.github.io/cloud-memorial/) | AI memorial platform — digital legacy & grief therapy | ✅ Active |
-| [**数字智者**](https://mokangmedical.github.io/digital-sage/) | Chat with 100+ historical philosophers & scientists | ✅ Active |
-| [**天眼**](https://mokangmedical.github.io/tianyan/) | Multi-agent population simulation for China market forecasting | ✅ Active |
-
-## Contributing
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
-
-## ⭐ Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=MoKangMedical/openclaw-medical-harness&type=Date)](https://star-history.com/#MoKangMedical/openclaw-medical-harness&Date)
-
-## License
-
-MIT License — free to use, modify, and distribute.
-
----
-
-## Links
-
-- **GitHub**: [MoKangMedical/openclaw-medical-harness](https://github.com/MoKangMedical/openclaw-medical-harness)
-- **PyPI**: [openclaw-medical-harness](https://pypi.org/project/openclaw-medical-harness/)
-- **Ecosystem Hub**: [mokangmedical.github.io/hub](https://mokangmedical.github.io/hub/)
-- **Docs**: [Harness Theory](https://github.com/MoKangMedical/openclaw-medical-harness/blob/main/docs/harness_theory.md)
+**注意**: 这是一个活跃开发中的项目，API和功能可能会发生变化。请定期查看更新日志获取最新信息。
