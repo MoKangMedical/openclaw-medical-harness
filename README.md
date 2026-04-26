@@ -1,6 +1,6 @@
-# openclaw-medical-harness
+# 🏥 openclaw-medical-harness
 
-🏥 Medical AI Agent Orchestration Framework. 5-step harness pipeline + MCP tools + multi-agent coordination.
+**医疗AI Agent编排框架** — 5步harness流水线 + MCP工具 + 多Agent协作。
 
 ## 项目简介
 
