@@ -1,0 +1,139 @@
+{
+  "version": "1.0.0",
+  "last_updated": "2026-04-26",
+  "description": "OpenClaw Medical Harness — MCP 工具注册表",
+  "tools": [
+    {
+      "name": "pubmed",
+      "display_name": "PubMed 文献检索",
+      "description": "在 PubMed 中检索生物医学文献，获取摘要和引用信息",
+      "category": "literature",
+      "mcp_endpoint": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils",
+      "mcp_method": "esearch.fcgi",
+      "parameters_schema": {
+        "query": {"type": "string", "required": true, "description": "检索关键词"},
+        "max_results": {"type": "integer", "default": 20, "description": "最大返回数"},
+        "sort": {"type": "string", "enum": ["relevance", "date"], "default": "relevance"}
+      },
+      "harness_compatible": ["diagnosis", "drug_discovery", "health_management"],
+      "rate_limit_per_minute": 10,
+      "requires_auth": false
+    },
+    {
+      "name": "chembl",
+      "display_name": "ChEMBL 药物数据",
+      "description": "查询 ChEMBL 获取药物化合物的生物活性、结构和靶点数据",
+      "category": "drug",
+      "mcp_endpoint": "https://www.ebi.ac.uk/chembl/api/data",
+      "mcp_method": "molecule",
+      "parameters_schema": {
+        "target_chembl_id": {"type": "string", "description": "ChEMBL 靶点 ID"},
+        "molecule_chembl_id": {"type": "string", "description": "ChEMBL 分子 ID"},
+        "pref_name": {"type": "string", "description": "药物名称"}
+      },
+      "harness_compatible": ["drug_discovery"],
+      "rate_limit_per_minute": 30,
+      "requires_auth": false
+    },
+    {
+      "name": "opentargets",
+      "display_name": "OpenTargets 靶点-疾病关联",
+      "description": "查询 OpenTargets 获取靶点-疾病关联评分和证据",
+      "category": "target",
+      "mcp_endpoint": "https://api.platform.opentargets.org/api/v4/graphql",
+      "mcp_method": "target",
+      "parameters_schema": {
+        "target_id": {"type": "string", "required": true, "description": "靶点 Ensembl ID"},
+        "disease_id": {"type": "string", "description": "疾病 EFO ID"}
+      },
+      "harness_compatible": ["diagnosis", "drug_discovery"],
+      "rate_limit_per_minute": 30,
+      "requires_auth": false
+    },
+    {
+      "name": "omim",
+      "display_name": "OMIM 遗传病查询",
+      "description": "在 OMIM 中检索孟德尔遗传病的基因-表型关系",
+      "category": "genetics",
+      "mcp_endpoint": "https://api.omim.org/api",
+      "mcp_method": "entry",
+      "parameters_schema": {
+        "mim_number": {"type": "string", "description": "OMIM 编号"},
+        "gene": {"type": "string", "description": "基因名"},
+        "phenotype": {"type": "string", "description": "表型描述"}
+      },
+      "harness_compatible": ["diagnosis"],
+      "rate_limit_per_minute": 10,
+      "requires_auth": true
+    },
+    {
+      "name": "openfda",
+      "display_name": "OpenFDA 药物安全",
+      "description": "查询 OpenFDA 获取药物不良事件报告和安全信号",
+      "category": "safety",
+      "mcp_endpoint": "https://api.fda.gov",
+      "mcp_method": "drug/event.json",
+      "parameters_schema": {
+        "drug_name": {"type": "string", "required": true, "description": "药物名称"},
+        "date_range": {"type": "string", "description": "日期范围"},
+        "serious_only": {"type": "boolean", "default": true, "description": "仅严重事件"}
+      },
+      "harness_compatible": ["drug_discovery", "health_management"],
+      "rate_limit_per_minute": 20,
+      "requires_auth": false
+    },
+    {
+      "name": "rdkit",
+      "display_name": "RDKit 化学信息学",
+      "description": "分子结构分析、性质计算和相似性搜索",
+      "category": "drug",
+      "mcp_endpoint": "https://rdkit.local/api",
+      "mcp_method": "compute",
+      "parameters_schema": {
+        "smiles": {"type": "string", "required": true, "description": "SMILES 分子表示"},
+        "properties": {"type": "array", "default": ["mw", "logp", "tpsa"], "description": "计算性质列表"}
+      },
+      "harness_compatible": ["drug_discovery"],
+      "rate_limit_per_minute": 60,
+      "requires_auth": false
+    },
+    {
+      "name": "clinical_trials_gov",
+      "display_name": "ClinicalTrials.gov 临床试验",
+      "description": "检索 ClinicalTrials.gov 获取临床试验信息和入排标准",
+      "category": "target",
+      "mcp_endpoint": "https://clinicaltrials.gov/api/v2",
+      "mcp_method": "studies",
+      "parameters_schema": {
+        "condition": {"type": "string", "description": "疾病/适应症"},
+        "intervention": {"type": "string", "description": "干预措施"},
+        "status": {"type": "string", "enum": ["recruiting", "active", "completed"], "description": "试验状态"}
+      },
+      "harness_compatible": ["diagnosis", "drug_discovery", "health_management"],
+      "rate_limit_per_minute": 30,
+      "requires_auth": false
+    },
+    {
+      "name": "icd10_api",
+      "display_name": "ICD-10 编码查询",
+      "description": "查询 ICD-10 疾病编码，支持模糊搜索和层级浏览",
+      "category": "genetics",
+      "mcp_endpoint": "https://icd.who.int/api",
+      "mcp_method": "search",
+      "parameters_schema": {
+        "query": {"type": "string", "required": true, "description": "疾病名称或编码"},
+        "flat": {"type": "boolean", "default": false, "description": "是否返回扁平结果"}
+      },
+      "harness_compatible": ["diagnosis", "health_management"],
+      "rate_limit_per_minute": 60,
+      "requires_auth": false
+    }
+  ],
+  "categories": {
+    "literature": "文献检索工具 — 检索和分析生物医学文献",
+    "drug": "药物数据工具 — 化合物信息、生物活性和化学性质",
+    "genetics": "遗传学工具 — 基因、遗传病和编码查询",
+    "safety": "安全性工具 — 药物不良事件和安全信号监测",
+    "target": "靶点工具 — 靶点-疾病关联和临床试验信息"
+  }
+}
