@@ -1,26 +1,16 @@
-# Changelog
+# 📋 更新日志
 
-## [0.2.0] — 2026-04-15
+本项目遵循 [语义化版本](https://semver.org/) 规范。
 
-### Added
-- Three-layer harness architecture: Diagnosis, Drug Discovery, Health Management
-- MIMO model provider integration (mimo-v2-pro)
-- MCP tool chain: PubMed, ChEMBL, OpenTargets, OMIM, OpenFDA, RDKit
-- Multi-agent orchestrator with OpenClaw and CrewAI modes
-- Medical-grade result validation (format, consistency, domain rules, safety checks)
-- Failure recovery: ESCALATE, FALLBACK, RETRY strategies
-- Demo server with Swagger UI
-- 47 comprehensive tests
+## [0.1.0] - 2026-04-26
 
-### Infrastructure
-- PyPI package: `pip install openclaw-medical-harness`
-- GitHub Pages documentation
-- CI/CD pipeline (GitHub Actions)
-- Schema.org structured data
+### 新增
+- 项目初始化
+- 核心功能实现
+- README 文档
+- 项目结构搭建
 
-## [0.1.0] — 2026-04-07
-
-### Added
-- Initial project structure
-- Base harness framework
-- Diagnosis harness prototype
+### 说明
+- 首次发布
+- 基础功能可用
+- 欢迎反馈和贡献
