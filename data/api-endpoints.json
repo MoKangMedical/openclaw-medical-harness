@@ -1,0 +1,96 @@
+{
+  "version": "2.0",
+  "description": "API端点列表",
+  "base_url": "/api/v2",
+  "endpoints": [
+    {
+      "group": "任务管理",
+      "endpoints": [
+        {"method": "POST", "path": "/tasks", "description": "创建新任务", "auth": true, "rate_limit": "20/min"},
+        {"method": "GET", "path": "/tasks", "description": "列出所有任务", "auth": true, "rate_limit": "100/min"},
+        {"method": "GET", "path": "/tasks/{id}", "description": "获取任务详情", "auth": true},
+        {"method": "PUT", "path": "/tasks/{id}", "description": "更新任务", "auth": true},
+        {"method": "DELETE", "path": "/tasks/{id}", "description": "删除任务", "auth": true},
+        {"method": "POST", "path": "/tasks/{id}/cancel", "description": "取消任务", "auth": true},
+        {"method": "GET", "path": "/tasks/{id}/status", "description": "查询任务状态", "auth": true},
+        {"method": "GET", "path": "/tasks/{id}/logs", "description": "获取任务日志", "auth": true}
+      ]
+    },
+    {
+      "group": "系统综述",
+      "endpoints": [
+        {"method": "POST", "path": "/reviews", "description": "创建系统综述任务", "auth": true},
+        {"method": "GET", "path": "/reviews/{id}", "description": "获取综述详情", "auth": true},
+        {"method": "GET", "path": "/reviews/{id}/studies", "description": "获取纳入研究列表", "auth": true},
+        {"method": "GET", "path": "/reviews/{id}/prisma", "description": "获取PRISMA流程图", "auth": true},
+        {"method": "GET", "path": "/reviews/{id}/rob", "description": "获取偏倚风险评估", "auth": true},
+        {"method": "GET", "path": "/reviews/{id}/meta", "description": "获取Meta分析结果", "auth": true},
+        {"method": "GET", "path": "/reviews/{id}/forest-plot", "description": "获取森林图", "auth": true},
+        {"method": "GET", "path": "/reviews/{id}/funnel-plot", "description": "获取漏斗图", "auth": true},
+        {"method": "GET", "path": "/reviews/{id}/report", "description": "下载完整报告", "auth": true}
+      ]
+    },
+    {
+      "group": "药物发现",
+      "endpoints": [
+        {"method": "POST", "path": "/screening", "description": "创建虚拟筛选任务", "auth": true},
+        {"method": "GET", "path": "/screening/{id}", "description": "获取筛选结果", "auth": true},
+        {"method": "GET", "path": "/screening/{id}/hits", "description": "获取命中化合物", "auth": true},
+        {"method": "GET", "path": "/screening/{id}/admet", "description": "获取ADMET预测", "auth": true},
+        {"method": "POST", "path": "/docking", "description": "创建分子对接任务", "auth": true},
+        {"method": "GET", "path": "/docking/{id}/results", "description": "获取对接结果", "auth": true}
+      ]
+    },
+    {
+      "group": "证据检索",
+      "endpoints": [
+        {"method": "POST", "path": "/search", "description": "执行文献检索", "auth": true},
+        {"method": "GET", "path": "/search/{id}/results", "description": "获取检索结果", "auth": true},
+        {"method": "POST", "path": "/search/{id}/filter", "description": "筛选文献", "auth": true},
+        {"method": "GET", "path": "/evidence/{id}", "description": "获取证据详情", "auth": true}
+      ]
+    },
+    {
+      "group": "Agent管理",
+      "endpoints": [
+        {"method": "GET", "path": "/agents", "description": "列出所有Agent", "auth": true},
+        {"method": "GET", "path": "/agents/{id}", "description": "获取Agent详情", "auth": true},
+        {"method": "GET", "path": "/agents/{id}/capabilities", "description": "获取Agent能力", "auth": true},
+        {"method": "GET", "path": "/agents/{id}/status", "description": "获取Agent状态", "auth": true},
+        {"method": "POST", "path": "/agents/{id}/restart", "description": "重启Agent", "auth": true, "role": "admin"}
+      ]
+    },
+    {
+      "group": "系统管理",
+      "endpoints": [
+        {"method": "GET", "path": "/health", "description": "健康检查", "auth": false},
+        {"method": "GET", "path": "/version", "description": "获取版本信息", "auth": false},
+        {"method": "GET", "path": "/metrics", "description": "获取系统指标", "auth": true, "role": "admin"},
+        {"method": "GET", "path": "/config", "description": "获取系统配置", "auth": true, "role": "admin"},
+        {"method": "PUT", "path": "/config", "description": "更新系统配置", "auth": true, "role": "admin"},
+        {"method": "GET", "path": "/audit-logs", "description": "获取审计日志", "auth": true, "role": "admin"}
+      ]
+    },
+    {
+      "group": "用户管理",
+      "endpoints": [
+        {"method": "POST", "path": "/auth/login", "description": "用户登录", "auth": false},
+        {"method": "POST", "path": "/auth/logout", "description": "用户登出", "auth": true},
+        {"method": "GET", "path": "/users/me", "description": "获取当前用户信息", "auth": true},
+        {"method": "PUT", "path": "/users/me", "description": "更新用户信息", "auth": true},
+        {"method": "GET", "path": "/users", "description": "列出所有用户", "auth": true, "role": "admin"},
+        {"method": "POST", "path": "/users", "description": "创建用户", "auth": true, "role": "admin"}
+      ]
+    }
+  ],
+  "common_responses": {
+    "200": {"description": "成功"},
+    "201": {"description": "创建成功"},
+    "400": {"description": "请求参数错误"},
+    "401": {"description": "未认证"},
+    "403": {"description": "无权限"},
+    "404": {"description": "资源不存在"},
+    "429": {"description": "请求过于频繁"},
+    "500": {"description": "服务器内部错误"}
+  }
+}

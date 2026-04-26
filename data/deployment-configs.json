@@ -1,0 +1,127 @@
+{
+  "version": "1.0.0",
+  "description": "部署配置",
+  "environments": [
+    {
+      "id": "development",
+      "name": "开发环境",
+      "description": "本地开发和测试",
+      "infrastructure": {
+        "type": "docker-compose",
+        "replicas": 1,
+        "resources": {
+          "cpu": "2",
+          "memory": "4Gi",
+          "storage": "20Gi"
+        }
+      },
+      "features": {
+        "debug_mode": true,
+        "hot_reload": true,
+        "mock_external_apis": true
+      }
+    },
+    {
+      "id": "staging",
+      "name": "预发布环境",
+      "description": "集成测试和UAT",
+      "infrastructure": {
+        "type": "kubernetes",
+        "replicas": 2,
+        "resources": {
+          "cpu": "4",
+          "memory": "8Gi",
+          "storage": "50Gi"
+        }
+      },
+      "features": {
+        "debug_mode": false,
+        "mock_external_apis": false,
+        "rate_limiting": true
+      }
+    },
+    {
+      "id": "production",
+      "name": "生产环境",
+      "description": "生产部署",
+      "infrastructure": {
+        "type": "kubernetes",
+        "replicas": 3,
+        "resources": {
+          "cpu": "8",
+          "memory": "16Gi",
+          "storage": "100Gi"
+        },
+        "auto_scaling": {
+          "enabled": true,
+          "min_replicas": 3,
+          "max_replicas": 10,
+          "cpu_threshold": 70
+        }
+      },
+      "features": {
+        "debug_mode": false,
+        "mock_external_apis": false,
+        "rate_limiting": true,
+        "cdn": true,
+        "ssl_termination": true
+      }
+    }
+  ],
+  "services": [
+    {
+      "id": "api-server",
+      "name": "API服务器",
+      "image": "medical-harness/api:latest",
+      "port": 8000,
+      "health_check": "/health",
+      "dependencies": ["database", "redis", "vector-store"]
+    },
+    {
+      "id": "worker",
+      "name": "任务Worker",
+      "image": "medical-harness/worker:latest",
+      "replicas": 2,
+      "dependencies": ["database", "redis", "message-queue"]
+    },
+    {
+      "id": "scheduler",
+      "name": "调度器",
+      "image": "medical-harness/scheduler:latest",
+      "replicas": 1,
+      "dependencies": ["database", "redis"]
+    },
+    {
+      "id": "monitor",
+      "name": "监控服务",
+      "image": "medical-harness/monitor:latest",
+      "port": 9090,
+      "dependencies": ["prometheus", "grafana"]
+    }
+  ],
+  "database": {
+    "type": "postgresql",
+    "version": "16",
+    "replicas": 2,
+    "backup": {
+      "enabled": true,
+      "schedule": "0 2 * * *",
+      "retention_days": 30
+    }
+  },
+  "ci_cd": {
+    "platform": "github_actions",
+    "stages": ["lint", "test", "build", "deploy"],
+    "triggers": {
+      "on_push_main": "deploy_staging",
+      "on_tag": "deploy_production",
+      "on_pull_request": "test_only"
+    }
+  },
+  "monitoring": {
+    "prometheus": {"enabled": true, "retention_days": 90},
+    "grafana": {"enabled": true, "dashboards": true},
+    "logging": {"driver": "json", "max_size": "100m", "max_file": 5},
+    "alerting": {"pagerduty": false, "email": true, "webhook": true}
+  }
+}

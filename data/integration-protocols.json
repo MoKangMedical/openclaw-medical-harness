@@ -1,0 +1,117 @@
+{
+  "version": "1.0.0",
+  "description": "系统集成协议定义",
+  "protocols": [
+    {
+      "id": "mcp-protocol",
+      "name": "Model Context Protocol",
+      "description": "MCP工具集成协议",
+      "version": "1.0",
+      "transport": "stdio",
+      "capabilities": [
+        {"name": "tool_calling", "enabled": true},
+        {"name": "resource_access", "enabled": true},
+        {"name": "prompt_management", "enabled": true}
+      ],
+      "tools": [
+        {"name": "pubmed_search", "category": "evidence_collection"},
+        {"name": "molecular_docking", "category": "drug_discovery"},
+        {"name": "statistical_analysis", "category": "meta_analysis"},
+        {"name": "document_generation", "category": "reporting"}
+      ]
+    },
+    {
+      "id": "rest-api",
+      "name": "REST API协议",
+      "description": "HTTP RESTful API集成",
+      "version": "2.0",
+      "base_url": "/api/v2",
+      "auth": {
+        "type": "bearer_token",
+        "header": "Authorization",
+        "token_prefix": "Bearer"
+      },
+      "endpoints": [
+        {"method": "POST", "path": "/tasks", "description": "创建任务"},
+        {"method": "GET", "path": "/tasks/{id}", "description": "查询任务状态"},
+        {"method": "POST", "path": "/tasks/{id}/cancel", "description": "取消任务"},
+        {"method": "GET", "path": "/results/{id}", "description": "获取结果"}
+      ]
+    },
+    {
+      "id": "websocket",
+      "name": "WebSocket协议",
+      "description": "实时通信集成",
+      "version": "1.0",
+      "url": "/ws",
+      "events": [
+        {"name": "task_started", "description": "任务开始"},
+        {"name": "task_progress", "description": "任务进度更新"},
+        {"name": "task_completed", "description": "任务完成"},
+        {"name": "task_failed", "description": "任务失败"},
+        {"name": "agent_message", "description": "Agent间消息"}
+      ]
+    },
+    {
+      "id": "message-queue",
+      "name": "消息队列协议",
+      "description": "异步任务队列集成",
+      "broker": "redis",
+      "queues": [
+        {"name": "evidence_tasks", "priority": "high", "max_concurrent": 5},
+        {"name": "analysis_tasks", "priority": "high", "max_concurrent": 3},
+        {"name": "report_tasks", "priority": "medium", "max_concurrent": 5},
+        {"name": "notification_tasks", "priority": "low", "max_concurrent": 10}
+      ],
+      "retry_policy": {
+        "max_retries": 3,
+        "retry_delay": 60,
+        "dead_letter_queue": "failed_tasks"
+      }
+    },
+    {
+      "id": "database-protocol",
+      "name": "数据库访问协议",
+      "description": "数据存储和检索协议",
+      "databases": [
+        {
+          "name": "evidence_store",
+          "type": "postgresql",
+          "purpose": "存储证据数据",
+          "collections": ["studies", "extraction_data", "quality_assessments"]
+        },
+        {
+          "name": "cache",
+          "type": "redis",
+          "purpose": "缓存频繁访问数据",
+          "ttl_default": 3600
+        },
+        {
+          "name": "vector_store",
+          "type": "chromadb",
+          "purpose": "语义检索",
+          "collections": ["evidence_embeddings", "query_embeddings"]
+        }
+      ]
+    },
+    {
+      "id": "file-protocol",
+      "name": "文件交换协议",
+      "description": "文件系统集成协议",
+      "storage": {
+        "local": {"path": "/data/files", "max_size_mb": 500},
+        "s3": {"bucket": "medical-harness", "region": "auto"}
+      },
+      "formats": {
+        "input": ["pdf", "docx", "xlsx", "csv", "json", "ris", "nbib"],
+        "output": ["pdf", "docx", "xlsx", "json", "html", "svg", "png"]
+      }
+    }
+  ],
+  "data_exchange": {
+    "format": "json",
+    "schema_version": "1.0",
+    "encoding": "UTF-8",
+    "compression": "gzip"
+  }
+}

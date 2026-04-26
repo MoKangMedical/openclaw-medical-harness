@@ -1,0 +1,122 @@
+{
+  "version": "1.0.0",
+  "description": "安全策略配置",
+  "authentication": {
+    "methods": [
+      {
+        "id": "api_key",
+        "name": "API密钥认证",
+        "enabled": true,
+        "key_length": 64,
+        "key_expiry_days": 90,
+        "rotation_policy": "自动轮换"
+      },
+      {
+        "id": "oauth2",
+        "name": "OAuth 2.0",
+        "enabled": true,
+        "flows": ["authorization_code", "client_credentials"],
+        "token_expiry_seconds": 3600,
+        "refresh_token_expiry_days": 30
+      },
+      {
+        "id": "jwt",
+        "name": "JWT令牌",
+        "enabled": true,
+        "algorithm": "RS256",
+        "expiry_seconds": 1800
+      }
+    ]
+  },
+  "authorization": {
+    "model": "RBAC",
+    "roles": [
+      {
+        "id": "admin",
+        "name": "管理员",
+        "permissions": ["read", "write", "delete", "manage_users", "configure"]
+      },
+      {
+        "id": "researcher",
+        "name": "研究人员",
+        "permissions": ["read", "write", "run_analysis"]
+      },
+      {
+        "id": "viewer",
+        "name": "查看者",
+        "permissions": ["read"]
+      },
+      {
+        "id": "agent",
+        "name": "AI Agent",
+        "permissions": ["read", "write", "execute_pipeline"]
+      }
+    ]
+  },
+  "data_protection": {
+    "encryption": {
+      "at_rest": {
+        "enabled": true,
+        "algorithm": "AES-256-GCM",
+        "key_management": "envelope_encryption"
+      },
+      "in_transit": {
+        "enabled": true,
+        "protocol": "TLS 1.3",
+        "min_version": "TLS 1.2"
+      }
+    },
+    "pii_handling": {
+      "detection_enabled": true,
+      "masking_strategy": "partial_mask",
+      "fields": ["patient_id", "name", "birth_date", "address", "phone"],
+      "retention_days": 365
+    },
+    "data_classification": [
+      {"level": "public", "description": "公开数据", "handling": "无需特殊保护"},
+      {"level": "internal", "description": "内部数据", "handling": "访问控制"},
+      {"level": "confidential", "description": "机密数据", "handling": "加密+访问控制+审计"},
+      {"level": "restricted", "description": "限制数据", "handling": "最强保护措施"}
+    ]
+  },
+  "audit": {
+    "enabled": true,
+    "log_events": [
+      "user_login",
+      "user_logout",
+      "api_access",
+      "data_read",
+      "data_write",
+      "data_delete",
+      "pipeline_start",
+      "pipeline_complete",
+      "config_change",
+      "error"
+    ],
+    "retention_days": 365,
+    "log_format": "json",
+    "destination": ["local_file", "siem"]
+  },
+  "rate_limiting": {
+    "enabled": true,
+    "rules": [
+      {"endpoint": "/api/*", "limit": 100, "window_seconds": 60},
+      {"endpoint": "/api/tasks", "limit": 20, "window_seconds": 60},
+      {"endpoint": "/api/analysis/*", "limit": 10, "window_seconds": 60}
+    ],
+    "response": {
+      "status_code": 429,
+      "retry_after_header": true
+    }
+  },
+  "ip_whitelist": {
+    "enabled": false,
+    "allowed_ranges": []
+  },
+  "content_security": {
+    "input_validation": true,
+    "output_sanitization": true,
+    "max_request_size_mb": 50,
+    "allowed_content_types": ["application/json", "multipart/form-data"]
+  }
+}
