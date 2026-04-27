@@ -1,0 +1,185 @@
+{
+  "version": "1.0.0",
+  "last_updated": "2026-04-26",
+  "description": "OpenClaw Medical Harness — Agent 类型定义",
+  "agent_types": [
+    {
+      "role": "diagnostic",
+      "display_name": "诊断推理 Agent",
+      "description": "负责临床推理和鉴别诊断，系统性地考虑常见病和罕见病",
+      "backstory": "你是一位经验丰富的临床诊断专家，擅长鉴别诊断。你系统性地分析病例，优先考虑常见病，当证据充分时考虑罕见病。",
+      "specialties": ["general", "neurology", "cardiology", "oncology", "pulmonology", "gastroenterology"],
+      "default_tools": ["pubmed", "omim", "icd10_api"],
+      "default_temperature": 0.2,
+      "capabilities": [
+        "症状-疾病关联分析",
+        "鉴别诊断排序",
+        "检查结果解读",
+        "诊断假设生成与验证",
+        "罕见病识别"
+      ],
+      "input_schema": {
+        "symptoms": {"type": "array", "description": "症状列表"},
+        "medical_history": {"type": "array", "description": "既往病史"},
+        "lab_results": {"type": "object", "description": "实验室检查结果"},
+        "imaging_results": {"type": "object", "description": "影像学结果"}
+      },
+      "output_schema": {
+        "differentials": {"type": "array", "description": "鉴别诊断列表（按可能性排序）"},
+        "confidence": {"type": "number", "description": "置信度 (0-1)"},
+        "recommended_tests": {"type": "array", "description": "建议进一步检查"},
+        "evidence": {"type": "array", "description": "支持证据"}
+      }
+    },
+    {
+      "role": "literature",
+      "display_name": "文献综述 Agent",
+      "description": "专注于证据检索与综合，从同行评审文献中寻找、评估和总结临床证据",
+      "backstory": "你是一位医学研究图书管理员，专长于证据综合。你擅长从同行评审文献中寻找、评估和总结临床证据。",
+      "specialties": ["systematic_review", "meta_analysis", "case_reports"],
+      "default_tools": ["pubmed", "clinical_trials_gov"],
+      "default_temperature": 0.1,
+      "capabilities": [
+        "文献检索策略制定",
+        "证据质量评估",
+        "系统综述摘要",
+        "引用网络分析",
+        "临床指南比对"
+      ],
+      "input_schema": {
+        "research_question": {"type": "string", "description": "研究问题 (PICO 格式)"},
+        "keywords": {"type": "array", "description": "检索关键词"},
+        "date_range": {"type": "string", "description": "发表日期范围"},
+        "study_types": {"type": "array", "description": "研究类型筛选"}
+      },
+      "output_schema": {
+        "evidence_summary": {"type": "string", "description": "证据摘要"},
+        "studies_found": {"type": "integer", "description": "检索到的文献数"},
+        "quality_rating": {"type": "string", "description": "证据质量评级"},
+        "citations": {"type": "array", "description": "引用列表"}
+      }
+    },
+    {
+      "role": "drug",
+      "display_name": "药物学 Agent",
+      "description": "专注于药理学、药物相互作用、剂量调整和不良反应",
+      "backstory": "你是一位临床药理学家，对药物机制、相互作用、剂量和不良反应有深入了解。你优先考虑患者安全。",
+      "specialties": ["pharmacokinetics", "pharmacodynamics", "drug_interactions", "oncology_pharmacology"],
+      "default_tools": ["chembl", "openfda", "rdkit"],
+      "default_temperature": 0.2,
+      "capabilities": [
+        "药物相互作用检查",
+        "剂量计算与调整",
+        "不良反应预测",
+        "药物代谢通路分析",
+        "替代药物推荐"
+      ],
+      "input_schema": {
+        "current_medications": {"type": "array", "description": "当前用药列表"},
+        "proposed_medication": {"type": "string", "description": "拟用药物"},
+        "patient_factors": {"type": "object", "description": "患者因素（年龄、体重、肝肾功能）"},
+        "allergies": {"type": "array", "description": "药物过敏史"}
+      },
+      "output_schema": {
+        "interactions": {"type": "array", "description": "药物相互作用"},
+        "dosing_recommendation": {"type": "string", "description": "剂量建议"},
+        "contraindications": {"type": "array", "description": "禁忌症"},
+        "alternatives": {"type": "array", "description": "替代药物"},
+        "safety_score": {"type": "number", "description": "安全性评分 (0-1)"}
+      }
+    },
+    {
+      "role": "communication",
+      "display_name": "患者沟通 Agent",
+      "description": "将复杂的医学信息转化为患者可理解的语言，提供共情和可操作的建议",
+      "backstory": "你是一位患者沟通专家，擅长将复杂的医学信息转化为清晰、共情且可操作的语言，帮助患者理解和应对。",
+      "specialties": ["patient_education", "health_literacy", "shared_decision_making"],
+      "default_tools": [],
+      "default_temperature": 0.5,
+      "capabilities": [
+        "医学术语通俗化",
+        "病情解释与安抚",
+        "治疗方案沟通",
+        "生活方式建议",
+        "心理支持引导"
+      ],
+      "input_schema": {
+        "medical_facts": {"type": "object", "description": "需要传达的医学信息"},
+        "patient_profile": {"type": "object", "description": "患者画像（年龄、教育水平等）"},
+        "communication_goal": {"type": "string", "description": "沟通目标"}
+      },
+      "output_schema": {
+        "explanation": {"type": "string", "description": "通俗易懂的解释"},
+        "key_points": {"type": "array", "description": "关键要点"},
+        "next_steps": {"type": "array", "description": "下一步行动建议"},
+        "reassurance": {"type": "string", "description": "安抚性话语"}
+      }
+    },
+    {
+      "role": "imaging",
+      "display_name": "影像分析 Agent",
+      "description": "分析医学影像，提供影像学报告和诊断建议",
+      "backstory": "你是一位放射科专家，擅长解读各种医学影像，包括 X 光、CT、MRI 和超声。你注重细节，善于发现细微异常。",
+      "specialties": ["radiology", "pathology", "dermatology"],
+      "default_tools": ["pubmed"],
+      "default_temperature": 0.15,
+      "capabilities": [
+        "影像所见描述",
+        "异常发现识别",
+        "影像诊断建议",
+        "随访建议",
+        "影像质量评估"
+      ],
+      "input_schema": {
+        "modality": {"type": "string", "description": "影像类型（X光/CT/MRI/超声）"},
+        "body_region": {"type": "string", "description": "检查部位"},
+        "clinical_question": {"type": "string", "description": "临床问题"},
+        "image_data": {"type": "string", "description": "影像数据（base64 或路径）"}
+      },
+      "output_schema": {
+        "findings": {"type": "array", "description": "影像所见"},
+        "impression": {"type": "string", "description": "影像诊断印象"},
+        "recommendation": {"type": "string", "description": "建议"},
+        "urgency": {"type": "string", "enum": ["routine", "urgent", "critical"], "description": "紧急程度"}
+      }
+    },
+    {
+      "role": "triage",
+      "display_name": "分诊 Agent",
+      "description": "评估患者紧急程度，进行分诊分级，确保危重患者优先处理",
+      "backstory": "你是一位急诊分诊护士，擅长快速评估患者紧急程度。你使用标准化分诊工具，确保危重患者得到及时救治。",
+      "specialties": ["emergency", "urgent_care"],
+      "default_tools": ["icd10_api"],
+      "default_temperature": 0.1,
+      "capabilities": [
+        "紧急程度评估",
+        "分诊分级（1-5级）",
+        "生命体征解读",
+        "急性症状识别",
+        "绿色通道启动建议"
+      ],
+      "input_schema": {
+        "chief_complaint": {"type": "string", "description": "主诉"},
+        "vital_signs": {"type": "object", "description": "生命体征"},
+        "symptoms": {"type": "array", "description": "症状列表"},
+        "onset_time": {"type": "string", "description": "发病时间"}
+      },
+      "output_schema": {
+        "triage_level": {"type": "integer", "description": "分诊级别 (1-5)"},
+        "acuity": {"type": "string", "enum": ["resuscitation", "emergent", "urgent", "semi-urgent", "non-urgent"]},
+        "time_to_provider": {"type": "string", "description": "建议等待时间"},
+        "immediate_actions": {"type": "array", "description": "立即处理措施"}
+      }
+    }
+  ],
+  "orchestration_modes": {
+    "openclaw": {
+      "description": "使用 OpenClaw 原生 Skill 系统进行 Agent 路由",
+      "features": ["skill_based_routing", "tool_integration", "session_management"]
+    },
+    "crewai": {
+      "description": "兼容 CrewAI Agent/Crew/Task API",
+      "features": ["crew_definition", "task_delegation", "sequential_execution"]
+    }
+  }
+}

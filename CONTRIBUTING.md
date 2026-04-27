@@ -1,153 +1,57 @@
-# Contributing to OpenClaw-Medical-Harness
+# 🤝 贡献指南
 
-Thank you for your interest in contributing! This guide will help you get started.
+感谢你对本项目的关注！我们欢迎所有形式的贡献。
 
-## Development Setup
+## 如何贡献
 
-```bash
-# Clone the repository
-git clone https://github.com/MoKangMedical/openclaw-medical-harness.git
-cd openclaw-medical-harness
+### 报告 Bug
+使用 [Bug Report](https://github.com/MoKangMedical/openclaw-medical-harness/issues/new?template=bug_report.md) 模板提交问题。
 
-# Create a virtual environment
-python -m venv .venv
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+### 功能建议
+使用 [Feature Request](https://github.com/MoKangMedical/openclaw-medical-harness/issues/new?template=feature_request.md) 模板提出建议。
 
-# Install in development mode
-pip install -e ".[dev]"
+### 代码贡献
 
-# Install pre-commit hooks
-pre-commit install
+1. Fork 项目
+2. 创建功能分支 (`git checkout -b feature/amazing-feature`)
+3. 提交更改 (`git commit -m 'feat: add amazing feature'`)
+4. 推送到分支 (`git push origin feature/amazing-feature`)
+5. 创建 Pull Request
+
+## 开发规范
+
+### 提交信息格式
+```
+<type>(<scope>): <subject>
+
+类型：
+- feat: 新功能
+- fix: 修复 Bug
+- docs: 文档更新
+- style: 代码格式（不影响功能）
+- refactor: 重构
+- test: 测试相关
+- chore: 构建/工具相关
 ```
 
-## Project Structure
+### 代码风格
+- Python: PEP 8 / Black 格式化
+- TypeScript: ESLint + Prettier
+- 提交前运行 `lint` 检查
 
-```
-openclaw-medical-harness/
-├── harness/                    # Core Harness implementations
-│   ├── base.py                # BaseHarness abstract class
-│   ├── context.py             # ContextManager
-│   ├── recovery.py            # FailureRecovery
-│   ├── validator.py           # ResultValidator
-│   ├── diagnosis/             # Diagnostic Harness
-│   ├── drug_discovery/        # Drug Discovery Harness
-│   └── health_management/     # Health Management Harness
-├── agents/                     # Multi-agent orchestration
-│   └── orchestrator.py        # MultiAgentOrchestrator
-├── mcp_tools/                  # MCP tool registry
-│   └── registry.py            # MedicalToolRegistry
-├── skills/                     # OpenClaw skill definitions
-├── examples/                   # Usage examples
-├── docs/                       # Documentation
-└── tests/                      # Test suite
-```
+### 分支策略
+- `main`: 稳定版本
+- `develop`: 开发分支
+- `feature/*`: 功能分支
+- `fix/*`: 修复分支
 
-## How to Contribute
+## 社区准则
 
-### Reporting Issues
+- 尊重所有参与者
+- 建设性讨论
+- 不接受任何形式的骚扰
 
-- Use the GitHub issue tracker
-- Include reproduction steps
-- Specify your Python version and OS
+## 联系方式
 
-### Adding a New Medical Tool
-
-1. Define the tool in `mcp_tools/registry.py`:
-   ```python
-   my_tool = MCPToolDefinition(
-       name="my_medical_tool",
-       display_name="My Medical Tool",
-       description="What it does",
-       category=MCPCategory.LITERATURE,  # or other category
-       mcp_endpoint="https://...",
-       mcp_method="method_name",
-       parameters_schema={...},
-   )
-   ```
-
-2. Register it in `_MEDICAL_TOOLS` dict
-3. Add tests in `tests/test_mcp_tools.py`
-4. Update documentation
-
-### Adding a New Harness
-
-1. Create a new package under `harness/`
-2. Extend `BaseHarness` and implement:
-   - `_build_prompt()` — domain-specific prompt formatting
-   - `_domain()` — domain identifier string
-3. Add domain-specific validation rules in `validator.py`
-4. Create example scripts in `examples/`
-5. Update `README.md` and `docs/architecture.md`
-
-### Adding a New Skill
-
-1. Create a YAML file in `skills/<category>/`
-2. Follow the schema in `skills/clinical/diagnostic_reasoning.yaml`
-3. Include input/output schemas, tool dependencies, and recovery config
-
-## Code Style
-
-- **Python 3.10+** with type annotations
-- **Ruff** for linting (`ruff check .`)
-- **MyPy** for type checking (`mypy .`)
-- Docstrings: Google style with type annotations
-- Line length: 100 characters
-
-### Example
-
-```python
-def process_symptoms(
-    symptoms: list[str],
-    severity_threshold: float = 0.5,
-) -> list[dict[str, Any]]:
-    """Process and filter symptoms by severity.
-
-    Args:
-        symptoms: Raw symptom strings from patient input.
-        severity_threshold: Minimum severity score to retain (0-1).
-
-    Returns:
-        List of structured symptom dicts with severity scores.
-
-    Raises:
-        ValueError: If severity_threshold is outside [0, 1].
-    """
-    if not 0.0 <= severity_threshold <= 1.0:
-        raise ValueError(f"Threshold must be in [0, 1], got {severity_threshold}")
-    # ...
-```
-
-## Testing
-
-```bash
-# Run all tests
-pytest
-
-# Run with coverage
-pytest --cov=harness --cov=agents --cov=mcp_tools
-
-# Run specific test file
-pytest tests/test_diagnostic_harness.py
-```
-
-## Pull Request Process
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/my-feature`)
-3. Make your changes with tests
-4. Ensure all checks pass (`ruff check . && mypy . && pytest`)
-5. Submit a PR with a clear description
-
-## Harness Theory Contributions
-
-We welcome contributions that advance Harness theory in medical AI:
-
-- **New Harness designs** for medical domains
-- **Context management** strategies for clinical data
-- **Recovery mechanisms** for diagnostic uncertainty
-- **Validation rules** for medical safety
-- **Performance benchmarks** demonstrating Harness impact
-
-## License
-
-By contributing, you agree that your contributions will be licensed under the MIT License.
+- GitHub Issues: 提交问题
+- Email: MoKangMedical@users.noreply.github.com

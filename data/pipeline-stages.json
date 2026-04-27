@@ -1,0 +1,152 @@
+{
+  "version": "1.0.0",
+  "description": "Pipeline阶段定义",
+  "pipelines": [
+    {
+      "id": "systematic-review",
+      "name": "系统综述Pipeline",
+      "description": "端到端系统综述生成流程",
+      "stages": [
+        {
+          "id": "stage-1",
+          "name": "研究问题定义",
+          "order": 1,
+          "agent": "evidence-collector",
+          "tasks": [
+            {"name": "PICO框架构建", "type": "input", "required": true},
+            {"name": "纳入排除标准制定", "type": "input", "required": true},
+            {"name": "方案注册", "type": "output", "required": false}
+          ],
+          "inputs": ["research_question", "pico_elements"],
+          "outputs": ["protocol", "search_strategy"],
+          "estimated_time": "30min",
+          "dependencies": []
+        },
+        {
+          "id": "stage-2",
+          "name": "文献检索",
+          "order": 2,
+          "agent": "evidence-collector",
+          "tasks": [
+            {"name": "数据库检索", "type": "process", "required": true},
+            {"name": "去重", "type": "process", "required": true},
+            {"name": "灰色文献检索", "type": "process", "required": false}
+          ],
+          "inputs": ["search_strategy"],
+          "outputs": ["raw_records", "search_log"],
+          "estimated_time": "60min",
+          "dependencies": ["stage-1"]
+        },
+        {
+          "id": "stage-3",
+          "name": "文献筛选",
+          "order": 3,
+          "agent": "evidence-collector",
+          "tasks": [
+            {"name": "标题摘要筛选", "type": "process", "required": true},
+            {"name": "全文筛选", "type": "process", "required": true},
+            {"name": "PRISMA流程图", "type": "output", "required": true}
+          ],
+          "inputs": ["raw_records", "inclusion_exclusion"],
+          "outputs": ["included_studies", "exclusion_log", "prisma_diagram"],
+          "estimated_time": "120min",
+          "dependencies": ["stage-2"]
+        },
+        {
+          "id": "stage-4",
+          "name": "数据提取",
+          "order": 4,
+          "agent": "evidence-collector",
+          "tasks": [
+            {"name": "设计数据提取表", "type": "process", "required": true},
+            {"name": "双人提取", "type": "process", "required": true},
+            {"name": "不一致解决", "type": "process", "required": true}
+          ],
+          "inputs": ["included_studies"],
+          "outputs": ["extracted_data", "extraction_form"],
+          "estimated_time": "180min",
+          "dependencies": ["stage-3"]
+        },
+        {
+          "id": "stage-5",
+          "name": "质量评价",
+          "order": 5,
+          "agent": "quality-controller",
+          "tasks": [
+            {"name": "偏倚风险评估", "type": "process", "required": true},
+            {"name": "证据质量评价", "type": "process", "required": true},
+            {"name": "结果可视化", "type": "output", "required": true}
+          ],
+          "inputs": ["included_studies", "rob_tool"],
+          "outputs": ["rob_results", "grade_profile"],
+          "estimated_time": "120min",
+          "dependencies": ["stage-3"]
+        },
+        {
+          "id": "stage-6",
+          "name": "数据合成",
+          "order": 6,
+          "agent": "meta-analyst",
+          "tasks": [
+            {"name": "Meta分析", "type": "process", "required": true},
+            {"name": "亚组分析", "type": "process", "required": false},
+            {"name": "敏感性分析", "type": "process", "required": true},
+            {"name": "发表偏倚检验", "type": "process", "required": true}
+          ],
+          "inputs": ["extracted_data", "analysis_config"],
+          "outputs": ["meta_results", "forest_plots", "funnel_plots"],
+          "estimated_time": "90min",
+          "dependencies": ["stage-4", "stage-5"]
+        },
+        {
+          "id": "stage-7",
+          "name": "报告撰写",
+          "order": 7,
+          "agent": "report-generator",
+          "tasks": [
+            {"name": "结果汇总", "type": "output", "required": true},
+            {"name": "讨论撰写", "type": "output", "required": true},
+            {"name": "SoF表格生成", "type": "output", "required": true}
+          ],
+          "inputs": ["meta_results", "rob_results", "grade_profile"],
+          "outputs": ["draft_report", "sof_table"],
+          "estimated_time": "60min",
+          "dependencies": ["stage-6"]
+        },
+        {
+          "id": "stage-8",
+          "name": "质量审核",
+          "order": 8,
+          "agent": "quality-controller",
+          "tasks": [
+            {"name": "PRISMA清单核查", "type": "validation", "required": true},
+            {"name": "一致性检查", "type": "validation", "required": true},
+            {"name": "最终审批", "type": "approval", "required": true}
+          ],
+          "inputs": ["draft_report"],
+          "outputs": ["final_report", "qa_certificate"],
+          "estimated_time": "30min",
+          "dependencies": ["stage-7"]
+        }
+      ]
+    },
+    {
+      "id": "drug-discovery",
+      "name": "药物发现Pipeline",
+      "description": "虚拟药物筛选流程",
+      "stages": [
+        {"id": "dd-stage-1", "name": "靶点确认", "order": 1, "agent": "drug-screener"},
+        {"id": "dd-stage-2", "name": "虚拟筛选", "order": 2, "agent": "drug-screener"},
+        {"id": "dd-stage-3", "name": "先导优化", "order": 3, "agent": "drug-screener"},
+        {"id": "dd-stage-4", "name": "ADMET评估", "order": 4, "agent": "drug-screener"},
+        {"id": "dd-stage-5", "name": "报告生成", "order": 5, "agent": "report-generator"}
+      ]
+    }
+  ],
+  "stage_status_options": ["pending", "running", "completed", "failed", "skipped", "paused"],
+  "retry_policy": {
+    "max_retries": 3,
+    "retry_delay_seconds": 30,
+    "backoff_multiplier": 2
+  }
+}

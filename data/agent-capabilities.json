@@ -1,0 +1,90 @@
+{
+  "version": "1.0.0",
+  "description": "Agent能力矩阵定义",
+  "agent_types": [
+    {
+      "id": "evidence-collector",
+      "name": "证据收集Agent",
+      "description": "自动化收集和整理医学证据",
+      "capabilities": [
+        {"name": "pubmed_search", "level": "advanced", "description": "PubMed文献检索"},
+        {"name": "guideline_crawl", "level": "advanced", "description": "临床指南爬取"},
+        {"name": "data_extraction", "level": "intermediate", "description": "数据提取"},
+        {"name": "quality_assessment", "level": "intermediate", "description": "质量评价"},
+        {"name": "citation_management", "level": "basic", "description": "引用管理"}
+      ],
+      "input_types": ["search_query", "pico_criteria", "inclusion_exclusion"],
+      "output_types": ["evidence_table", "prisma_flow", "quality_report"]
+    },
+    {
+      "id": "meta-analyst",
+      "name": "Meta分析Agent",
+      "description": "执行统计分析和Meta分析",
+      "capabilities": [
+        {"name": "effect_size_calc", "level": "advanced", "description": "效应量计算"},
+        {"name": "heterogeneity_test", "level": "advanced", "description": "异质性检验"},
+        {"name": "subgroup_analysis", "level": "advanced", "description": "亚组分析"},
+        {"name": "sensitivity_analysis", "level": "advanced", "description": "敏感性分析"},
+        {"name": "publication_bias", "level": "intermediate", "description": "发表偏倚评估"},
+        {"name": "forest_plot", "level": "advanced", "description": "森林图绘制"},
+        {"name": "funnel_plot", "level": "intermediate", "description": "漏斗图绘制"}
+      ],
+      "input_types": ["extracted_data", "analysis_config"],
+      "output_types": ["analysis_results", "plots", "statistics_report"]
+    },
+    {
+      "id": "drug-screener",
+      "name": "药物筛选Agent",
+      "description": "虚拟筛选和药物设计",
+      "capabilities": [
+        {"name": "molecular_docking", "level": "advanced", "description": "分子对接"},
+        {"name": "admet_prediction", "level": "advanced", "description": "ADMET预测"},
+        {"name": "virtual_screening", "level": "advanced", "description": "虚拟筛选"},
+        {"name": "lead_optimization", "level": "intermediate", "description": "先导化合物优化"},
+        {"name": "target_analysis", "level": "intermediate", "description": "靶点分析"}
+      ],
+      "input_types": ["target_structure", "compound_library", "screening_criteria"],
+      "output_types": ["hit_compounds", "docking_results", "admet_report"]
+    },
+    {
+      "id": "report-generator",
+      "name": "报告生成Agent",
+      "description": "生成结构化医学报告",
+      "capabilities": [
+        {"name": "template_filling", "level": "advanced", "description": "模板填充"},
+        {"name": "narrative_generation", "level": "intermediate", "description": "叙述生成"},
+        {"name": "citation_formatting", "level": "advanced", "description": "引用格式化"},
+        {"name": "table_generation", "level": "advanced", "description": "表格生成"},
+        {"name": "figure_generation", "level": "intermediate", "description": "图表生成"}
+      ],
+      "input_types": ["analysis_results", "template", "format_requirements"],
+      "output_types": ["report_document", "tables", "figures"]
+    },
+    {
+      "id": "quality-controller",
+      "name": "质量控制Agent",
+      "description": "审核和验证输出质量",
+      "capabilities": [
+        {"name": "consistency_check", "level": "advanced", "description": "一致性检查"},
+        {"name": "completeness_check", "level": "advanced", "description": "完整性检查"},
+        {"name": "format_validation", "level": "intermediate", "description": "格式验证"},
+        {"name": "factual_verification", "level": "advanced", "description": "事实核查"},
+        {"name": "bias_detection", "level": "intermediate", "description": "偏倚检测"}
+      ],
+      "input_types": ["report", "data", "standards"],
+      "output_types": ["quality_report", "issues_list", "approval_status"]
+    }
+  ],
+  "capability_levels": [
+    {"id": "basic", "name": "基础", "score": 1},
+    {"id": "intermediate", "name": "中级", "score": 2},
+    {"id": "advanced", "name": "高级", "score": 3},
+    {"id": "expert", "name": "专家", "score": 4}
+  ],
+  "collaboration_modes": [
+    {"id": "sequential", "name": "顺序执行", "description": "Agent依次执行任务"},
+    {"id": "parallel", "name": "并行执行", "description": "多个Agent同时工作"},
+    {"id": "hierarchical", "name": "层级协作", "description": "主Agent协调子Agent"},
+    {"id": "feedback_loop", "name": "反馈循环", "description": "Agent间相互验证"}
+  ]
+}

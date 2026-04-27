@@ -1,0 +1,72 @@
+[
+  {
+    "id": "diagnosis_workflow",
+    "name": "诊断辅助工作流",
+    "description": "多Agent协作的诊断辅助流程",
+    "stages": [
+      {"stage": "intake", "agent": "general", "action": "收集患者主诉、现病史、既往史"},
+      {"stage": "analysis", "agent": "diagnostic", "action": "分析症状、生成鉴别诊断"},
+      {"stage": "evidence", "agent": "research", "action": "检索相关文献和指南"},
+      {"stage": "recommendation", "agent": "diagnostic", "action": "生成诊断建议和检查方案"},
+      {"stage": "documentation", "agent": "general", "action": "生成结构化诊断报告"}
+    ],
+    "agents_required": ["general", "diagnostic", "research"],
+    "estimated_time": "5-10分钟"
+  },
+  {
+    "id": "research_workflow",
+    "name": "科研辅助工作流",
+    "description": "临床科研的多Agent协作流程",
+    "stages": [
+      {"stage": "question", "agent": "research", "action": "明确研究问题和假设"},
+      {"stage": "design", "agent": "research", "action": "设计研究方案"},
+      {"stage": "literature", "agent": "research", "action": "系统文献检索"},
+      {"stage": "analysis", "agent": "research", "action": "数据统计分析"},
+      {"stage": "report", "agent": "research", "action": "生成研究报告"}
+    ],
+    "agents_required": ["research"],
+    "estimated_time": "30-60分钟"
+  },
+  {
+    "id": "followup_workflow",
+    "name": "随访管理工作流",
+    "description": "患者随访的自动化管理流程",
+    "stages": [
+      {"stage": "schedule", "agent": "followup", "action": "生成随访计划"},
+      {"stage": "remind", "agent": "followup", "action": "发送随访提醒"},
+      {"stage": "collect", "agent": "followup", "action": "收集随访数据"},
+      {"stage": "evaluate", "agent": "diagnostic", "action": "评估病情变化"},
+      {"stage": "adjust", "agent": "diagnostic", "action": "调整治疗方案"}
+    ],
+    "agents_required": ["followup", "diagnostic"],
+    "estimated_time": "10-15分钟"
+  },
+  {
+    "id": "education_workflow",
+    "name": "医学教育工作流",
+    "description": "个性化医学教育流程",
+    "stages": [
+      {"stage": "assess", "agent": "education", "action": "评估学习者水平"},
+      {"stage": "plan", "agent": "education", "action": "制定学习计划"},
+      {"stage": "teach", "agent": "education", "action": "传授知识内容"},
+      {"stage": "quiz", "agent": "education", "action": "知识测验"},
+      {"stage": "feedback", "agent": "education", "action": "反馈学习效果"}
+    ],
+    "agents_required": ["education"],
+    "estimated_time": "20-30分钟"
+  },
+  {
+    "id": "management_workflow",
+    "name": "医疗管理工作流",
+    "description": "医疗质量管理流程",
+    "stages": [
+      {"stage": "collect", "agent": "management", "action": "收集质量数据"},
+      {"stage": "analyze", "agent": "management", "action": "分析质量指标"},
+      {"stage": "identify", "agent": "management", "action": "识别问题领域"},
+      {"stage": "improve", "agent": "management", "action": "制定改进措施"},
+      {"stage": "monitor", "agent": "management", "action": "监控改进效果"}
+    ],
+    "agents_required": ["management"],
+    "estimated_time": "15-20分钟"
+  }
+]

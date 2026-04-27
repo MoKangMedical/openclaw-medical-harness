@@ -1,0 +1,141 @@
+{
+  "version": "1.0.0",
+  "description": "性能监控指标定义",
+  "metrics": [
+    {
+      "id": "pipeline_latency",
+      "name": "Pipeline延迟",
+      "category": "performance",
+      "unit": "seconds",
+      "description": "Pipeline从开始到完成的总时间",
+      "thresholds": {"warning": 3600, "critical": 7200},
+      "dimensions": ["pipeline_id", "stage"]
+    },
+    {
+      "id": "stage_duration",
+      "name": "阶段耗时",
+      "category": "performance",
+      "unit": "seconds",
+      "description": "单个Pipeline阶段的执行时间",
+      "thresholds": {"warning": 1800, "critical": 3600},
+      "dimensions": ["pipeline_id", "stage_id"]
+    },
+    {
+      "id": "task_throughput",
+      "name": "任务吞吐量",
+      "category": "performance",
+      "unit": "tasks/minute",
+      "description": "单位时间内完成的任务数",
+      "thresholds": {"warning": 5, "critical": 2},
+      "dimensions": ["task_type", "agent_id"]
+    },
+    {
+      "id": "success_rate",
+      "name": "成功率",
+      "category": "reliability",
+      "unit": "percentage",
+      "description": "任务成功完成的比率",
+      "thresholds": {"warning": 90, "critical": 80},
+      "dimensions": ["pipeline_id", "task_type"]
+    },
+    {
+      "id": "error_rate",
+      "name": "错误率",
+      "category": "reliability",
+      "unit": "percentage",
+      "description": "任务失败的比率",
+      "thresholds": {"warning": 5, "critical": 10},
+      "dimensions": ["error_type", "agent_id"]
+    },
+    {
+      "id": "queue_depth",
+      "name": "队列深度",
+      "category": "capacity",
+      "unit": "tasks",
+      "description": "等待处理的任务数",
+      "thresholds": {"warning": 50, "critical": 100},
+      "dimensions": ["queue_name"]
+    },
+    {
+      "id": "agent_utilization",
+      "name": "Agent利用率",
+      "category": "capacity",
+      "unit": "percentage",
+      "description": "Agent的使用率",
+      "thresholds": {"warning": 80, "critical": 95},
+      "dimensions": ["agent_id"]
+    },
+    {
+      "id": "memory_usage",
+      "name": "内存使用",
+      "category": "resource",
+      "unit": "MB",
+      "description": "系统内存使用量",
+      "thresholds": {"warning": 4096, "critical": 7168},
+      "dimensions": ["service"]
+    },
+    {
+      "id": "cpu_usage",
+      "name": "CPU使用率",
+      "category": "resource",
+      "unit": "percentage",
+      "description": "CPU使用百分比",
+      "thresholds": {"warning": 70, "critical": 90},
+      "dimensions": ["service", "core"]
+    },
+    {
+      "id": "api_response_time",
+      "name": "API响应时间",
+      "category": "performance",
+      "unit": "milliseconds",
+      "description": "API端点的响应时间",
+      "thresholds": {"warning": 500, "critical": 2000},
+      "dimensions": ["endpoint", "method"]
+    },
+    {
+      "id": "external_api_latency",
+      "name": "外部API延迟",
+      "category": "performance",
+      "unit": "milliseconds",
+      "description": "调用外部API的延迟",
+      "thresholds": {"warning": 2000, "critical": 5000},
+      "dimensions": ["api_name", "endpoint"]
+    },
+    {
+      "id": "storage_usage",
+      "name": "存储使用量",
+      "category": "resource",
+      "unit": "GB",
+      "description": "数据存储使用量",
+      "thresholds": {"warning": 80, "critical": 95},
+      "dimensions": ["storage_type"]
+    }
+  ],
+  "dashboards": [
+    {
+      "id": "overview",
+      "name": "系统概览",
+      "metrics": ["pipeline_latency", "success_rate", "error_rate", "queue_depth", "agent_utilization"]
+    },
+    {
+      "id": "performance",
+      "name": "性能监控",
+      "metrics": ["stage_duration", "task_throughput", "api_response_time", "external_api_latency"]
+    },
+    {
+      "id": "resources",
+      "name": "资源监控",
+      "metrics": ["memory_usage", "cpu_usage", "storage_usage"]
+    }
+  ],
+  "alerting": {
+    "channels": ["email", "webhook", "slack"],
+    "severity_levels": ["info", "warning", "critical"],
+    "escalation_policy": {
+      "warning": {"notify_after_minutes": 5, "escalate_after_minutes": 30},
+      "critical": {"notify_after_minutes": 1, "escalate_after_minutes": 10}
+    }
+  },
+  "collection_interval_seconds": 60,
+  "retention_days": 90
+}
