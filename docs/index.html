@@ -208,7 +208,28 @@ footer{
 /* ANIMATIONS */
 .fade-up{opacity:0;transform:translateY(24px);transition:opacity 0.6s ease,transform 0.6s ease}
 .fade-up.visible{opacity:1;transform:translateY(0)}
+/* Responsive improvements */
+@media(max-width:768px){
+.hero{padding:4rem 1.5rem 2rem}
+.hero h1{font-size:2rem}
+.features,.grid{grid-template-columns:1fr}
+.price-cards{grid-template-columns:1fr}
+.stats{gap:1.5rem}
+.nav{padding:0.8rem 1rem}
+.nav div{gap:0.3rem}
+.nav a{margin:0 0.4rem;font-size:0.8rem}
+.container{padding:1rem}
+}
+@media(max-width:480px){
+.hero h1{font-size:1.5rem}
+.card{padding:1.2rem}
+.metric .value{font-size:2rem}
+}
 </style>
+  <meta property="og:title" content="OpenClaw Medical Harness — AI医疗模型测试与验证平台">
+  <meta property="og:description" content="面向医疗AI开发者的专业测试与验证平台。临床基准测试、多模型对比、合规性验证、API测试、安全性评估。">
+  <meta property="og:type" content="website">
+  <meta name="robots" content="index, follow">
 </head>
 <body>
 
