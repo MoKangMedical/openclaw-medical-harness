@@ -1,108 +1,136 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>OpenClaw Medical Harness — Medical AI Agent Orchestration Framework</title>
-<meta name="description" content="Open-source medical AI agent orchestration framework. 5-step pipeline: Tool Chain → Context Management → Model Reasoning → Validation → Recovery. PyPI package for MIMO, Claude, GPT-4.">
-<meta name="keywords" content="medical AI,agent framework,diagnosis,drug discovery,harness theory,MIMO,OpenClaw,Python,PyPI,PubMed,ChEMBL">
-<meta property="og:title" content="OpenClaw Medical Harness">
-<meta property="og:description" content="Build reliable medical AI agents with a 5-step harness pipeline.">
-<meta property="og:type" content="website">
-<meta name="robots" content="index, follow">
-<link rel="canonical" href="https://mokangmedical.github.io/openclaw-medical-harness/">
-<script type="application/ld+json">
-{"@context":"https://schema.org","@type":"SoftwareApplication","name":"OpenClaw Medical Harness","description":"Medical AI Agent Orchestration Framework","url":"https://mokangmedical.github.io/openclaw-medical-harness/","author":{"@type":"Person","name":"MoKangMedical"},"codeRepository":"https://github.com/MoKangMedical/openclaw-medical-harness","license":"https://opensource.org/licenses/MIT","softwareRequirements":"Python >= 3.10","operatingSystem":"Cross-platform","applicationCategory":"DeveloperApplication","isAccessibleForFree":true}
-</script>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>OpenClaw Medical Harness</title>
+<meta name="description" content="SUBOpenClaw Medical Harness">
 <style>
-:root{--bg:#0d1117;--card:#161b22;--border:#30363d;--accent:#58a6ff;--text:#c9d1d9;--text2:#8b949e;--green:#3fb950}
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);line-height:1.7;max-width:900px;margin:0 auto;padding:2rem}
-h1{font-size:2.2rem;margin-bottom:.3rem}h2{margin-top:2rem;margin-bottom:1rem}
-a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
-.badges{display:flex;gap:.5rem;flex-wrap:wrap;margin:1rem 0}
-.badge{display:inline-block;padding:.2rem .6rem;border-radius:12px;font-size:.8rem;background:var(--card);border:1px solid var(--border);color:var(--text)}
-.card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1.2rem;margin:1rem 0}
-pre{background:#1c2128;padding:1rem;border-radius:8px;overflow-x:auto;font-size:.9rem}
-code{color:var(--green)}
-table{width:100%;border-collapse:collapse;margin:1rem 0}
-th,td{padding:.6rem;text-align:left;border-bottom:1px solid var(--border)}
-th{color:var(--text2);font-weight:600}
-.eco-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:.8rem;margin:1rem 0}
-.eco-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:1rem}
-.eco-card h4{margin-bottom:.2rem}.eco-card p{font-size:.85rem;color:var(--text2)}
-footer{text-align:center;padding:2rem 0;color:var(--text2);font-size:.85rem;border-top:1px solid var(--border);margin-top:2rem}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0a0a1e;color:#e2e8f0;line-height:1.6}
+.hero{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:2rem;background:linear-gradient(135deg,#10b98122 0%,#0a0a1e 50%,#10b98111 100%);position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:radial-gradient(circle at 30% 40%,#10b98115,transparent 60%),radial-gradient(circle at 70% 60%,#8b5cf610,transparent 60%)}
+.hero-c{position:relative;z-index:1;max-width:800px}
+.hero h1{font-size:clamp(2rem,5vw,3.5rem);font-weight:800;margin-bottom:1rem;background:linear-gradient(135deg,#fff,#10b981);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-1px}
+.hero p{font-size:1.2rem;color:rgba(255,255,255,0.7);margin-bottom:2rem}
+.cg{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+.cb{padding:14px 32px;border-radius:12px;font-size:1rem;font-weight:600;cursor:pointer;transition:all .3s;border:none}
+.cp{background:linear-gradient(135deg,#10b981,#8b5cf6);color:#fff;box-shadow:0 4px 20px #10b98140}
+.cp:hover{transform:translateY(-2px);box-shadow:0 8px 30px #10b98160}
+.cs{background:rgba(255,255,255,0.1);color:#fff;border:1px solid rgba(255,255,255,0.2)}
+.cs:hover{background:rgba(255,255,255,0.15)}
+.section{padding:6rem 2rem;max-width:1200px;margin:0 auto}
+.st{text-align:center;font-size:2.2rem;font-weight:700;margin-bottom:1rem}
+.ss{text-align:center;color:rgba(255,255,255,0.6);margin-bottom:3rem;font-size:1.1rem}
+.fg{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem}
+.fc{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:2rem;transition:all .3s}
+.fc:hover{transform:translateY(-4px);border-color:#10b981;box-shadow:0 8px 30px rgba(0,0,0,0.3)}
+.fc h3{font-size:1.1rem;margin-bottom:.5rem;color:#fff}
+.fc p{color:rgba(255,255,255,0.6);font-size:.9rem}
+.pg{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;max-width:900px;margin:0 auto}
+.pc{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:2.5rem;text-align:center;position:relative;transition:all .3s}
+.pc.popular{border-color:#10b981;background:rgba(99,102,241,0.08)}
+.pb{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#10b981,#8b5cf6);color:#fff;padding:4px 20px;border-radius:20px;font-size:.8rem;font-weight:600}
+.pc h3{font-size:1.3rem;margin-bottom:.5rem}
+.pr{font-size:2rem;font-weight:800;color:#fff;margin:1rem 0}
+.pc p{color:rgba(255,255,255,0.6);margin-bottom:1.5rem}
+.pc .cb{width:100%;background:rgba(255,255,255,0.1);color:#fff;border:1px solid rgba(255,255,255,0.2);padding:12px;border-radius:10px}
+.pc.popular .cb{background:linear-gradient(135deg,#10b981,#8b5cf6);border:none}
+.stats{display:flex;justify-content:center;gap:4rem;flex-wrap:wrap;padding:3rem 0}
+.stat{text-align:center}
+.sn{font-size:2.5rem;font-weight:800;background:linear-gradient(135deg,#10b981,#c084fc);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.sl{color:rgba(255,255,255,0.5);font-size:.85rem;margin-top:.3rem}
+.cta-section{padding:4rem 2rem;text-align:center}
+footer{background:rgba(0,0,0,0.3);border-top:1px solid rgba(255,255,255,0.08);padding:3rem 2rem;text-align:center}
+.fl{display:flex;justify-content:center;gap:2rem;flex-wrap:wrap;margin-bottom:1.5rem}
+.fl a{color:rgba(255,255,255,0.5);text-decoration:none;font-size:.85rem;transition:color .2s}
+.fl a:hover{color:#fff}
+.fc2{color:rgba(255,255,255,0.3);font-size:.8rem}
+@media(max-width:768px){.stats{gap:2rem}}
 </style>
 </head>
-<body>
-<h1>🏥 OpenClaw Medical Harness</h1>
-<p style="color:var(--text2)">Medical AI Agent Orchestration Framework — Built on Harness Theory</p>
-<div class="badges">
-<a href="https://pypi.org/project/openclaw-medical-harness/" class="badge">📦 PyPI v0.2.0</a>
-<a href="https://github.com/MoKangMedical/openclaw-medical-harness" class="badge">⭐ GitHub</a>
-<a href="https://github.com/MoKangMedical/openclaw-medical-harness/actions" class="badge">✅ CI</a>
-<a href="https://mokangmedical.github.io/hub/" class="badge">🌐 Ecosystem</a>
-</div>
+<body style="padding-top:56px!important">
+<nav id="opc-nav" style="position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(10,10,30,0.95);backdrop-filter:blur(20px);border-bottom:1px solid rgba(99,102,241,0.2);padding:0 2rem;height:56px;display:flex;align-items:center;justify-content:space-between;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif">
+  <a href="https://mokangmedical.github.io/opc-homepage/" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:#fff;font-weight:700;font-size:15px">
+    <svg width="28" height="28" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="14" stroke="url(#ng1)" stroke-width="2.5"/><path d="M10 16h12M16 10v12" stroke="url(#ng1)" stroke-width="2.5" stroke-linecap="round"/><defs><linearGradient id="ng1" x1="0" y1="0" x2="32" y2="32"><stop stop-color="#818cf8"/><stop offset="1" stop-color="#c084fc"/></linearGradient></defs></svg>
+    <span style="background:linear-gradient(135deg,#818cf8,#c084fc);-webkit-background-clip:text;-webkit-text-fill-color:transparent">MoKangMedical</span>
+  </a>
+  <div style="display:flex;gap:6px;align-items:center">
+    <a href="https://mokangmedical.github.io/opc-homepage/" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;padding:6px 12px;border-radius:8px">生态首页</a>
+    <a href="https://github.com/MoKangMedical" target="_blank" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;padding:6px 12px;border-radius:8px">GitHub</a>
+    <a href="https://mokangmedical.github.io/opc-alliance/" style="background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;padding:6px 16px;border-radius:8px;font-weight:600;font-size:13px;text-decoration:none">OPC Hub</a>
+  </div>
+</nav>
+<nav style="position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(10,10,30,0.95);backdrop-filter:blur(20px);border-bottom:1px solid rgba(99,102,241,0.2);padding:0 2rem;height:56px;display:flex;align-items:center;justify-content:space-between">
+  <a href="https://mokangmedical.github.io/opc-homepage/" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:#fff;font-weight:700;font-size:15px">
+    <svg width="28" height="28" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="14" stroke="url(#ng1)" stroke-width="2.5"/><path d="M10 16h12M16 10v12" stroke="url(#ng1)" stroke-width="2.5" stroke-linecap="round"/><defs><linearGradient id="ng1" x1="0" y1="0" x2="32" y2="32"><stop stop-color="#818cf8"/><stop offset="1" stop-color="#c084fc"/></linearGradient></defs></svg>
+    <span style="background:linear-gradient(135deg,#818cf8,#c084fc);-webkit-background-clip:text;-webkit-text-fill-color:transparent">MoKangMedical</span>
+  </a>
+  <div style="display:flex;gap:6px;align-items:center">
+    <a href="https://mokangmedical.github.io/opc-homepage/" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;padding:6px 12px;border-radius:8px">生态首页</a>
+    <a href="https://github.com/MoKangMedical" target="_blank" style="color:rgba(255,255,255,0.7);text-decoration:none;font-size:13px;padding:6px 12px;border-radius:8px">GitHub</a>
+    <a href="https://mokangmedical.github.io/opc-alliance/" style="background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#fff;padding:6px 16px;border-radius:8px;font-weight:600;font-size:13px;text-decoration:none">OPC Hub</a>
+  </div>
+</nav>
+<div style="padding-top:56px"></div>
 
-<h2>Quick Start</h2>
-<pre><code>pip install openclaw-medical-harness
+<section class="hero">
+  <div class="hero-c">
+    <h1>OpenClaw Medical Harness</h1>
+    <p>SUBOpenClaw Medical Harness</p>
+    <div class="stats">
+      <div class="stat"><div class="sn">10K+</div><div class="sl">活跃用户</div></div>
+      <div class="stat"><div class="sn">50+</div><div class="sl">企业客户</div></div>
+      <div class="stat"><div class="sn">99.9%</div><div class="sl">系统可用性</div></div>
+    </div>
+    <div class="cg">
+      <button class="cb cp" onclick="document.getElementById('pricing').scrollIntoView({behavior:'smooth'})">立即体验</button>
+      <button class="cb cs" onclick="document.getElementById('features').scrollIntoView({behavior:'smooth'})">了解更多</button>
+    </div>
+  </div>
+</section>
 
-from openclaw_medical_harness import DiagnosisHarness
-h = DiagnosisHarness(specialty='neurology')
-r = h.execute({'symptoms': ['ptosis', 'fatigable weakness'], 'patient': {'age': 35}})
-print(r['diagnosis'], r['confidence'])</code></pre>
+<section class="section" id="features">
+  <h2 class="st">核心能力</h2>
+  <p class="ss">六大核心技术模块，覆盖全场景需求</p>
+  <div class="fg">
+        <div class="fc"><h3>5步Harness流水线</h3><p>标准化Agent编排流程</p></div>
+        <div class="fc"><h3>MCP工具集成</h3><p>Model Context Protocol无缝对接</p></div>
+        <div class="fc"><h3>多Agent协作</h3><p>66个专业Skill协同工作</p></div>
+        <div class="fc"><h3>HIPAA合规</h3><p>医疗数据安全保护</p></div>
+        <div class="fc"><h3>临床决策支持</h3><p>循证医学辅助诊断</p></div>
+        <div class="fc"><h3>弹性架构</h3><p>水平扩展，高可用部署</p></div>
 
-<h2>Three Harnesses</h2>
-<table>
-<tr><th>Harness</th><th>Pipeline</th><th>Integrations</th></tr>
-<tr><td><strong>Diagnosis</strong></td><td>Symptoms → Differential → Workup → Dx</td><td>PubMed, OMIM, Knowledge Base</td></tr>
-<tr><td><strong>Drug Discovery</strong></td><td>Target → Screening → ADMET → Lead Opt</td><td>ChEMBL, OpenTargets, RDKit</td></tr>
-<tr><td><strong>Health Mgmt</strong></td><td>Assessment → Plan → Adherence → Effect</td><td>Wearables, Labs, PubMed</td></tr>
-</table>
+  </div>
+</section>
 
-<h2>5-Step Pipeline</h2>
-<div class="card">
-<p><code>Input → Context Build → Tool Chain → Model Reasoning → Validation → Recovery → Output</code></p>
-<p style="color:var(--text2);margin-top:.5rem">Any LLM (MIMO, Claude, GPT-4, Ollama) + MCP tool chain + medical-grade validation</p>
-</div>
+<section class="section" id="pricing" style="background:rgba(99,102,241,0.03);border-radius:32px;margin:0 1rem">
+  <h2 class="st">定价方案</h2>
+  <p class="ss">灵活定价，按需选择</p>
+  <div class="pg">
+      <div class="pc"><h3>开源版</h3><div class="pr">¥0</div><p>社区支持免费</p><button class="cb">开始使用</button></div>
+      <div class="pc popular"><div class="pb">最受欢迎</div><h3>专业版</h3><div class="pr">¥1999/月</div><p>企业级支持</p><button class="cb">开始使用</button></div>
+      <div class="pc"><h3>定制版</h3><div class="pr">面议</div><p>私有化部署</p><button class="cb">开始使用</button></div>
 
-<h2>Model Providers</h2>
-<table>
-<tr><th>Provider</th><th>Model</th><th>Status</th></tr>
-<tr><td>Xiaomi MIMO</td><td>mimo-v2-pro</td><td>✅ Default</td></tr>
-<tr><td>OpenAI</td><td>GPT-4</td><td>🔌 Via factory</td></tr>
-<tr><td>Anthropic</td><td>Claude</td><td>🔌 Via factory</td></tr>
-<tr><td>Ollama</td><td>Local models</td><td>🔌 Via factory</td></tr>
-</table>
+  </div>
+</section>
 
-<h2>MCP Tools</h2>
-<table>
-<tr><th>Tool</th><th>Category</th><th>Auth</th></tr>
-<tr><td>PubMed</td><td>Literature</td><td>No</td></tr>
-<tr><td>ChEMBL</td><td>Drug data</td><td>No</td></tr>
-<tr><td>OpenTargets</td><td>Target-disease</td><td>No</td></tr>
-<tr><td>OMIM</td><td>Genetics</td><td>API Key</td></tr>
-<tr><td>OpenFDA</td><td>Drug safety</td><td>No</td></tr>
-</table>
-
-<h2>Harness Theory</h2>
-<div class="card">
-<p>在AI应用中，<strong>架构设计（Harness）比底层模型更重要</strong>。完整Harness可将准确率从72.3%提升至91.8%。</p>
-</div>
-
-<h2>MoKangMedical Ecosystem</h2>
-<div class="eco-grid">
-<div class="eco-card"><h4><a href="https://mokangmedical.github.io/chronicdiseasemanagement/">慢康智枢</a></h4><p>Hospital chronic disease management</p></div>
-<div class="eco-card"><h4><a href="https://mokangmedical.github.io/medichat-rd/">MediChat-RD</a></h4><p>Multi-agent rare disease diagnosis</p></div>
-<div class="eco-card"><h4><a href="https://mokangmedical.github.io/medi-pharma/">MediPharma</a></h4><p>AI drug discovery platform</p></div>
-<div class="eco-card"><h4><a href="https://mokangmedical.github.io/drugmind/">DrugMind</a></h4><p>Drug R&D digital twin</p></div>
-<div class="eco-card"><h4><a href="https://mokangmedical.github.io/cloud-memorial/">云思园</a></h4><p>AI memorial platform</p></div>
-<div class="eco-card"><h4><a href="https://mokangmedical.github.io/digital-sage/">数字智者</a></h4><p>100+ historical AI dialogues</p></div>
-<div class="eco-card"><h4><a href="https://mokangmedical.github.io/tianyan/">天眼</a></h4><p>Multi-agent market forecasting</p></div>
-<div class="eco-card"><h4><a href="https://mokangmedical.github.io/hub/">🌐 Ecosystem Hub</a></h4><p>All projects in one place</p></div>
-</div>
+<section class="cta-section">
+  <h2 style="font-size:2rem;font-weight:700;margin-bottom:1rem">准备好开始了吗？</h2>
+  <p style="color:rgba(255,255,255,0.6);margin-bottom:2rem">加入MoKangMedical生态，探索AI医疗的无限可能</p>
+  <button class="cb cp" onclick="window.open('https://github.com/MoKangMedical')">开始使用</button>
+</section>
 
 <footer>
-<a href="https://github.com/MoKangMedical/openclaw-medical-harness">GitHub</a> · <a href="https://pypi.org/project/openclaw-medical-harness/">PyPI</a> · <a href="https://mokangmedical.github.io/hub/">Hub</a> · MIT License
+  <div class="fl">
+    <a href="https://mokangmedical.github.io/tianyan/">天眼</a>
+    <a href="https://mokangmedical.github.io/PharmaSim/">PharmaSim</a>
+    <a href="https://mokangmedical.github.io/chronicdiseasemanagement/">ChroniCare</a>
+    <a href="https://mokangmedical.github.io/medichat-rd/">MediChat-RD</a>
+    <a href="https://mokangmedical.github.io/opc-homepage/">OPC生态</a>
+    <a href="https://github.com/MoKangMedical">GitHub</a>
+  </div>
+  <p class="fc2">&copy; 2026 MoKangMedical. All rights reserved.</p>
 </footer>
-</body></html>
+</body>
+</html>
